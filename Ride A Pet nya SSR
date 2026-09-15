@@ -1,0 +1,286 @@
+-- SSR Ride A Pet (Phoenix-Speed Tween Bypass)
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+
+-- Bersihkan UI Lama
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "SSRRideAPetGUI"
+ScreenGui.Parent = CoreGui or LP:WaitForChild("PlayerGui")
+
+for _, gui in pairs(ScreenGui.Parent:GetChildren()) do
+    if gui.Name == "SSRRideAPetGUI" and gui ~= ScreenGui then
+        gui:Destroy()
+    end
+end
+
+-- ==========================================
+-- SETUP UI: DELTA STYLE MINIMIZE (FLOATING ICON)
+-- ==========================================
+local OpenIcon = Instance.new("ImageButton", ScreenGui)
+OpenIcon.Name = "OpenIcon"
+OpenIcon.Size = UDim2.new(0, 50, 0, 50)
+OpenIcon.Position = UDim2.new(0.5, -80, 0.1, 0)
+OpenIcon.BackgroundTransparency = 1 
+-- Menggunakan Image ID murni hasil ekstrak
+OpenIcon.Image = "rbxassetid://102866112057826"
+OpenIcon.Active = true
+OpenIcon.Draggable = true
+OpenIcon.Visible = false
+
+-- Setup Main Frame
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 160, 0, 260)
+MainFrame.Position = UDim2.new(0.5, -80, 0.1, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 20)
+MainFrame.BorderSizePixel = 2
+MainFrame.BorderColor3 = Color3.fromRGB(255, 150, 0)
+MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.ClipsDescendants = true
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -30, 0, 25)
+Title.BackgroundColor3 = Color3.fromRGB(50, 30, 10)
+Title.Text = " SSR Ride A Pet"
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextColor3 = Color3.fromRGB(255, 150, 0)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 14
+
+local MinBtn = Instance.new("TextButton", MainFrame)
+MinBtn.Size = UDim2.new(0, 30, 0, 25); MinBtn.Position = UDim2.new(1, -30, 0, 0)
+MinBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+MinBtn.Text = "-"; MinBtn.TextColor3 = Color3.new(1, 1, 1)
+
+-- Logika Minimize Delta Style
+MinBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+    OpenIcon.Visible = true
+    OpenIcon.Position = MainFrame.Position
+end)
+
+OpenIcon.MouseButton1Click:Connect(function()
+    OpenIcon.Visible = false
+    MainFrame.Visible = true
+    MainFrame.Position = OpenIcon.Position
+end)
+
+-- ==========================================
+-- ISI MENU SSR RIDE A PET
+-- ==========================================
+local RadarBtn = Instance.new("TextButton", MainFrame)
+RadarBtn.Size = UDim2.new(1, -10, 0, 30); RadarBtn.Position = UDim2.new(0, 5, 0, 30)
+RadarBtn.BackgroundColor3 = Color3.fromRGB(60, 50, 50)
+RadarBtn.Text = "Radar & Auto-Run: OFF"
+RadarBtn.TextColor3 = Color3.new(1, 1, 1); RadarBtn.Font = Enum.Font.SourceSansBold
+RadarBtn.TextSize = 12
+
+local SaveBaseBtn = Instance.new("TextButton", MainFrame)
+SaveBaseBtn.Size = UDim2.new(0.5, -7, 0, 30); SaveBaseBtn.Position = UDim2.new(0, 5, 0, 65)
+SaveBaseBtn.BackgroundColor3 = Color3.fromRGB(150, 80, 0)
+SaveBaseBtn.Text = "+ Save Base"; SaveBaseBtn.TextColor3 = Color3.new(1, 1, 1)
+SaveBaseBtn.Font = Enum.Font.SourceSansBold; SaveBaseBtn.TextSize = 12
+
+local TPBaseBtn = Instance.new("TextButton", MainFrame)
+TPBaseBtn.Size = UDim2.new(0.5, -7, 0, 30); TPBaseBtn.Position = UDim2.new(0.5, 2, 0, 65)
+TPBaseBtn.BackgroundColor3 = Color3.fromRGB(80, 50, 20)
+TPBaseBtn.Text = "Run: Base"; TPBaseBtn.TextColor3 = Color3.new(0.8, 0.8, 0.8)
+TPBaseBtn.Font = Enum.Font.SourceSansBold; TPBaseBtn.TextSize = 12
+
+local EggList = Instance.new("ScrollingFrame", MainFrame)
+EggList.Size = UDim2.new(1, -10, 0, 150); EggList.Position = UDim2.new(0, 5, 0, 100)
+EggList.BackgroundColor3 = Color3.fromRGB(30, 30, 30); EggList.ScrollBarThickness = 4
+
+local ListLayout = Instance.new("UIListLayout", EggList)
+ListLayout.Padding = UDim.new(0, 2); ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    EggList.CanvasSize = UDim2.new(0, 0, 0, ListLayout.AbsoluteContentSize.Y)
+end)
+
+-- LOGIC VARIABLES
+local radarEnabled = false
+local espCache = {}
+local buttonCache = {}
+local savedBaseCFrame = nil
+
+-- ==========================================
+-- JURUS AUTO-RUN (PHOENIX SPEED: 190 SPs)
+-- ==========================================
+local currentTween = nil
+local isRunning = false
+local TRAVEL_SPEED = 190
+
+local function runTo(targetCFrame)
+    local char = LP.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    local hrp = char.HumanoidRootPart
+
+    if currentTween then currentTween:Cancel() end
+
+    local distance = (hrp.Position - targetCFrame.Position).Magnitude
+    local tweenTime = distance / TRAVEL_SPEED
+
+    local tweenInfo = TweenInfo.new(tweenTime, Enum.EasingStyle.Linear)
+    currentTween = TweenService:Create(hrp, tweenInfo, {CFrame = targetCFrame + Vector3.new(0, 5, 0)})
+    
+    isRunning = true
+    currentTween:Play()
+
+    currentTween.Completed:Connect(function()
+        isRunning = false
+        hrp.AssemblyLinearVelocity = Vector3.new(0,0,0)
+    end)
+end
+
+-- Auto-Noclip
+RunService.Stepped:Connect(function()
+    if isRunning and LP.Character then
+        for _, part in pairs(LP.Character:GetChildren()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+-- ==========================================
+-- PEMBEKU TIMER LOKAL
+-- ==========================================
+local function freezeTimer()
+    pcall(function()
+        for _, obj in pairs(LP.PlayerGui:GetDescendants()) do
+            if obj:IsA("TextLabel") and obj.Text:match("Egg Will Break") then
+                local ui = obj:FindFirstAncestorWhichIsA("ScreenGui")
+                if ui then
+                    for _, script in pairs(ui:GetDescendants()) do
+                        if script:IsA("LocalScript") then
+                            script.Disabled = true 
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end
+
+-- ==========================================
+-- BASE WAYPOINT
+-- ==========================================
+SaveBaseBtn.MouseButton1Click:Connect(function()
+    if LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
+        savedBaseCFrame = LP.Character.HumanoidRootPart.CFrame
+        TPBaseBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+        TPBaseBtn.TextColor3 = Color3.new(1, 1, 1)
+        TPBaseBtn.Text = "Run: Base (ON)"
+    end
+end)
+
+TPBaseBtn.MouseButton1Click:Connect(function()
+    if savedBaseCFrame then
+        runTo(savedBaseCFrame)
+    end
+end)
+
+local function clearAll()
+    for _, gui in pairs(espCache) do if gui then gui:Destroy() end end
+    for _, btn in pairs(buttonCache) do if btn then btn:Destroy() end end
+    table.clear(espCache)
+    table.clear(buttonCache)
+end
+
+local function updateESP()
+    if not radarEnabled then return end
+    
+    freezeTimer()
+    
+    local activeEggs = {}
+    local eggCounts = {}
+    local validTargets = {}
+
+    for _, obj in pairs(Workspace:GetDescendants()) do
+        if obj.Parent and obj.Parent.Name == "RenderedEggs" then
+            local targetPart = obj:IsA("Model") and (obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")) or (obj:IsA("BasePart") and obj)
+            if targetPart then
+                table.insert(validTargets, {obj = obj, part = targetPart})
+                eggCounts[obj.Name] = (eggCounts[obj.Name] or 0) + 1
+            end
+        end
+    end
+
+    for _, data in ipairs(validTargets) do
+        local obj = data.obj
+        local targetPart = data.part
+        activeEggs[obj] = true
+        
+        if not espCache[obj] then
+            local bg = Instance.new("BillboardGui")
+            bg.Size = UDim2.new(0, 120, 0, 30); bg.AlwaysOnTop = true; bg.Adornee = targetPart
+            
+            local txt = Instance.new("TextLabel", bg)
+            txt.Size = UDim2.new(1, 0, 1, 0); txt.BackgroundTransparency = 1; txt.Text = obj.Name
+            txt.TextStrokeTransparency = 0; txt.TextScaled = true; txt.Font = Enum.Font.SourceSansBold
+            
+            local lowerName = obj.Name:lower()
+            if lowerName:match("mythic") then txt.TextColor3 = Color3.fromRGB(255, 0, 255)
+            elseif lowerName:match("flaming") or lowerName:match("divine") then txt.TextColor3 = Color3.fromRGB(255, 69, 0)
+            elseif lowerName:match("golden") then txt.TextColor3 = Color3.fromRGB(255, 215, 0)
+            else txt.TextColor3 = Color3.fromRGB(0, 255, 255) end
+            
+            bg.Parent = game.CoreGui
+            espCache[obj] = bg
+        end
+
+        if not buttonCache[obj] then
+            local tpBtn = Instance.new("TextButton")
+            tpBtn.Size = UDim2.new(1, 0, 0, 25)
+            tpBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            tpBtn.Text = "Run: " .. obj.Name
+            tpBtn.Font = Enum.Font.SourceSansBold; tpBtn.TextSize = 12
+            
+            local lowerName = obj.Name:lower()
+            if lowerName:match("mythic") then tpBtn.TextColor3 = Color3.fromRGB(255, 100, 255)
+            elseif lowerName:match("flaming") or lowerName:match("divine") then tpBtn.TextColor3 = Color3.fromRGB(255, 100, 100)
+            elseif lowerName:match("golden") then tpBtn.TextColor3 = Color3.fromRGB(255, 215, 0)
+            else tpBtn.TextColor3 = Color3.new(1, 1, 1) end
+            
+            tpBtn.MouseButton1Click:Connect(function()
+                runTo(targetPart.CFrame)
+            end)
+            
+            tpBtn.Parent = EggList
+            buttonCache[obj] = tpBtn
+        end
+
+        if buttonCache[obj] then
+            buttonCache[obj].LayoutOrder = eggCounts[obj.Name]
+        end
+    end
+
+    for obj, _ in pairs(espCache) do
+        if not activeEggs[obj] or not obj.Parent or obj.Parent.Name ~= "RenderedEggs" then
+            if espCache[obj] then espCache[obj]:Destroy(); espCache[obj] = nil end
+            if buttonCache[obj] then buttonCache[obj]:Destroy(); buttonCache[obj] = nil end
+        end
+    end
+end
+
+RadarBtn.MouseButton1Click:Connect(function()
+    radarEnabled = not radarEnabled
+    if radarEnabled then
+        RadarBtn.Text = "Radar & Auto-Run: ON"
+        RadarBtn.BackgroundColor3 = Color3.fromRGB(255, 150, 0)
+    else
+        RadarBtn.Text = "Radar & Auto-Run: OFF"
+        RadarBtn.BackgroundColor3 = Color3.fromRGB(60, 50, 50)
+        clearAll()
+        if currentTween then currentTween:Cancel() end
+    end
+end)
+
+task.spawn(function()
+    while task.wait(1) do
+        if radarEnabled then updateESP() end
+    end
+end)
