@@ -1,0 +1,203 @@
+-- SSR Karinderya V10 (PERFECT: Auto Order Fix & Infinite Radius Deliver)
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CoreGui = game:GetService("CoreGui")
+
+local RemotesFolder = ReplicatedStorage:WaitForChild("Remotes")
+local CounterRemotes = RemotesFolder:WaitForChild("CounterRemotes")
+local AssignNPC = CounterRemotes:WaitForChild("AssignNPC")
+local GetCounterInfo = CounterRemotes:WaitForChild("GetCounterInfo")
+
+-- BERSINKAN UI LAMA
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "SSRKarinderyaGUI"
+ScreenGui.Parent = CoreGui or LP:WaitForChild("PlayerGui")
+for _, gui in pairs(ScreenGui.Parent:GetChildren()) do
+    if gui.Name == "SSRKarinderyaGUI" and gui ~= ScreenGui then gui:Destroy() end
+end
+
+-- ==========================================
+-- SYSTEM ANTI-AFK (BYPASS ROBLOX KICK)
+-- ==========================================
+local VirtualUser = game:GetService("VirtualUser")
+LP.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
+-- ==========================================
+-- SETUP UI UTAMA 
+-- ==========================================
+local OpenIcon = Instance.new("ImageButton", ScreenGui)
+OpenIcon.Name = "OpenIcon"
+OpenIcon.Size = UDim2.new(0, 50, 0, 50)
+OpenIcon.Position = UDim2.new(0.5, -100, 0.1, 0)
+OpenIcon.BackgroundTransparency = 1 
+OpenIcon.Image = "rbxassetid://102866112057826"
+OpenIcon.Active = true; OpenIcon.Draggable = true
+OpenIcon.Visible = false 
+
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 200, 0, 190)
+MainFrame.Position = UDim2.new(0.5, -100, 0.2, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
+MainFrame.BorderSizePixel = 2
+MainFrame.BorderColor3 = Color3.fromRGB(0, 255, 200)
+MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.ClipsDescendants = true
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -30, 0, 25)
+Title.BackgroundColor3 = Color3.fromRGB(10, 15, 25)
+Title.Text = " SSR Karinderya V10"
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextColor3 = Color3.fromRGB(0, 255, 200)
+Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 13
+
+local MinBtn = Instance.new("TextButton", MainFrame)
+MinBtn.Size = UDim2.new(0, 30, 0, 25); MinBtn.Position = UDim2.new(1, -30, 0, 0)
+MinBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+MinBtn.Text = "-"; MinBtn.TextColor3 = Color3.new(1, 1, 1)
+
+MinBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false; OpenIcon.Visible = true; OpenIcon.Position = MainFrame.Position
+end)
+OpenIcon.MouseButton1Click:Connect(function()
+    OpenIcon.Visible = false; MainFrame.Visible = true; MainFrame.Position = OpenIcon.Position
+end)
+
+-- ==========================================
+-- TOMBOL FITUR
+-- ==========================================
+local AutoAssignBtn = Instance.new("TextButton", MainFrame)
+AutoAssignBtn.Size = UDim2.new(1, -20, 0, 35); AutoAssignBtn.Position = UDim2.new(0, 10, 0, 35)
+AutoAssignBtn.BackgroundColor3 = Color3.fromRGB(50, 60, 80)
+AutoAssignBtn.Text = "Auto Order: OFF"
+AutoAssignBtn.TextColor3 = Color3.new(1, 1, 1); AutoAssignBtn.Font = Enum.Font.SourceSansBold
+
+local AutoDeliverBtn = Instance.new("TextButton", MainFrame)
+AutoDeliverBtn.Size = UDim2.new(1, -20, 0, 35); AutoDeliverBtn.Position = UDim2.new(0, 10, 0, 75)
+AutoDeliverBtn.BackgroundColor3 = Color3.fromRGB(50, 60, 80)
+AutoDeliverBtn.Text = "Auto Deliver: OFF"
+AutoDeliverBtn.TextColor3 = Color3.new(1, 1, 1); AutoDeliverBtn.Font = Enum.Font.SourceSansBold
+
+local StatusTxt = Instance.new("TextLabel", MainFrame)
+StatusTxt.Size = UDim2.new(1, -20, 0, 60); StatusTxt.Position = UDim2.new(0, 10, 0, 115)
+StatusTxt.BackgroundTransparency = 1
+StatusTxt.Text = "Status: Idle\nDeliver: Standby"
+StatusTxt.TextColor3 = Color3.fromRGB(150, 150, 150)
+StatusTxt.Font = Enum.Font.SourceSans; StatusTxt.TextScaled = true
+
+local autoAssign = false
+local autoDeliver = false
+
+-- FUNGSI CARI WARUNG (FIXED: Balik pakai versi V3 yang terbukti manjur)
+local function getMyPlot()
+    local myPlot = nil
+    local shortestDist = math.huge
+    local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return nil end
+
+    for _, obj in pairs(Workspace:GetChildren()) do
+        if obj.Name:match("Karenderya") then
+            local diningPlot = obj:FindFirstChild("DiningPlot1")
+            if diningPlot then
+                local refPart = nil
+                for _, tableObj in pairs(diningPlot:GetChildren()) do
+                    if tableObj.Name:match("Table") then
+                        refPart = tableObj:FindFirstChild("PromptPart") or tableObj:FindFirstChild("ChairSpawn1") or tableObj:FindFirstChildWhichIsA("BasePart", true)
+                        if refPart then break end
+                    end
+                end
+                
+                if refPart then
+                    local dist = (hrp.Position - refPart.Position).Magnitude
+                    if dist < shortestDist then
+                        shortestDist = dist
+                        myPlot = obj
+                    end
+                end
+            end
+        end
+    end
+    return myPlot
+end
+
+-- LOGIKA 1: AUTO ASSIGN ORDER (Remote Based)
+local function processOrders()
+    local myPlot = getMyPlot()
+    if not myPlot then return end
+    
+    local success, counterData = pcall(function() return GetCounterInfo:InvokeServer() end)
+    if success and type(counterData) == "table" and counterData.NpcId then
+        local availableTables = {}
+        for _, plot in pairs(myPlot:GetChildren()) do
+            if plot.Name:match("DiningPlot") then
+                for _, tableObj in pairs(plot:GetChildren()) do
+                    if tableObj.Name:match("Table") then table.insert(availableTables, tableObj) end
+                end
+            end
+        end
+        if #availableTables > 0 then
+            local randomTable = availableTables[math.random(1, #availableTables)]
+            AssignNPC:FireServer({
+                ["Seat"] = math.random(1, 2),
+                ["NpcId"] = counterData.NpcId,
+                ["NPCName"] = counterData.NpcId,
+                ["Slot"] = randomTable
+            })
+            StatusTxt.Text = "Status: Pelanggan ke " .. randomTable.Name
+        end
+    end
+end
+
+-- LOGIKA 2: INFINITE RADIUS OMNI-VACUUM
+local function deliverFood()
+    for _, obj in pairs(Workspace:GetDescendants()) do
+        if obj:IsA("ProximityPrompt") then
+            local act = obj.ActionText:lower()
+            local objTxt = obj.ObjectText:lower()
+            local parName = obj.Parent and obj.Parent.Name:lower() or ""
+            
+            -- Filter Makanan
+            local isFood = act:match("serve") or objTxt:match("serve") or 
+                           parName:match("plate") or parName:match("cooked") or parName:match("lugaw") or 
+                           parName:match("pancit") or parName:match("silog") or parName:match("food")
+            
+            -- Blacklist ketat (Gak boleh mencet kasir atau kulkas)
+            local isBad = act:match("customize") or act:match("open") or act:match("order") or act:match("take") or
+                          parName:match("chiller") or parName:match("fridge") or parName:match("counter")
+
+            if isFood and not isBad then
+                pcall(function()
+                    -- INJEKSI RADIUS TANPA BATAS (Bypass Roblox Distance Check)
+                    obj.RequiresLineOfSight = false
+                    obj.MaxActivationDistance = 1000 
+                    
+                    fireproximityprompt(obj)
+                end)
+            end
+        end
+    end
+end
+
+AutoAssignBtn.MouseButton1Click:Connect(function()
+    autoAssign = not autoAssign
+    AutoAssignBtn.Text = autoAssign and "Auto Order: ON" or "Auto Order: OFF"
+    AutoAssignBtn.BackgroundColor3 = autoAssign and Color3.fromRGB(0, 200, 255) or Color3.fromRGB(50, 60, 80)
+end)
+AutoDeliverBtn.MouseButton1Click:Connect(function()
+    autoDeliver = not autoDeliver
+    AutoDeliverBtn.Text = autoDeliver and "Auto Deliver: ON" or "Auto Deliver: OFF"
+    AutoDeliverBtn.BackgroundColor3 = autoDeliver and Color3.fromRGB(0, 200, 255) or Color3.fromRGB(50, 60, 80)
+end)
+
+-- Loop Auto Order
+task.spawn(function()
+    while task.wait(1.5) do if autoAssign then pcall(processOrders) end end
+end)
+-- Loop Deliver (Jeda 0.3 detik)
+task.spawn(function()
+    while task.wait(0.3) do if autoDeliver then pcall(deliverFood) end end
+end)
