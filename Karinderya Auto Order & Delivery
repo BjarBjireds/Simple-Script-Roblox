@@ -1,9 +1,10 @@
--- SSR Karinderya V18 (FINAL: Multi-Page GUI & Smart Waypoint Auto Walk)
+-- SSR Karinderya V19 (FINAL: Smart Pathfinding Auto Walk)
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CoreGui = game:GetService("CoreGui")
+local PathfindingService = game:GetService("PathfindingService")
 
 local RemotesFolder = ReplicatedStorage:WaitForChild("Remotes")
 local CounterRemotes = RemotesFolder:WaitForChild("CounterRemotes")
@@ -29,7 +30,7 @@ LP.Idled:Connect(function()
 end)
 
 -- ==========================================
--- SETUP UI UTAMA (DIPERBESAR BUAT MULTI-PAGE)
+-- SETUP UI UTAMA 
 -- ==========================================
 local OpenIcon = Instance.new("ImageButton", ScreenGui)
 OpenIcon.Name = "OpenIcon"
@@ -51,7 +52,7 @@ MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.ClipsDescendants 
 local Title = Instance.new("TextLabel", MainFrame)
 Title.Size = UDim2.new(1, -30, 0, 25)
 Title.BackgroundColor3 = Color3.fromRGB(10, 15, 25)
-Title.Text = " SSR Karinderya V18"
+Title.Text = " SSR Karinderya V19 (Smart GPS)"
 Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.TextColor3 = Color3.fromRGB(255, 150, 0)
 Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 13
@@ -84,7 +85,6 @@ WalkTabBtn.Size = UDim2.new(0.5, 0, 1, 0); WalkTabBtn.Position = UDim2.new(0.5, 
 WalkTabBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
 WalkTabBtn.Text = "AUTO WALK"; WalkTabBtn.TextColor3 = Color3.new(1, 1, 1); WalkTabBtn.Font = Enum.Font.SourceSansBold
 
--- PAGES (HALAMAN)
 local FarmPage = Instance.new("Frame", MainFrame)
 FarmPage.Size = UDim2.new(1, 0, 1, -55); FarmPage.Position = UDim2.new(0, 0, 0, 55)
 FarmPage.BackgroundTransparency = 1; FarmPage.Visible = true
@@ -93,16 +93,13 @@ local WalkPage = Instance.new("Frame", MainFrame)
 WalkPage.Size = UDim2.new(1, 0, 1, -55); WalkPage.Position = UDim2.new(0, 0, 0, 55)
 WalkPage.BackgroundTransparency = 1; WalkPage.Visible = false
 
--- FUNGSI PINDAH TAB
 FarmTabBtn.MouseButton1Click:Connect(function()
     FarmPage.Visible = true; WalkPage.Visible = false
-    FarmTabBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 255)
-    WalkTabBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
+    FarmTabBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 255); WalkTabBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
 end)
 WalkTabBtn.MouseButton1Click:Connect(function()
     WalkPage.Visible = true; FarmPage.Visible = false
-    WalkTabBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 200)
-    FarmTabBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
+    WalkTabBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 200); FarmTabBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
 end)
 
 -- ==========================================
@@ -162,7 +159,7 @@ local countKasir = 0
 local countMeja = 0
 
 -- ==========================================
--- LOGIKA AUTO WALK & WAYPOINTS
+-- LOGIKA SMART PATHFINDING (GPS)
 -- ==========================================
 local function updateWalkStatus()
     WalkStatusTxt.Text = "Total Titik:\nKasir: " .. countKasir .. " | Meja: " .. countMeja
@@ -172,8 +169,7 @@ SetKasirBtn.MouseButton1Click:Connect(function()
     local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
     if hrp then
         table.insert(waypoints, {type = "kasir", pos = hrp.Position})
-        countKasir = countKasir + 1
-        updateWalkStatus()
+        countKasir = countKasir + 1; updateWalkStatus()
         SetKasirBtn.Text = "Titik Kasir Ditambah! (+)"
         task.wait(0.5); SetKasirBtn.Text = "Set Titik Kasir/Dapur (+)"
     end
@@ -183,8 +179,7 @@ SetMejaBtn.MouseButton1Click:Connect(function()
     local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
     if hrp then
         table.insert(waypoints, {type = "meja", pos = hrp.Position})
-        countMeja = countMeja + 1
-        updateWalkStatus()
+        countMeja = countMeja + 1; updateWalkStatus()
         SetMejaBtn.Text = "Titik Meja Ditambah! (+)"
         task.wait(0.5); SetMejaBtn.Text = "Set Titik Meja (+)"
     end
@@ -192,8 +187,7 @@ end)
 
 ResetWpBtn.MouseButton1Click:Connect(function()
     waypoints = {}
-    countKasir = 0; countMeja = 0
-    updateWalkStatus()
+    countKasir = 0; countMeja = 0; updateWalkStatus()
     ResetWpBtn.Text = "Titik Direset!"
     task.wait(0.5); ResetWpBtn.Text = "Reset Semua Titik"
 end)
@@ -220,21 +214,53 @@ task.spawn(function()
                 local hrp = char and char:FindFirstChild("HumanoidRootPart")
                 
                 if hum and hrp then
-                    hum:MoveTo(wp.pos)
+                    -- Buat rute GPS untuk menghindari tembok/objek
+                    local path = PathfindingService:CreatePath({
+                        AgentRadius = 2,
+                        AgentHeight = 5,
+                        AgentCanJump = true,
+                        WaypointSpacing = 4
+                    })
                     
-                    -- Nunggu sampai karakter nyampe di titik (atau maksimal 8 detik biar gak nyangkut)
-                    local timeOut = 0
-                    while autoWalk and (hrp.Position - wp.pos).Magnitude > 4 and timeOut < 80 do
-                        task.wait(0.1)
-                        timeOut = timeOut + 1
+                    local success, errorMessage = pcall(function()
+                        path:ComputeAsync(hrp.Position, wp.pos)
+                    end)
+                    
+                    if success and path.Status == Enum.PathStatus.Success then
+                        -- Jalan ngikutin rute belok-belok
+                        local pathWaypoints = path:GetWaypoints()
+                        for _, pWp in ipairs(pathWaypoints) do
+                            if not autoWalk then break end
+                            
+                            -- Kalau ada tangga/rintangan, otomatis loncat
+                            if pWp.Action == Enum.PathWaypointAction.Jump then
+                                hum.Jump = true
+                            end
+                            
+                            hum:MoveTo(pWp.Position)
+                            
+                            -- Tunggu nyampe di titik kecil (node) sebelum lanjut
+                            local timeOut = 0
+                            while autoWalk and (hrp.Position - pWp.Position).Magnitude > 3 and timeOut < 30 do
+                                task.wait(0.1)
+                                timeOut = timeOut + 1
+                            end
+                        end
+                    else
+                        -- Kalau GPS gagal (misal titiknya terlalu mepet tembok), pakai mode terabas lurus
+                        hum:MoveTo(wp.pos)
+                        local timeOut = 0
+                        while autoWalk and (hrp.Position - wp.pos).Magnitude > 4 and timeOut < 50 do
+                            task.wait(0.1)
+                            timeOut = timeOut + 1
+                        end
                     end
                     
-                    -- Kalau nyampe di titik Kasir/Dapur, tunggu sesuai jeda di TextBox
+                    -- Tunggu di kasir sesuai input (detik)
                     if wp.type == "kasir" and autoWalk then
                         local waitTime = tonumber(WaitTimeInput.Text) or 3
                         task.wait(waitTime)
                     end
-                    -- Kalau titik Meja, dia bakal bablas jalan ke titik selanjutnya tanpa nunggu
                 end
             end
         end
