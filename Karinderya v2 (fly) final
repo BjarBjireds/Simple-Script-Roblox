@@ -1,4 +1,4 @@
--- SSR Karinderya V21 (TRUE FINAL: Flawless Phantom & Physics Bypass)
+-- SSR Karinderya V23 (TRUE FINAL: Full Auto Restock + Phantom Walk)
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
@@ -12,6 +12,8 @@ local CounterRemotes = RemotesFolder:WaitForChild("CounterRemotes")
 local AssignNPC = CounterRemotes:WaitForChild("AssignNPC")
 local GetCounterInfo = CounterRemotes:WaitForChild("GetCounterInfo")
 local PropEquipEvent = RemotesFolder:WaitForChild("PropEquipEvent")
+local ShopRemotes = RemotesFolder:WaitForChild("ShopRemotes")
+local BuyIngredientEvent = ShopRemotes:WaitForChild("BuyIngredient")
 
 -- BERSINKAN UI LAMA
 local ScreenGui = Instance.new("ScreenGui")
@@ -34,41 +36,28 @@ end)
 -- SETUP UI UTAMA 
 -- ==========================================
 local OpenIcon = Instance.new("ImageButton", ScreenGui)
-OpenIcon.Name = "OpenIcon"
-OpenIcon.Size = UDim2.new(0, 50, 0, 50)
-OpenIcon.Position = UDim2.new(0.5, -100, 0.1, 0)
-OpenIcon.BackgroundTransparency = 1 
-OpenIcon.Image = "rbxassetid://102866112057826"
-OpenIcon.Active = true; OpenIcon.Draggable = true
-OpenIcon.Visible = false 
+OpenIcon.Name = "OpenIcon"; OpenIcon.Size = UDim2.new(0, 50, 0, 50); OpenIcon.Position = UDim2.new(0.5, -100, 0.1, 0)
+OpenIcon.BackgroundTransparency = 1; OpenIcon.Image = "rbxassetid://102866112057826"
+OpenIcon.Active = true; OpenIcon.Draggable = true; OpenIcon.Visible = false 
 
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 220, 0, 300)
+MainFrame.Size = UDim2.new(0, 220, 0, 340)
 MainFrame.Position = UDim2.new(0.5, -110, 0.2, 0)
 MainFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
-MainFrame.BorderSizePixel = 2
-MainFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
+MainFrame.BorderSizePixel = 2; MainFrame.BorderColor3 = Color3.fromRGB(0, 255, 128) -- Tema Hijau Sultan
 MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.ClipsDescendants = true
 
 local Title = Instance.new("TextLabel", MainFrame)
-Title.Size = UDim2.new(1, -30, 0, 25)
-Title.BackgroundColor3 = Color3.fromRGB(10, 15, 25)
-Title.Text = " SSR Karinderya V21"
-Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 13
+Title.Size = UDim2.new(1, -30, 0, 25); Title.BackgroundColor3 = Color3.fromRGB(10, 15, 25)
+Title.Text = " SSR Karinderya V23"; Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextColor3 = Color3.fromRGB(0, 255, 128); Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 13
 
 local MinBtn = Instance.new("TextButton", MainFrame)
 MinBtn.Size = UDim2.new(0, 30, 0, 25); MinBtn.Position = UDim2.new(1, -30, 0, 0)
-MinBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-MinBtn.Text = "-"; MinBtn.TextColor3 = Color3.new(1, 1, 1)
+MinBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50); MinBtn.Text = "-"; MinBtn.TextColor3 = Color3.new(1, 1, 1)
 
-MinBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = false; OpenIcon.Visible = true; OpenIcon.Position = MainFrame.Position
-end)
-OpenIcon.MouseButton1Click:Connect(function()
-    OpenIcon.Visible = false; MainFrame.Visible = true; MainFrame.Position = OpenIcon.Position
-end)
+MinBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false; OpenIcon.Visible = true; OpenIcon.Position = MainFrame.Position end)
+OpenIcon.MouseButton1Click:Connect(function() OpenIcon.Visible = false; MainFrame.Visible = true; MainFrame.Position = OpenIcon.Position end)
 
 local TabContainer = Instance.new("Frame", MainFrame)
 TabContainer.Size = UDim2.new(1, 0, 0, 30); TabContainer.Position = UDim2.new(0, 0, 0, 25)
@@ -93,7 +82,7 @@ FarmTabBtn.MouseButton1Click:Connect(function()
 end)
 WalkTabBtn.MouseButton1Click:Connect(function()
     WalkPage.Visible = true; FarmPage.Visible = false
-    WalkTabBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255); FarmTabBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45); WalkTabBtn.TextColor3 = Color3.new(0,0,0)
+    WalkTabBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 128); FarmTabBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45); WalkTabBtn.TextColor3 = Color3.new(0,0,0)
 end)
 
 -- ==========================================
@@ -102,14 +91,21 @@ end)
 local AutoAssignBtn = Instance.new("TextButton", FarmPage)
 AutoAssignBtn.Size = UDim2.new(1, -20, 0, 35); AutoAssignBtn.Position = UDim2.new(0, 10, 0, 10)
 AutoAssignBtn.BackgroundColor3 = Color3.fromRGB(50, 60, 80); AutoAssignBtn.Text = "Auto Order: OFF"; AutoAssignBtn.TextColor3 = Color3.new(1, 1, 1); AutoAssignBtn.Font = Enum.Font.SourceSansBold
+
 local AutoDeliverBtn = Instance.new("TextButton", FarmPage)
-AutoDeliverBtn.Size = UDim2.new(1, -20, 0, 35); AutoDeliverBtn.Position = UDim2.new(0, 10, 0, 55)
+AutoDeliverBtn.Size = UDim2.new(1, -20, 0, 35); AutoDeliverBtn.Position = UDim2.new(0, 10, 0, 50)
 AutoDeliverBtn.BackgroundColor3 = Color3.fromRGB(50, 60, 80); AutoDeliverBtn.Text = "Auto Deliver: OFF"; AutoDeliverBtn.TextColor3 = Color3.new(1, 1, 1); AutoDeliverBtn.Font = Enum.Font.SourceSansBold
+
 local AutoWashBtn = Instance.new("TextButton", FarmPage)
-AutoWashBtn.Size = UDim2.new(1, -20, 0, 35); AutoWashBtn.Position = UDim2.new(0, 10, 0, 100)
+AutoWashBtn.Size = UDim2.new(1, -20, 0, 35); AutoWashBtn.Position = UDim2.new(0, 10, 0, 90)
 AutoWashBtn.BackgroundColor3 = Color3.fromRGB(50, 60, 80); AutoWashBtn.Text = "Auto Wash: OFF"; AutoWashBtn.TextColor3 = Color3.new(1, 1, 1); AutoWashBtn.Font = Enum.Font.SourceSansBold
+
+local AutoRestockBtn = Instance.new("TextButton", FarmPage)
+AutoRestockBtn.Size = UDim2.new(1, -20, 0, 35); AutoRestockBtn.Position = UDim2.new(0, 10, 0, 130)
+AutoRestockBtn.BackgroundColor3 = Color3.fromRGB(50, 60, 80); AutoRestockBtn.Text = "Auto Restock: OFF"; AutoRestockBtn.TextColor3 = Color3.new(1, 1, 1); AutoRestockBtn.Font = Enum.Font.SourceSansBold
+
 local FarmStatusTxt = Instance.new("TextLabel", FarmPage)
-FarmStatusTxt.Size = UDim2.new(1, -20, 0, 50); FarmStatusTxt.Position = UDim2.new(0, 10, 0, 145)
+FarmStatusTxt.Size = UDim2.new(1, -20, 0, 50); FarmStatusTxt.Position = UDim2.new(0, 10, 0, 175)
 FarmStatusTxt.BackgroundTransparency = 1; FarmStatusTxt.Text = "Status: Idle"; FarmStatusTxt.TextColor3 = Color3.fromRGB(150, 150, 150); FarmStatusTxt.Font = Enum.Font.SourceSans; FarmStatusTxt.TextScaled = true
 
 -- ==========================================
@@ -136,14 +132,66 @@ WalkStatusTxt.Size = UDim2.new(1, -20, 0, 40); WalkStatusTxt.Position = UDim2.ne
 WalkStatusTxt.BackgroundTransparency = 1; WalkStatusTxt.Text = "Total Titik:\nKasir: 0 | Meja: 0"; WalkStatusTxt.TextColor3 = Color3.fromRGB(200, 200, 200); WalkStatusTxt.Font = Enum.Font.SourceSans; WalkStatusTxt.TextScaled = true
 
 -- ==========================================
--- VARIABEL GLOBAL & NOCLIP LOGIC
+-- VARIABEL GLOBAL
 -- ==========================================
-local autoAssign, autoDeliver, autoWash, autoWalk = false, false, false, false
+local autoAssign, autoDeliver, autoWash, autoRestock, autoWalk = false, false, false, false, false
 local waypoints = {}
-local countKasir = 0; local countMeja = 0
+local countKasir, countMeja = 0, 0
 local noclipConnection = nil
 local currentTween = nil
 
+-- DATABASE BELANJA FULL 100%
+local daftarBelanja = {
+    "Condiments", "Egg",
+    "Bangus", "Pork", "Beef", "Chicken", "Shrimp", -- Meats
+    "Bacon", "Tapa", "Tocino", "Hotdog", "Hungarian", -- Frozen
+    "Kola", "Loyal", "Suprise", -- Drinks
+    "Rice", "Vegetable", "Cornbeef", "Cheese", "SpaghettiPack", "CarbonaraPack", "Noodles", "Chicharon" -- Others
+}
+
+-- ==========================================
+-- LOGIKA AUTO RESTOCK (10 DETIK COOLDOWN)
+-- ==========================================
+task.spawn(function()
+    while task.wait(10) do 
+        if autoRestock then
+            FarmStatusTxt.Text = "Status: Belanja Bahan! 🛒"
+            for _, item in ipairs(daftarBelanja) do
+                if not autoRestock then break end
+                pcall(function()
+                    BuyIngredientEvent:InvokeServer(item, 1, "Cash")
+                end)
+                task.wait(0.1) -- Jeda kilat biar server gak nganggap spam/DDoS
+            end
+            FarmStatusTxt.Text = "Status: Belanja Selesai"
+        end
+    end
+end)
+
+-- ==========================================
+-- KONEKSI TOMBOL FARMING
+-- ==========================================
+AutoAssignBtn.MouseButton1Click:Connect(function()
+    autoAssign = not autoAssign; AutoAssignBtn.Text = autoAssign and "Auto Order: ON" or "Auto Order: OFF"
+    AutoAssignBtn.BackgroundColor3 = autoAssign and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 60, 80)
+end)
+AutoDeliverBtn.MouseButton1Click:Connect(function()
+    autoDeliver = not autoDeliver; AutoDeliverBtn.Text = autoDeliver and "Auto Deliver: ON" or "Auto Deliver: OFF"
+    AutoDeliverBtn.BackgroundColor3 = autoDeliver and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 60, 80)
+end)
+AutoWashBtn.MouseButton1Click:Connect(function()
+    autoWash = not autoWash; AutoWashBtn.Text = autoWash and "Auto Wash: ON" or "Auto Wash: OFF"
+    AutoWashBtn.BackgroundColor3 = autoWash and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 60, 80)
+end)
+AutoRestockBtn.MouseButton1Click:Connect(function()
+    autoRestock = not autoRestock; AutoRestockBtn.Text = autoRestock and "Auto Restock: ON" or "Auto Restock: OFF"
+    AutoRestockBtn.BackgroundColor3 = autoRestock and Color3.fromRGB(0, 255, 128) or Color3.fromRGB(50, 60, 80)
+    AutoRestockBtn.TextColor3 = autoRestock and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 255, 255)
+end)
+
+-- ==========================================
+-- SISA FUNGSI NOCLIP & FARMING
+-- ==========================================
 local function updateWalkStatus() WalkStatusTxt.Text = "Total Titik:\nKasir: " .. countKasir .. " | Meja: " .. countMeja end
 
 local function toggleNoclip(state)
@@ -162,9 +210,6 @@ local function toggleNoclip(state)
     end
 end
 
--- ==========================================
--- TOMBOL WAYPOINTS
--- ==========================================
 SetKasirBtn.MouseButton1Click:Connect(function()
     local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
     if hrp then
@@ -188,7 +233,7 @@ ToggleWalkBtn.MouseButton1Click:Connect(function()
     if #waypoints == 0 then ToggleWalkBtn.Text = "SET TITIK DULU BOS!"; task.wait(1); ToggleWalkBtn.Text = "PHANTOM WALK: OFF"; return end
     autoWalk = not autoWalk
     ToggleWalkBtn.Text = autoWalk and "PHANTOM WALK: ON" or "PHANTOM WALK: OFF"
-    ToggleWalkBtn.BackgroundColor3 = autoWalk and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(50, 60, 80)
+    ToggleWalkBtn.BackgroundColor3 = autoWalk and Color3.fromRGB(0, 255, 128) or Color3.fromRGB(50, 60, 80)
     ToggleWalkBtn.TextColor3 = autoWalk and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
     
     if not autoWalk then
@@ -203,7 +248,6 @@ ToggleWalkBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- LOOP TERBANG (PHYSICS BYPASS)
 task.spawn(function()
     while task.wait(0.1) do
         if autoWalk and #waypoints > 0 then
@@ -215,35 +259,28 @@ task.spawn(function()
                 local hrp = char and char:FindFirstChild("HumanoidRootPart")
                 
                 if hrp then
-                    -- 1. Pasang Gravitasi Buatan (Anti-Jatuh) biar gak usah Anchored
                     local antiFall = hrp:FindFirstChild("SSR_AntiFall")
                     if not antiFall then
                         antiFall = Instance.new("BodyVelocity")
-                        antiFall.Name = "SSR_AntiFall"
-                        antiFall.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-                        antiFall.Velocity = Vector3.new(0, 0, 0)
-                        antiFall.Parent = hrp
+                        antiFall.Name = "SSR_AntiFall"; antiFall.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                        antiFall.Velocity = Vector3.new(0, 0, 0); antiFall.Parent = hrp
                     end
-                    hrp.Anchored = false -- PENTING: Jangan dibekuin biar server tetep baca interaksi!
+                    hrp.Anchored = false 
                     
-                    -- 2. Kalkulasi Terbang
                     local dist = (hrp.Position - wp.pos).Magnitude
-                    local walkSpeed = 16 
-                    local timeToTarget = dist / walkSpeed
+                    local timeToTarget = dist / 16
                     
-                    local tweenInfo = TweenInfo.new(timeToTarget, Enum.EasingStyle.Linear)
-                    currentTween = TweenService:Create(hrp, tweenInfo, {CFrame = CFrame.new(wp.pos)})
+                    currentTween = TweenService:Create(hrp, TweenInfo.new(timeToTarget, Enum.EasingStyle.Linear), {CFrame = CFrame.new(wp.pos)})
                     currentTween:Play()
                     currentTween.Completed:Wait() 
                     
                     if not autoWalk then break end
                     
-                    -- 3. JEDA PIT STOP (Wajib nunggu biar Auto-Deliver/Wash sempet kerja)
                     if wp.type == "kasir" then
                         local waitTime = tonumber(WaitTimeInput.Text) or 3
                         task.wait(waitTime)
                     else
-                        task.wait(1.5) -- Jeda di meja biar mangkok sempet disuapin!
+                        task.wait(1.5) 
                     end
                 end
             end
@@ -251,14 +288,10 @@ task.spawn(function()
     end
 end)
 
--- ==========================================
--- LOGIKA FARMING (V17 PERFECTED)
--- ==========================================
 local function getMyPlot()
     local myPlot = nil; local shortestDist = math.huge
     local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
     if not hrp then return nil end
-
     for _, obj in pairs(Workspace:GetChildren()) do
         if obj.Name:match("Karenderya") then
             local dp = obj:FindFirstChild("DiningPlot1")
@@ -296,7 +329,6 @@ local function processOrders()
         if #availableTables > 0 then
             local randomTable = availableTables[math.random(1, #availableTables)]
             AssignNPC:FireServer({["Seat"] = math.random(1, 2), ["NpcId"] = counterData.NpcId, ["NPCName"] = counterData.NpcId, ["Slot"] = randomTable})
-            FarmStatusTxt.Text = "Status: Pelanggan ke " .. randomTable.Name
         end
     end
 end
@@ -340,38 +372,20 @@ local function washPlates()
     if washPrompt and washPrompt.Enabled then
         local tPart = washPrompt.Parent
         if tPart and tPart:IsA("BasePart") and (tPart.Position - hrp.Position).Magnitude <= 35 then 
-            FarmStatusTxt.Text = "Status: Nyikat Piring! 🧼"
             pcall(function()
-                PropEquipEvent:FireServer("Sponge", true)
-                task.wait(0.2)
+                PropEquipEvent:FireServer("Sponge", true); task.wait(0.2)
                 washPrompt.RequiresLineOfSight = false; washPrompt.MaxActivationDistance = 35
                 local holdTime = washPrompt.HoldDuration > 0 and washPrompt.HoldDuration or 1
                 for i = 1, 6 do
                     if not washPrompt.Enabled then break end
-                    washPrompt:InputHoldBegin()
-                    fireproximityprompt(washPrompt)
-                    task.wait(holdTime + 0.1)
-                    washPrompt:InputHoldEnd()
-                    task.wait(0.2)
+                    washPrompt:InputHoldBegin(); fireproximityprompt(washPrompt); task.wait(holdTime + 0.1)
+                    washPrompt:InputHoldEnd(); task.wait(0.2)
                 end
             end)
             pcall(function() PropEquipEvent:FireServer("Sponge", false) end)
         end
     end
 end
-
-AutoAssignBtn.MouseButton1Click:Connect(function()
-    autoAssign = not autoAssign; AutoAssignBtn.Text = autoAssign and "Auto Order: ON" or "Auto Order: OFF"
-    AutoAssignBtn.BackgroundColor3 = autoAssign and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 60, 80)
-end)
-AutoDeliverBtn.MouseButton1Click:Connect(function()
-    autoDeliver = not autoDeliver; AutoDeliverBtn.Text = autoDeliver and "Auto Deliver: ON" or "Auto Deliver: OFF"
-    AutoDeliverBtn.BackgroundColor3 = autoDeliver and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 60, 80)
-end)
-AutoWashBtn.MouseButton1Click:Connect(function()
-    autoWash = not autoWash; AutoWashBtn.Text = autoWash and "Auto Wash: ON" or "Auto Wash: OFF"
-    AutoWashBtn.BackgroundColor3 = autoWash and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 60, 80)
-end)
 
 task.spawn(function() while task.wait(1.5) do if autoAssign then pcall(processOrders) end end end)
 task.spawn(function() while task.wait(0.3) do if autoDeliver then pcall(deliverFood) end end end)
