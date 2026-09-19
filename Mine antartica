@@ -1,0 +1,359 @@
+-- SSR Mine Antarctica V7 (Highlight Chams & Zero-Offset ESP)
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+local CoreGui = game:GetService("CoreGui")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+-- BERSINKAN UI LAMA
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "SSRMineAntarcticaGUI"
+ScreenGui.Parent = CoreGui or LP:WaitForChild("PlayerGui")
+
+for _, gui in pairs(ScreenGui.Parent:GetChildren()) do
+    if gui.Name == "SSRMineAntarcticaGUI" and gui ~= ScreenGui then
+        gui:Destroy()
+    end
+end
+
+-- ==========================================
+-- SETUP UI UTAMA 
+-- ==========================================
+local OpenIcon = Instance.new("ImageButton", ScreenGui)
+OpenIcon.Name = "OpenIcon"
+OpenIcon.Size = UDim2.new(0, 50, 0, 50)
+OpenIcon.Position = UDim2.new(0.5, -100, 0.1, 0)
+OpenIcon.BackgroundTransparency = 1 
+OpenIcon.Image = "rbxassetid://102866112057826"
+OpenIcon.Active = true; OpenIcon.Draggable = true
+OpenIcon.Visible = false 
+
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 220, 0, 260)
+MainFrame.Position = UDim2.new(0.5, -110, 0.2, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
+MainFrame.BorderSizePixel = 2
+MainFrame.BorderColor3 = Color3.fromRGB(0, 200, 255)
+MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.ClipsDescendants = true
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -30, 0, 25)
+Title.BackgroundColor3 = Color3.fromRGB(10, 15, 25)
+Title.Text = " SSR Hub V7"
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextColor3 = Color3.fromRGB(0, 200, 255)
+Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 14
+
+local MinBtn = Instance.new("TextButton", MainFrame)
+MinBtn.Size = UDim2.new(0, 30, 0, 25); MinBtn.Position = UDim2.new(1, -30, 0, 0)
+MinBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+MinBtn.Text = "-"; MinBtn.TextColor3 = Color3.new(1, 1, 1)
+
+MinBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+    OpenIcon.Visible = true
+    OpenIcon.Position = MainFrame.Position
+end)
+
+OpenIcon.MouseButton1Click:Connect(function()
+    OpenIcon.Visible = false
+    MainFrame.Visible = true
+    MainFrame.Position = OpenIcon.Position
+end)
+
+-- ==========================================
+-- SISTEM TAB
+-- ==========================================
+local TabFrame = Instance.new("Frame", MainFrame)
+TabFrame.Size = UDim2.new(1, 0, 0, 30)
+TabFrame.Position = UDim2.new(0, 0, 0, 25)
+TabFrame.BackgroundColor3 = Color3.fromRGB(15, 20, 30)
+
+local TabESP = Instance.new("TextButton", TabFrame)
+TabESP.Size = UDim2.new(0.5, 0, 1, 0)
+TabESP.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+TabESP.Text = "ESP Gem"
+TabESP.TextColor3 = Color3.new(1, 1, 1); TabESP.Font = Enum.Font.SourceSansBold
+
+local TabPlayer = Instance.new("TextButton", TabFrame)
+TabPlayer.Size = UDim2.new(0.5, 0, 1, 0); TabPlayer.Position = UDim2.new(0.5, 0, 0, 0)
+TabPlayer.BackgroundColor3 = Color3.fromRGB(30, 40, 50)
+TabPlayer.Text = "Universal"
+TabPlayer.TextColor3 = Color3.new(1, 1, 1); TabPlayer.Font = Enum.Font.SourceSansBold
+
+local PageESP = Instance.new("Frame", MainFrame)
+PageESP.Size = UDim2.new(1, 0, 1, -55); PageESP.Position = UDim2.new(0, 0, 0, 55)
+PageESP.BackgroundTransparency = 1
+
+local PagePlayer = Instance.new("Frame", MainFrame)
+PagePlayer.Size = UDim2.new(1, 0, 1, -55); PagePlayer.Position = UDim2.new(0, 0, 0, 55)
+PagePlayer.BackgroundTransparency = 1; PagePlayer.Visible = false
+
+TabESP.MouseButton1Click:Connect(function()
+    PageESP.Visible = true; PagePlayer.Visible = false
+    TabESP.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+    TabPlayer.BackgroundColor3 = Color3.fromRGB(30, 40, 50)
+end)
+
+TabPlayer.MouseButton1Click:Connect(function()
+    PageESP.Visible = false; PagePlayer.Visible = true
+    TabPlayer.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+    TabESP.BackgroundColor3 = Color3.fromRGB(30, 40, 50)
+end)
+
+-- ==========================================
+-- PAGE 1: ESP GEM (HIGHLIGHT CHAMS + ZERO OFFSET)
+-- ==========================================
+local ESPBtn = Instance.new("TextButton", PageESP)
+ESPBtn.Size = UDim2.new(1, -20, 0, 35); ESPBtn.Position = UDim2.new(0, 10, 0, 10)
+ESPBtn.BackgroundColor3 = Color3.fromRGB(50, 60, 80)
+ESPBtn.Text = "Gem ESP: OFF"
+ESPBtn.TextColor3 = Color3.new(1, 1, 1); ESPBtn.Font = Enum.Font.SourceSansBold
+
+local espEnabled = false
+local espCache = {}
+
+local function clearESP()
+    for _, data in pairs(espCache) do 
+        if data.bg then data.bg:Destroy() end 
+        if data.hl then data.hl:Destroy() end
+    end
+    table.clear(espCache)
+end
+
+local function getRarityColor(rarity)
+    local r = tostring(rarity):lower()
+    if r == "mythic" or r == "divine" then return Color3.fromRGB(255, 0, 0)
+    elseif r == "exotic" then return Color3.fromRGB(255, 0, 255)
+    elseif r == "zenith" then return Color3.fromRGB(0, 255, 255)
+    else return nil end
+end
+
+local function updateESP()
+    if not espEnabled then return end
+    local spawnedGems = Workspace:FindFirstChild("SpawnedGems")
+    if not spawnedGems then return end
+    
+    local activeGems = {}
+    for _, gem in pairs(spawnedGems:GetChildren()) do
+        local rarity = gem:GetAttribute("Rarity") or "Common"
+        local color = getRarityColor(rarity)
+        
+        if color then
+            activeGems[gem] = true
+            if not espCache[gem] then
+                local targetPart = gem:IsA("Model") and gem.PrimaryPart or gem:FindFirstChildWhichIsA("BasePart") or (gem:IsA("BasePart") and gem)
+                if targetPart then
+                    local kg = gem:GetAttribute("Kg") or 0
+                    local value = gem:GetAttribute("Value") or 0
+                    
+                    -- 1. Teks ESP (Nempel pas di tengah)
+                    local bg = Instance.new("BillboardGui")
+                    bg.Size = UDim2.new(0, 150, 0, 20)
+                    bg.AlwaysOnTop = true; bg.Adornee = targetPart
+                    bg.ExtentsOffset = Vector3.new(0, 0, 0) -- HAPUS OFFSET BIAR PRESISI
+                    bg.MaxDistance = 300 
+                    
+                    local txt = Instance.new("TextLabel", bg)
+                    txt.Size = UDim2.new(1, 0, 1, 0)
+                    txt.BackgroundTransparency = 1
+                    txt.Text = string.format("%s - %skg - $%s", tostring(rarity), tostring(kg), tostring(value))
+                    txt.TextColor3 = color; txt.TextStrokeTransparency = 1
+                    txt.TextScaled = true; txt.Font = Enum.Font.SourceSansBold
+                    bg.Parent = CoreGui
+                    
+                    -- 2. Highlight Chams (Bentuk 3D Tembus Pandang)
+                    local hl = Instance.new("Highlight")
+                    hl.Adornee = gem
+                    hl.FillColor = color
+                    hl.OutlineColor = Color3.new(1, 1, 1)
+                    hl.FillTransparency = 0.5
+                    hl.OutlineTransparency = 0.2
+                    hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop -- Tembus Tembok!
+                    hl.Parent = CoreGui
+                    
+                    espCache[gem] = {bg = bg, hl = hl}
+                end
+            end
+        end
+    end
+    
+    for gem, data in pairs(espCache) do
+        if not activeGems[gem] or not gem.Parent then
+            if data.bg then data.bg:Destroy() end
+            if data.hl then data.hl:Destroy() end
+            espCache[gem] = nil
+        end
+    end
+end
+
+ESPBtn.MouseButton1Click:Connect(function()
+    espEnabled = not espEnabled
+    if espEnabled then
+        ESPBtn.Text = "Gem ESP: ON"
+        ESPBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+    else
+        ESPBtn.Text = "Gem ESP: OFF"
+        ESPBtn.BackgroundColor3 = Color3.fromRGB(50, 60, 80)
+        clearESP()
+    end
+end)
+
+task.spawn(function()
+    while task.wait(1.5) do
+        if espEnabled then updateESP() end
+    end
+end)
+
+-- ==========================================
+-- PAGE 2: UNIVERSAL (SAMA SEPERTI V6)
+-- ==========================================
+local function createLeftBtn(text, yPos, parent)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(0.5, -15, 0, 30); btn.Position = UDim2.new(0, 10, 0, yPos)
+    btn.BackgroundColor3 = Color3.fromRGB(50, 60, 80)
+    btn.Text = text; btn.TextColor3 = Color3.new(1, 1, 1); btn.Font = Enum.Font.SourceSansBold
+    return btn
+end
+
+local FlyBtn = createLeftBtn("Fly: OFF", 10, PagePlayer)
+local NoclipBtn = createLeftBtn("Noclip: OFF", 50, PagePlayer)
+local AirwalkBtn = createLeftBtn("Airwalk: OFF", 90, PagePlayer)
+local SetPos1Btn = createLeftBtn("Set Pos 1", 130, PagePlayer)
+local SetPos2Btn = createLeftBtn("Set Pos 2", 170, PagePlayer)
+
+local function createRightBtn(text, yPos, parent)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(0.5, -15, 0, 30); btn.Position = UDim2.new(0.5, 5, 0, yPos)
+    btn.BackgroundColor3 = Color3.fromRGB(50, 60, 80)
+    btn.Text = text; btn.TextColor3 = Color3.new(1, 1, 1); btn.Font = Enum.Font.SourceSansBold
+    return btn
+end
+
+local SpeedBox = Instance.new("TextBox", PagePlayer)
+SpeedBox.Size = UDim2.new(0.5, -15, 0, 30); SpeedBox.Position = UDim2.new(0.5, 5, 0, 10)
+SpeedBox.BackgroundColor3 = Color3.fromRGB(30, 40, 50)
+SpeedBox.Text = "50"; SpeedBox.PlaceholderText = "Fly/Walk Speed"
+SpeedBox.TextColor3 = Color3.new(1, 1, 1); SpeedBox.Font = Enum.Font.SourceSansBold
+
+local SpeedBtn = createRightBtn("Set WalkSpeed", 50, PagePlayer)
+local TP1Btn = createRightBtn("TP ke Pos 1", 130, PagePlayer)
+local TP2Btn = createRightBtn("TP ke Pos 2", 170, PagePlayer)
+
+-- ==========================================
+-- LOGIKA FITUR UNIVERSAL (SAMA SEPERTI V6)
+-- ==========================================
+local noclip, flying, airwalk, airwalkPart, lockedAirwalkY = false, false, false, nil, 0
+local savedPos1, savedPos2 = nil, nil
+
+SetPos1Btn.MouseButton1Click:Connect(function()
+    if LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
+        savedPos1 = LP.Character.HumanoidRootPart.CFrame
+        SetPos1Btn.Text = "Tersimpan 1!"; SetPos1Btn.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+        task.delay(1, function() SetPos1Btn.Text = "Set Pos 1"; SetPos1Btn.BackgroundColor3 = Color3.fromRGB(50, 60, 80) end)
+    end
+end)
+
+SetPos2Btn.MouseButton1Click:Connect(function()
+    if LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
+        savedPos2 = LP.Character.HumanoidRootPart.CFrame
+        SetPos2Btn.Text = "Tersimpan 2!"; SetPos2Btn.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+        task.delay(1, function() SetPos2Btn.Text = "Set Pos 2"; SetPos2Btn.BackgroundColor3 = Color3.fromRGB(50, 60, 80) end)
+    end
+end)
+
+TP1Btn.MouseButton1Click:Connect(function()
+    if savedPos1 and LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then LP.Character.HumanoidRootPart.CFrame = savedPos1 end
+end)
+
+TP2Btn.MouseButton1Click:Connect(function()
+    if savedPos2 and LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then LP.Character.HumanoidRootPart.CFrame = savedPos2 end
+end)
+
+SpeedBtn.MouseButton1Click:Connect(function()
+    if LP.Character and LP.Character:FindFirstChild("Humanoid") then LP.Character.Humanoid.WalkSpeed = tonumber(SpeedBox.Text) or 16 end
+end)
+
+NoclipBtn.MouseButton1Click:Connect(function()
+    noclip = not noclip
+    NoclipBtn.Text = noclip and "Noclip: ON" or "Noclip: OFF"
+    NoclipBtn.BackgroundColor3 = noclip and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 60, 80)
+end)
+
+RunService.Stepped:Connect(function()
+    if noclip and LP.Character then
+        for _, part in pairs(LP.Character:GetDescendants()) do
+            if part:IsA("BasePart") and part.CanCollide then part.CanCollide = false end
+        end
+    end
+end)
+
+AirwalkBtn.MouseButton1Click:Connect(function()
+    airwalk = not airwalk
+    AirwalkBtn.Text = airwalk and "Airwalk: ON" or "Airwalk: OFF"
+    AirwalkBtn.BackgroundColor3 = airwalk and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 60, 80)
+    
+    if airwalk then
+        if LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
+            lockedAirwalkY = LP.Character.HumanoidRootPart.Position.Y - 3.5
+            airwalkPart = Instance.new("Part", Workspace)
+            airwalkPart.Size = Vector3.new(10, 1, 10); airwalkPart.Anchored = true
+            airwalkPart.Transparency = 0.5; airwalkPart.Color = Color3.fromRGB(0, 255, 255)
+        end
+    else
+        if airwalkPart then airwalkPart:Destroy() end
+    end
+end)
+
+RunService.RenderStepped:Connect(function()
+    if airwalk and airwalkPart and LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = LP.Character.HumanoidRootPart
+        airwalkPart.CFrame = CFrame.new(hrp.Position.X, lockedAirwalkY, hrp.Position.Z)
+    end
+end)
+
+local bodyVelocity, bodyGyro = nil, nil
+
+FlyBtn.MouseButton1Click:Connect(function()
+    flying = not flying
+    FlyBtn.Text = flying and "Fly: ON" or "Fly: OFF"
+    FlyBtn.BackgroundColor3 = flying and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 60, 80)
+    
+    local char = LP.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    local hrp = char.HumanoidRootPart
+    
+    if flying then
+        bodyVelocity = Instance.new("BodyVelocity", hrp)
+        bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bodyVelocity.Velocity = Vector3.zero
+        bodyGyro = Instance.new("BodyGyro", hrp)
+        bodyGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        bodyGyro.CFrame = hrp.CFrame
+    else
+        if bodyVelocity then bodyVelocity:Destroy() end
+        if bodyGyro then bodyGyro:Destroy() end
+    end
+end)
+
+RunService.RenderStepped:Connect(function()
+    if flying and bodyVelocity and bodyGyro and LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") and LP.Character:FindFirstChild("Humanoid") then
+        local cam = workspace.CurrentCamera
+        local speed = tonumber(SpeedBox.Text) or 50
+        local moveDir = LP.Character.Humanoid.MoveDirection
+        
+        if moveDir.Magnitude > 0 then
+            local flatLook = Vector3.new(cam.CFrame.LookVector.X, 0, cam.CFrame.LookVector.Z).Unit
+            local flatRight = Vector3.new(cam.CFrame.RightVector.X, 0, cam.CFrame.RightVector.Z).Unit
+            local moveForward = moveDir:Dot(flatLook)
+            local moveRight = moveDir:Dot(flatRight)
+            local flyDir = (cam.CFrame.LookVector * moveForward) + (cam.CFrame.RightVector * moveRight)
+            
+            bodyVelocity.Velocity = flyDir.Unit * speed
+        else
+            bodyVelocity.Velocity = Vector3.zero
+        end
+        bodyGyro.CFrame = cam.CFrame
+    end
+end)
