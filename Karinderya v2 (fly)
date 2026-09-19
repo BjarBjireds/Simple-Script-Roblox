@@ -1,0 +1,378 @@
+-- SSR Karinderya V21 (TRUE FINAL: Flawless Phantom & Physics Bypass)
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local RemotesFolder = ReplicatedStorage:WaitForChild("Remotes")
+local CounterRemotes = RemotesFolder:WaitForChild("CounterRemotes")
+local AssignNPC = CounterRemotes:WaitForChild("AssignNPC")
+local GetCounterInfo = CounterRemotes:WaitForChild("GetCounterInfo")
+local PropEquipEvent = RemotesFolder:WaitForChild("PropEquipEvent")
+
+-- BERSINKAN UI LAMA
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "SSRKarinderyaGUI"
+ScreenGui.Parent = CoreGui or LP:WaitForChild("PlayerGui")
+for _, gui in pairs(ScreenGui.Parent:GetChildren()) do
+    if gui.Name == "SSRKarinderyaGUI" and gui ~= ScreenGui then gui:Destroy() end
+end
+
+-- ==========================================
+-- SYSTEM ANTI-AFK 
+-- ==========================================
+local VirtualUser = game:GetService("VirtualUser")
+LP.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
+-- ==========================================
+-- SETUP UI UTAMA 
+-- ==========================================
+local OpenIcon = Instance.new("ImageButton", ScreenGui)
+OpenIcon.Name = "OpenIcon"
+OpenIcon.Size = UDim2.new(0, 50, 0, 50)
+OpenIcon.Position = UDim2.new(0.5, -100, 0.1, 0)
+OpenIcon.BackgroundTransparency = 1 
+OpenIcon.Image = "rbxassetid://102866112057826"
+OpenIcon.Active = true; OpenIcon.Draggable = true
+OpenIcon.Visible = false 
+
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 220, 0, 300)
+MainFrame.Position = UDim2.new(0.5, -110, 0.2, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
+MainFrame.BorderSizePixel = 2
+MainFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
+MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.ClipsDescendants = true
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -30, 0, 25)
+Title.BackgroundColor3 = Color3.fromRGB(10, 15, 25)
+Title.Text = " SSR Karinderya V21"
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 13
+
+local MinBtn = Instance.new("TextButton", MainFrame)
+MinBtn.Size = UDim2.new(0, 30, 0, 25); MinBtn.Position = UDim2.new(1, -30, 0, 0)
+MinBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+MinBtn.Text = "-"; MinBtn.TextColor3 = Color3.new(1, 1, 1)
+
+MinBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false; OpenIcon.Visible = true; OpenIcon.Position = MainFrame.Position
+end)
+OpenIcon.MouseButton1Click:Connect(function()
+    OpenIcon.Visible = false; MainFrame.Visible = true; MainFrame.Position = OpenIcon.Position
+end)
+
+local TabContainer = Instance.new("Frame", MainFrame)
+TabContainer.Size = UDim2.new(1, 0, 0, 30); TabContainer.Position = UDim2.new(0, 0, 0, 25)
+TabContainer.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
+
+local FarmTabBtn = Instance.new("TextButton", TabContainer)
+FarmTabBtn.Size = UDim2.new(0.5, 0, 1, 0); FarmTabBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 255)
+FarmTabBtn.Text = "FARMING"; FarmTabBtn.TextColor3 = Color3.new(1, 1, 1); FarmTabBtn.Font = Enum.Font.SourceSansBold
+
+local WalkTabBtn = Instance.new("TextButton", TabContainer)
+WalkTabBtn.Size = UDim2.new(0.5, 0, 1, 0); WalkTabBtn.Position = UDim2.new(0.5, 0, 0, 0)
+WalkTabBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45); WalkTabBtn.Text = "AUTO WALK"; WalkTabBtn.TextColor3 = Color3.new(1, 1, 1); WalkTabBtn.Font = Enum.Font.SourceSansBold
+
+local FarmPage = Instance.new("Frame", MainFrame)
+FarmPage.Size = UDim2.new(1, 0, 1, -55); FarmPage.Position = UDim2.new(0, 0, 0, 55); FarmPage.BackgroundTransparency = 1; FarmPage.Visible = true
+local WalkPage = Instance.new("Frame", MainFrame)
+WalkPage.Size = UDim2.new(1, 0, 1, -55); WalkPage.Position = UDim2.new(0, 0, 0, 55); WalkPage.BackgroundTransparency = 1; WalkPage.Visible = false
+
+FarmTabBtn.MouseButton1Click:Connect(function()
+    FarmPage.Visible = true; WalkPage.Visible = false
+    FarmTabBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 255); WalkTabBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
+end)
+WalkTabBtn.MouseButton1Click:Connect(function()
+    WalkPage.Visible = true; FarmPage.Visible = false
+    WalkTabBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255); FarmTabBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45); WalkTabBtn.TextColor3 = Color3.new(0,0,0)
+end)
+
+-- ==========================================
+-- ISI HALAMAN 1 (FARM PAGE)
+-- ==========================================
+local AutoAssignBtn = Instance.new("TextButton", FarmPage)
+AutoAssignBtn.Size = UDim2.new(1, -20, 0, 35); AutoAssignBtn.Position = UDim2.new(0, 10, 0, 10)
+AutoAssignBtn.BackgroundColor3 = Color3.fromRGB(50, 60, 80); AutoAssignBtn.Text = "Auto Order: OFF"; AutoAssignBtn.TextColor3 = Color3.new(1, 1, 1); AutoAssignBtn.Font = Enum.Font.SourceSansBold
+local AutoDeliverBtn = Instance.new("TextButton", FarmPage)
+AutoDeliverBtn.Size = UDim2.new(1, -20, 0, 35); AutoDeliverBtn.Position = UDim2.new(0, 10, 0, 55)
+AutoDeliverBtn.BackgroundColor3 = Color3.fromRGB(50, 60, 80); AutoDeliverBtn.Text = "Auto Deliver: OFF"; AutoDeliverBtn.TextColor3 = Color3.new(1, 1, 1); AutoDeliverBtn.Font = Enum.Font.SourceSansBold
+local AutoWashBtn = Instance.new("TextButton", FarmPage)
+AutoWashBtn.Size = UDim2.new(1, -20, 0, 35); AutoWashBtn.Position = UDim2.new(0, 10, 0, 100)
+AutoWashBtn.BackgroundColor3 = Color3.fromRGB(50, 60, 80); AutoWashBtn.Text = "Auto Wash: OFF"; AutoWashBtn.TextColor3 = Color3.new(1, 1, 1); AutoWashBtn.Font = Enum.Font.SourceSansBold
+local FarmStatusTxt = Instance.new("TextLabel", FarmPage)
+FarmStatusTxt.Size = UDim2.new(1, -20, 0, 50); FarmStatusTxt.Position = UDim2.new(0, 10, 0, 145)
+FarmStatusTxt.BackgroundTransparency = 1; FarmStatusTxt.Text = "Status: Idle"; FarmStatusTxt.TextColor3 = Color3.fromRGB(150, 150, 150); FarmStatusTxt.Font = Enum.Font.SourceSans; FarmStatusTxt.TextScaled = true
+
+-- ==========================================
+-- ISI HALAMAN 2 (WALK PAGE)
+-- ==========================================
+local WaitTimeInput = Instance.new("TextBox", WalkPage)
+WaitTimeInput.Size = UDim2.new(1, -20, 0, 25); WaitTimeInput.Position = UDim2.new(0, 10, 0, 5)
+WaitTimeInput.BackgroundColor3 = Color3.fromRGB(10, 15, 25); WaitTimeInput.TextColor3 = Color3.new(1,1,1)
+WaitTimeInput.PlaceholderText = "Jeda Kasir (Detik) | Def: 3"; WaitTimeInput.Text = "3"; WaitTimeInput.Font = Enum.Font.SourceSansBold
+local SetKasirBtn = Instance.new("TextButton", WalkPage)
+SetKasirBtn.Size = UDim2.new(1, -20, 0, 35); SetKasirBtn.Position = UDim2.new(0, 10, 0, 35)
+SetKasirBtn.BackgroundColor3 = Color3.fromRGB(40, 100, 200); SetKasirBtn.Text = "Set Titik Kasir/Dapur (+)"; SetKasirBtn.TextColor3 = Color3.new(1, 1, 1); SetKasirBtn.Font = Enum.Font.SourceSansBold
+local SetMejaBtn = Instance.new("TextButton", WalkPage)
+SetMejaBtn.Size = UDim2.new(1, -20, 0, 35); SetMejaBtn.Position = UDim2.new(0, 10, 0, 75)
+SetMejaBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 100); SetMejaBtn.Text = "Set Titik Meja (+)"; SetMejaBtn.TextColor3 = Color3.new(1, 1, 1); SetMejaBtn.Font = Enum.Font.SourceSansBold
+local ResetWpBtn = Instance.new("TextButton", WalkPage)
+ResetWpBtn.Size = UDim2.new(1, -20, 0, 30); ResetWpBtn.Position = UDim2.new(0, 10, 0, 115)
+ResetWpBtn.BackgroundColor3 = Color3.fromRGB(150, 50, 50); ResetWpBtn.Text = "Reset Semua Titik"; ResetWpBtn.TextColor3 = Color3.new(1, 1, 1); ResetWpBtn.Font = Enum.Font.SourceSansBold
+local ToggleWalkBtn = Instance.new("TextButton", WalkPage)
+ToggleWalkBtn.Size = UDim2.new(1, -20, 0, 40); ToggleWalkBtn.Position = UDim2.new(0, 10, 0, 150)
+ToggleWalkBtn.BackgroundColor3 = Color3.fromRGB(50, 60, 80); ToggleWalkBtn.Text = "PHANTOM WALK: OFF"; ToggleWalkBtn.TextColor3 = Color3.new(1, 1, 1); ToggleWalkBtn.Font = Enum.Font.SourceSansBold
+local WalkStatusTxt = Instance.new("TextLabel", WalkPage)
+WalkStatusTxt.Size = UDim2.new(1, -20, 0, 40); WalkStatusTxt.Position = UDim2.new(0, 10, 0, 195)
+WalkStatusTxt.BackgroundTransparency = 1; WalkStatusTxt.Text = "Total Titik:\nKasir: 0 | Meja: 0"; WalkStatusTxt.TextColor3 = Color3.fromRGB(200, 200, 200); WalkStatusTxt.Font = Enum.Font.SourceSans; WalkStatusTxt.TextScaled = true
+
+-- ==========================================
+-- VARIABEL GLOBAL & NOCLIP LOGIC
+-- ==========================================
+local autoAssign, autoDeliver, autoWash, autoWalk = false, false, false, false
+local waypoints = {}
+local countKasir = 0; local countMeja = 0
+local noclipConnection = nil
+local currentTween = nil
+
+local function updateWalkStatus() WalkStatusTxt.Text = "Total Titik:\nKasir: " .. countKasir .. " | Meja: " .. countMeja end
+
+local function toggleNoclip(state)
+    if state then
+        if not noclipConnection then
+            noclipConnection = RunService.Stepped:Connect(function()
+                if LP.Character then
+                    for _, v in pairs(LP.Character:GetDescendants()) do
+                        if v:IsA("BasePart") then v.CanCollide = false end
+                    end
+                end
+            end)
+        end
+    else
+        if noclipConnection then noclipConnection:Disconnect(); noclipConnection = nil end
+    end
+end
+
+-- ==========================================
+-- TOMBOL WAYPOINTS
+-- ==========================================
+SetKasirBtn.MouseButton1Click:Connect(function()
+    local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        table.insert(waypoints, {type = "kasir", pos = hrp.Position}); countKasir = countKasir + 1; updateWalkStatus()
+        SetKasirBtn.Text = "Titik Kasir Ditambah! (+)"; task.wait(0.5); SetKasirBtn.Text = "Set Titik Kasir/Dapur (+)"
+    end
+end)
+SetMejaBtn.MouseButton1Click:Connect(function()
+    local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        table.insert(waypoints, {type = "meja", pos = hrp.Position}); countMeja = countMeja + 1; updateWalkStatus()
+        SetMejaBtn.Text = "Titik Meja Ditambah! (+)"; task.wait(0.5); SetMejaBtn.Text = "Set Titik Meja (+)"
+    end
+end)
+ResetWpBtn.MouseButton1Click:Connect(function()
+    waypoints = {}; countKasir = 0; countMeja = 0; updateWalkStatus()
+    ResetWpBtn.Text = "Titik Direset!"; task.wait(0.5); ResetWpBtn.Text = "Reset Semua Titik"
+end)
+
+ToggleWalkBtn.MouseButton1Click:Connect(function()
+    if #waypoints == 0 then ToggleWalkBtn.Text = "SET TITIK DULU BOS!"; task.wait(1); ToggleWalkBtn.Text = "PHANTOM WALK: OFF"; return end
+    autoWalk = not autoWalk
+    ToggleWalkBtn.Text = autoWalk and "PHANTOM WALK: ON" or "PHANTOM WALK: OFF"
+    ToggleWalkBtn.BackgroundColor3 = autoWalk and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(50, 60, 80)
+    ToggleWalkBtn.TextColor3 = autoWalk and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
+    
+    if not autoWalk then
+        toggleNoclip(false)
+        if currentTween then currentTween:Cancel() end
+        local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then 
+            hrp.Anchored = false 
+            local antiFall = hrp:FindFirstChild("SSR_AntiFall")
+            if antiFall then antiFall:Destroy() end
+        end
+    end
+end)
+
+-- LOOP TERBANG (PHYSICS BYPASS)
+task.spawn(function()
+    while task.wait(0.1) do
+        if autoWalk and #waypoints > 0 then
+            toggleNoclip(true)
+            
+            for i, wp in ipairs(waypoints) do
+                if not autoWalk then break end
+                local char = LP.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                
+                if hrp then
+                    -- 1. Pasang Gravitasi Buatan (Anti-Jatuh) biar gak usah Anchored
+                    local antiFall = hrp:FindFirstChild("SSR_AntiFall")
+                    if not antiFall then
+                        antiFall = Instance.new("BodyVelocity")
+                        antiFall.Name = "SSR_AntiFall"
+                        antiFall.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                        antiFall.Velocity = Vector3.new(0, 0, 0)
+                        antiFall.Parent = hrp
+                    end
+                    hrp.Anchored = false -- PENTING: Jangan dibekuin biar server tetep baca interaksi!
+                    
+                    -- 2. Kalkulasi Terbang
+                    local dist = (hrp.Position - wp.pos).Magnitude
+                    local walkSpeed = 16 
+                    local timeToTarget = dist / walkSpeed
+                    
+                    local tweenInfo = TweenInfo.new(timeToTarget, Enum.EasingStyle.Linear)
+                    currentTween = TweenService:Create(hrp, tweenInfo, {CFrame = CFrame.new(wp.pos)})
+                    currentTween:Play()
+                    currentTween.Completed:Wait() 
+                    
+                    if not autoWalk then break end
+                    
+                    -- 3. JEDA PIT STOP (Wajib nunggu biar Auto-Deliver/Wash sempet kerja)
+                    if wp.type == "kasir" then
+                        local waitTime = tonumber(WaitTimeInput.Text) or 3
+                        task.wait(waitTime)
+                    else
+                        task.wait(1.5) -- Jeda di meja biar mangkok sempet disuapin!
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- ==========================================
+-- LOGIKA FARMING (V17 PERFECTED)
+-- ==========================================
+local function getMyPlot()
+    local myPlot = nil; local shortestDist = math.huge
+    local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return nil end
+
+    for _, obj in pairs(Workspace:GetChildren()) do
+        if obj.Name:match("Karenderya") then
+            local dp = obj:FindFirstChild("DiningPlot1")
+            if dp then
+                local refPart = nil
+                for _, tableObj in pairs(dp:GetChildren()) do
+                    if tableObj.Name:match("Table") then
+                        refPart = tableObj:FindFirstChild("PromptPart") or tableObj:FindFirstChild("ChairSpawn1") or tableObj:FindFirstChildWhichIsA("BasePart", true)
+                        if refPart then break end
+                    end
+                end
+                if refPart then
+                    local dist = (hrp.Position - refPart.Position).Magnitude
+                    if dist < shortestDist then shortestDist = dist; myPlot = obj end
+                end
+            end
+        end
+    end
+    return myPlot
+end
+
+local function processOrders()
+    local myPlot = getMyPlot()
+    if not myPlot then return end
+    local success, counterData = pcall(function() return GetCounterInfo:InvokeServer() end)
+    if success and type(counterData) == "table" and counterData.NpcId then
+        local availableTables = {}
+        for _, plot in pairs(myPlot:GetChildren()) do
+            if plot.Name:match("DiningPlot") then
+                for _, tObj in pairs(plot:GetChildren()) do
+                    if tObj.Name:match("Table") then table.insert(availableTables, tObj) end
+                end
+            end
+        end
+        if #availableTables > 0 then
+            local randomTable = availableTables[math.random(1, #availableTables)]
+            AssignNPC:FireServer({["Seat"] = math.random(1, 2), ["NpcId"] = counterData.NpcId, ["NPCName"] = counterData.NpcId, ["Slot"] = randomTable})
+            FarmStatusTxt.Text = "Status: Pelanggan ke " .. randomTable.Name
+        end
+    end
+end
+
+local function deliverFood()
+    local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    for _, obj in pairs(Workspace:GetDescendants()) do
+        if obj:IsA("ProximityPrompt") or obj:IsA("ClickDetector") then
+            local act = obj:IsA("ProximityPrompt") and obj.ActionText:lower() or ""
+            local objTxt = obj:IsA("ProximityPrompt") and obj.ObjectText:lower() or ""
+            local parName = obj.Parent and obj.Parent.Name:lower() or ""
+            local objName = obj.Name:lower()
+            
+            local isFood = act:match("serve") or objTxt:match("serve") or parName:match("plate") or parName:match("cooked") or parName:match("lugaw") or parName:match("pancit") or parName:match("silog") or parName:match("food")
+            local isBad = act:match("customize") or act:match("open") or act:match("order") or act:match("take") or act:match("wash") or objName:match("wash") or parName:match("sink") or parName:match("chiller") or parName:match("fridge") or parName:match("counter")
+
+            if isFood and not isBad then
+                local tPart = obj.Parent
+                if tPart and tPart:IsA("BasePart") and (tPart.Position - hrp.Position).Magnitude <= 45 then 
+                    pcall(function()
+                        if obj:IsA("ProximityPrompt") then
+                            obj.RequiresLineOfSight = false; obj.MaxActivationDistance = 45; fireproximityprompt(obj)
+                        else fireclickdetector(obj) end
+                    end)
+                end
+            end
+        end
+    end
+end
+
+local function washPlates()
+    local myPlot = getMyPlot()
+    local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+    if not myPlot or not hrp then return end
+
+    local washPrompt = nil
+    local sinkFolder = myPlot:FindFirstChild("Sink")
+    if sinkFolder then washPrompt = sinkFolder:FindFirstChild("Wash", true) end
+    
+    if washPrompt and washPrompt.Enabled then
+        local tPart = washPrompt.Parent
+        if tPart and tPart:IsA("BasePart") and (tPart.Position - hrp.Position).Magnitude <= 35 then 
+            FarmStatusTxt.Text = "Status: Nyikat Piring! 🧼"
+            pcall(function()
+                PropEquipEvent:FireServer("Sponge", true)
+                task.wait(0.2)
+                washPrompt.RequiresLineOfSight = false; washPrompt.MaxActivationDistance = 35
+                local holdTime = washPrompt.HoldDuration > 0 and washPrompt.HoldDuration or 1
+                for i = 1, 6 do
+                    if not washPrompt.Enabled then break end
+                    washPrompt:InputHoldBegin()
+                    fireproximityprompt(washPrompt)
+                    task.wait(holdTime + 0.1)
+                    washPrompt:InputHoldEnd()
+                    task.wait(0.2)
+                end
+            end)
+            pcall(function() PropEquipEvent:FireServer("Sponge", false) end)
+        end
+    end
+end
+
+AutoAssignBtn.MouseButton1Click:Connect(function()
+    autoAssign = not autoAssign; AutoAssignBtn.Text = autoAssign and "Auto Order: ON" or "Auto Order: OFF"
+    AutoAssignBtn.BackgroundColor3 = autoAssign and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 60, 80)
+end)
+AutoDeliverBtn.MouseButton1Click:Connect(function()
+    autoDeliver = not autoDeliver; AutoDeliverBtn.Text = autoDeliver and "Auto Deliver: ON" or "Auto Deliver: OFF"
+    AutoDeliverBtn.BackgroundColor3 = autoDeliver and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 60, 80)
+end)
+AutoWashBtn.MouseButton1Click:Connect(function()
+    autoWash = not autoWash; AutoWashBtn.Text = autoWash and "Auto Wash: ON" or "Auto Wash: OFF"
+    AutoWashBtn.BackgroundColor3 = autoWash and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 60, 80)
+end)
+
+task.spawn(function() while task.wait(1.5) do if autoAssign then pcall(processOrders) end end end)
+task.spawn(function() while task.wait(0.3) do if autoDeliver then pcall(deliverFood) end end end)
+task.spawn(function() while task.wait(1) do if autoWash then pcall(washPlates) end end end)
