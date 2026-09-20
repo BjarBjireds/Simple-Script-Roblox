@@ -1,4 +1,4 @@
--- SSR Race Horses V13 (AK47 HARVEST & MACHINE GUN FEED)
+-- SSR Race Horses V18 (MUDBODY HUNTER - PERFECT WASH)
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
@@ -26,7 +26,7 @@ LP.Idled:Connect(function()
 end)
 
 -- ==========================================
--- SETUP UI UTAMA (TEMA AK47 / GUNMETAL)
+-- SETUP UI UTAMA 
 -- ==========================================
 local OpenIcon = Instance.new("ImageButton", ScreenGui)
 OpenIcon.Name = "OpenIcon"; OpenIcon.Size = UDim2.new(0, 50, 0, 50); OpenIcon.Position = UDim2.new(0.5, -100, 0.1, 0)
@@ -34,16 +34,16 @@ OpenIcon.BackgroundTransparency = 1; OpenIcon.Image = "rbxassetid://102866112057
 OpenIcon.Active = true; OpenIcon.Draggable = true; OpenIcon.Visible = false 
 
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 220, 0, 240) 
+MainFrame.Size = UDim2.new(0, 220, 0, 320) 
 MainFrame.Position = UDim2.new(0.5, -110, 0.2, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 25, 20) 
-MainFrame.BorderSizePixel = 2; MainFrame.BorderColor3 = Color3.fromRGB(255, 150, 50)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 20, 15) 
+MainFrame.BorderSizePixel = 2; MainFrame.BorderColor3 = Color3.fromRGB(50, 255, 100)
 MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.ClipsDescendants = true
 
 local Title = Instance.new("TextLabel", MainFrame)
-Title.Size = UDim2.new(1, -30, 0, 25); Title.BackgroundColor3 = Color3.fromRGB(20, 15, 10)
-Title.Text = " SSR Race Horses V13 (AK47)"; Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.TextColor3 = Color3.fromRGB(255, 150, 50); Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 13
+Title.Size = UDim2.new(1, -30, 0, 25); Title.BackgroundColor3 = Color3.fromRGB(10, 15, 10)
+Title.Text = " SSR Race Horses V18"; Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextColor3 = Color3.fromRGB(50, 255, 100); Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 13
 
 local MinBtn = Instance.new("TextButton", MainFrame)
 MinBtn.Size = UDim2.new(0, 30, 0, 25); MinBtn.Position = UDim2.new(1, -30, 0, 0)
@@ -63,27 +63,41 @@ SetKandangBtn.TextColor3 = Color3.new(1, 1, 1); SetKandangBtn.Font = Enum.Font.S
 
 local AutoCollectBtn = Instance.new("TextButton", MainFrame)
 AutoCollectBtn.Size = UDim2.new(1, -20, 0, 35); AutoCollectBtn.Position = UDim2.new(0, 10, 0, 75)
-AutoCollectBtn.BackgroundColor3 = Color3.fromRGB(40, 30, 20)
+AutoCollectBtn.BackgroundColor3 = Color3.fromRGB(20, 40, 30)
 AutoCollectBtn.Text = "AK47 Collect: OFF"
 AutoCollectBtn.TextColor3 = Color3.new(1, 1, 1); AutoCollectBtn.Font = Enum.Font.SourceSansBold
 
 local AutoFeedBtn = Instance.new("TextButton", MainFrame)
 AutoFeedBtn.Size = UDim2.new(1, -20, 0, 35); AutoFeedBtn.Position = UDim2.new(0, 10, 0, 115)
-AutoFeedBtn.BackgroundColor3 = Color3.fromRGB(40, 30, 20)
+AutoFeedBtn.BackgroundColor3 = Color3.fromRGB(20, 40, 30)
 AutoFeedBtn.Text = "AK47 Feed: OFF"
 AutoFeedBtn.TextColor3 = Color3.new(1, 1, 1); AutoFeedBtn.Font = Enum.Font.SourceSansBold
 
+local AutoCleanBtn = Instance.new("TextButton", MainFrame)
+AutoCleanBtn.Size = UDim2.new(1, -20, 0, 35); AutoCleanBtn.Position = UDim2.new(0, 10, 0, 155)
+AutoCleanBtn.BackgroundColor3 = Color3.fromRGB(20, 40, 30)
+AutoCleanBtn.Text = "Private Clean Poop: OFF"
+AutoCleanBtn.TextColor3 = Color3.new(1, 1, 1); AutoCleanBtn.Font = Enum.Font.SourceSansBold
+
+local AutoWashBtn = Instance.new("TextButton", MainFrame)
+AutoWashBtn.Size = UDim2.new(1, -20, 0, 35); AutoWashBtn.Position = UDim2.new(0, 10, 0, 195)
+AutoWashBtn.BackgroundColor3 = Color3.fromRGB(20, 40, 30)
+AutoWashBtn.Text = "MudBody Wash: OFF"
+AutoWashBtn.TextColor3 = Color3.new(1, 1, 1); AutoWashBtn.Font = Enum.Font.SourceSansBold
+
 local StatusTxt = Instance.new("TextLabel", MainFrame)
-StatusTxt.Size = UDim2.new(1, -20, 0, 50); StatusTxt.Position = UDim2.new(0, 10, 0, 155)
+StatusTxt.Size = UDim2.new(1, -20, 0, 50); StatusTxt.Position = UDim2.new(0, 10, 0, 235)
 StatusTxt.BackgroundTransparency = 1; StatusTxt.Text = "Status: Idle\nTitik Kandang: Belum Diset!"
 StatusTxt.TextColor3 = Color3.fromRGB(200, 200, 200); StatusTxt.Font = Enum.Font.SourceSans; StatusTxt.TextScaled = true
 
 -- ==========================================
 -- VARIABEL GLOBAL & SYNC PROTOCOL
 -- ==========================================
-local autoCollect, autoFeed = false, false
+local autoCollect, autoFeed, autoClean, autoWash = false, false, false, false
 local titikKandang = nil 
 local isFeedingPhase = false 
+local isCleaningPhase = false 
+local isWashingPhase = false 
 local bagIsFull = false
 
 SetKandangBtn.MouseButton1Click:Connect(function()
@@ -92,7 +106,7 @@ SetKandangBtn.MouseButton1Click:Connect(function()
     if hrp then
         titikKandang = hrp.Position
         SetKandangBtn.Text = "TITIK KANDANG DISET!"
-        SetKandangBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+        SetKandangBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
         task.wait(1)
         SetKandangBtn.Text = "UPDATE TITIK KANDANG"
         SetKandangBtn.BackgroundColor3 = Color3.fromRGB(150, 100, 0)
@@ -102,49 +116,58 @@ end)
 AutoCollectBtn.MouseButton1Click:Connect(function()
     autoCollect = not autoCollect
     AutoCollectBtn.Text = autoCollect and "AK47 Collect: ON" or "AK47 Collect: OFF"
-    AutoCollectBtn.BackgroundColor3 = autoCollect and Color3.fromRGB(255, 150, 50) or Color3.fromRGB(40, 30, 20)
+    AutoCollectBtn.BackgroundColor3 = autoCollect and Color3.fromRGB(255, 150, 50) or Color3.fromRGB(20, 40, 30)
     AutoCollectBtn.TextColor3 = autoCollect and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
 end)
 
 AutoFeedBtn.MouseButton1Click:Connect(function()
-    if not titikKandang then
-        StatusTxt.Text = "Status: SET KANDANG DULU BOS! ❌"
-        return
-    end
+    if not titikKandang then StatusTxt.Text = "Status: SET KANDANG DULU BOS! ❌"; return end
     autoFeed = not autoFeed
     AutoFeedBtn.Text = autoFeed and "AK47 Feed: ON" or "AK47 Feed: OFF"
-    AutoFeedBtn.BackgroundColor3 = autoFeed and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(40, 30, 20)
+    AutoFeedBtn.BackgroundColor3 = autoFeed and Color3.fromRGB(255, 50, 100) or Color3.fromRGB(20, 40, 30)
     AutoFeedBtn.TextColor3 = autoFeed and Color3.new(1, 1, 1) or Color3.new(1, 1, 1)
 end)
 
+AutoCleanBtn.MouseButton1Click:Connect(function()
+    if not titikKandang then StatusTxt.Text = "Status: SET KANDANG DULU BOS! ❌"; return end
+    autoClean = not autoClean
+    AutoCleanBtn.Text = autoClean and "Private Clean Poop: ON" or "Private Clean Poop: OFF"
+    AutoCleanBtn.BackgroundColor3 = autoClean and Color3.fromRGB(160, 80, 40) or Color3.fromRGB(20, 40, 30) 
+    AutoCleanBtn.TextColor3 = autoClean and Color3.new(1, 1, 1) or Color3.new(1, 1, 1)
+end)
+
+AutoWashBtn.MouseButton1Click:Connect(function()
+    if not titikKandang then StatusTxt.Text = "Status: SET KANDANG DULU BOS! ❌"; return end
+    autoWash = not autoWash
+    AutoWashBtn.Text = autoWash and "MudBody Wash: ON" or "MudBody Wash: OFF"
+    AutoWashBtn.BackgroundColor3 = autoWash and Color3.fromRGB(0, 200, 255) or Color3.fromRGB(20, 40, 30) 
+    AutoWashBtn.TextColor3 = autoWash and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
+end)
+
 -- ==========================================
--- FUNGSI BANTUAN
+-- FUNGSI BANTUAN UMUM
 -- ==========================================
-local function checkApples()
+local function checkItem(itemName)
     local char = LP.Character
     local backpack = LP:FindFirstChild("Backpack")
     if not char or not backpack then return false, nil end
     for _, item in pairs(char:GetChildren()) do
-        if item.Name:lower():match("apple") then return true, item end
+        if item.Name:lower():match(itemName:lower()) then return true, item end
     end
     for _, item in pairs(backpack:GetChildren()) do
-        if item.Name:lower():match("apple") then return true, item end
+        if item.Name:lower():match(itemName:lower()) then return true, item end
     end
     return false, nil
 end
 
--- Cek apakah pohon kosong secara akurat (Baca UI Pohon)
 local function isTreeEmpty(tree)
     if not tree then return true end
     for _, desc in pairs(tree:GetDescendants()) do
-        if desc:IsA("TextLabel") and (desc.Text:match("0/") or desc.Text:match("0 /")) then
-            return true
-        end
+        if desc:IsA("TextLabel") and (desc.Text:match("0/") or desc.Text:match("0 /")) then return true end
     end
     return false
 end
 
--- Cari pohon berbuah
 local function getReadyTree()
     local treesFolder = Workspace:FindFirstChild("Trees")
     if not treesFolder then return nil, nil end
@@ -163,16 +186,70 @@ local function getNearestHorse(pos)
     local horsesFolder = Workspace:FindFirstChild("Horses")
     if horsesFolder then
         for _, horse in pairs(horsesFolder:GetChildren()) do
-            local horsePos = nil
-            if horse.PrimaryPart then horsePos = horse.PrimaryPart.Position
-            else
-                local part = horse:FindFirstChildWhichIsA("BasePart", true)
-                if part then horsePos = part.Position end
-            end
+            local horsePos = (horse.PrimaryPart and horse.PrimaryPart.Position) or (horse:FindFirstChildWhichIsA("BasePart", true) and horse:FindFirstChildWhichIsA("BasePart", true).Position)
             if horsePos then
                 local dist = (pos - horsePos).Magnitude
-                if dist < nearestDist then
-                    nearestDist = dist; targetHorse = horse
+                if dist < nearestDist then nearestDist = dist; targetHorse = horse end
+            end
+        end
+    end
+    return targetHorse
+end
+
+local function getMyPrivatePoop()
+    if not titikKandang then return nil, nil end
+    for _, obj in pairs(Workspace:GetChildren()) do
+        if obj.Name:match("Poop") then
+            local part = obj:IsA("BasePart") and obj or obj:FindFirstChildWhichIsA("BasePart", true)
+            if part and (part.Position - titikKandang).Magnitude <= 60 then return obj, part end
+        end
+    end
+    return nil, nil
+end
+
+local function getNearestBin(pos)
+    local targetBin = nil
+    local nearestDist = math.huge
+    local stablesFolder = Workspace:FindFirstChild("Stables")
+    if stablesFolder then
+        for _, obj in pairs(stablesFolder:GetDescendants()) do
+            if obj.Name:match("Bin") or obj.Name:match("Trash") then
+                local part = obj:IsA("BasePart") and obj or obj:FindFirstChildWhichIsA("BasePart", true)
+                if part then
+                    local dist = (pos - part.Position).Magnitude
+                    if dist < nearestDist then nearestDist = dist; targetBin = obj end
+                end
+            end
+        end
+    end
+    return targetBin
+end
+
+-- FUNGSI BARU: RADAR MUDBODY AKURAT 100%
+local function getDirtyHorseWithMud(pos)
+    local targetHorse = nil
+    local nearestDist = 60 -- Jarak aman kandang sendiri
+    local horsesFolder = Workspace:FindFirstChild("Horses")
+    
+    if horsesFolder then
+        for _, horse in pairs(horsesFolder:GetChildren()) do
+            local isDirty = false
+            -- Cari objek persis bernama "MudBody" dari hasil scan kamu
+            for _, desc in pairs(horse:GetDescendants()) do
+                if desc.Name == "MudBody" then
+                    isDirty = true
+                    break
+                end
+            end
+            
+            if isDirty then
+                local horsePos = (horse.PrimaryPart and horse.PrimaryPart.Position) or (horse:FindFirstChildWhichIsA("BasePart", true) and horse:FindFirstChildWhichIsA("BasePart", true).Position)
+                if horsePos then
+                    local dist = (pos - horsePos).Magnitude
+                    if dist < nearestDist then
+                        nearestDist = dist
+                        targetHorse = horse
+                    end
                 end
             end
         end
@@ -181,17 +258,15 @@ local function getNearestHorse(pos)
 end
 
 -- ==========================================
--- SENSOR UI ANTI-SPAM (BACA TAS PENUH SAJA)
+-- SENSOR UI ANTI-SPAM (TAS PENUH SAJA)
 -- ==========================================
 task.spawn(function()
     while task.wait(0.2) do 
         local detectedFull = false
         for _, gui in pairs(LP.PlayerGui:GetDescendants()) do
             if gui:IsA("TextLabel") and gui.Visible and gui.Text ~= "" then
-                local txt = gui.Text:lower()
-                if txt:match("you can only carry 10 apples") then
-                    detectedFull = true
-                    break
+                if gui.Text:lower():match("you can only carry 10 apples") then
+                    detectedFull = true; break
                 end
             end
         end
@@ -200,61 +275,124 @@ task.spawn(function()
 end)
 
 -- ==========================================
--- LOGIKA 1: V13 AK47 COLLECT (RITMIK & PASTI)
+-- LOGIKA 3: PRIVATE CLEAN POOP (PRIORITAS 1)
 -- ==========================================
 task.spawn(function()
-    while task.wait(0.1) do 
-        if autoCollect then
-            if not autoFeed then isFeedingPhase = false end
+    while task.wait(0.5) do
+        if autoClean and titikKandang then
+            local hasPoop, poopItem = checkItem("Poop")
+            local char = LP.Character
+            local hrp = char and char:FindFirstChild("HumanoidRootPart")
+            local hum = char and char:FindFirstChildOfClass("Humanoid")
             
-            if bagIsFull then
-                if autoFeed and titikKandang then
-                    isFeedingPhase = true
-                else
-                    StatusTxt.Text = "Status: Tas Penuh! Aktifin Auto Feed! 🎒"
-                    task.wait(1)
-                end
-            end
-            
-            if not isFeedingPhase and not bagIsFull then
-                local tree, treePart = getReadyTree()
-                local char = LP.Character
-                local hrp = char and char:FindFirstChild("HumanoidRootPart")
-                
-                if tree and hrp then
-                    -- TELEPORT KE POHON
-                    hrp.CFrame = treePart.CFrame * CFrame.new(0, 0, 4) 
-                    task.wait(0.2) 
-                    StatusTxt.Text = "Status: AK47 PANEN! 🍎🔫"
-                    
-                    -- TEMBAK SATU-SATU (AK47 MODE) SAMPAI KOSONG ATAU PENUH
-                    while autoCollect and not isFeedingPhase and not bagIsFull do
-                        if isTreeEmpty(tree) then break end -- Stop kalau pohon udah beneran 0/6
+            if hrp and hum then
+                if hasPoop then
+                    isCleaningPhase = true
+                    local bin = getNearestBin(titikKandang) 
+                    if bin then
+                        StatusTxt.Text = "Status: OTW Buang Poop! 🗑️💨"
+                        if poopItem then hum:EquipTool(poopItem); task.wait(0.2) end
                         
-                        pcall(function() FireRemote:FireServer("Interact", tree) end)
-                        task.wait(0.25) -- Jeda AK47 (Tembak tiap 0.25 detik) biar server lancar
+                        local binPart = bin:IsA("BasePart") and bin or bin:FindFirstChildWhichIsA("BasePart", true)
+                        if binPart then hrp.CFrame = binPart.CFrame * CFrame.new(0, 0, 3) end
+                        task.wait(0.3)
+                        
+                        for i = 1, 3 do pcall(function() FireRemote:FireServer("Interact", bin) end); task.wait(0.2) end
+                        task.wait(1) 
+                    end
+                else
+                    local poopObj, poopPart = getMyPrivatePoop() 
+                    if poopObj and poopPart then
+                        isCleaningPhase = true
+                        local hasShovel, shovelItem = checkItem("Shovel")
+                        
+                        if hasShovel then
+                            StatusTxt.Text = "Status: Bersihin Poop Kuda KITA! 💩⛏️"
+                            if shovelItem then hum:EquipTool(shovelItem); task.wait(0.2) end
+                            
+                            hrp.CFrame = poopPart.CFrame * CFrame.new(0, 2, 2)
+                            task.wait(0.3)
+                            
+                            for i = 1, 3 do pcall(function() FireRemote:FireServer("Interact", poopObj) end); task.wait(0.2) end
+                            task.wait(0.8) 
+                        else
+                            StatusTxt.Text = "Status: Shovel Kamu Mana?! ❌⛏️"
+                            isCleaningPhase = false
+                        end
+                    else
+                        isCleaningPhase = false
                     end
                 end
             end
+        else
+            isCleaningPhase = false
         end
     end
 end)
 
 -- ==========================================
--- LOGIKA 2: V13 MACHINE GUN FEED
+-- LOGIKA 4: MUDBODY HUNTER WASH (PRIORITAS 2)
+-- ==========================================
+task.spawn(function()
+    while task.wait(0.8) do
+        if autoWash and titikKandang and not isCleaningPhase then
+            local dirtyHorse = getDirtyHorseWithMud(titikKandang)
+            
+            if dirtyHorse then
+                local hasSponge, spongeItem = checkItem("Sponge")
+                local char = LP.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                local hum = char and char:FindFirstChildOfClass("Humanoid")
+                
+                if hasSponge and hrp and hum then
+                    isWashingPhase = true
+                    StatusTxt.Text = "Status: Mandiin Kuda Kotor (MudBody)! 🧽💦"
+                    
+                    if spongeItem then hum:EquipTool(spongeItem); task.wait(0.2) end
+                    
+                    local horsePart = dirtyHorse.PrimaryPart or dirtyHorse:FindFirstChildWhichIsA("BasePart", true)
+                    if horsePart then hrp.CFrame = horsePart.CFrame * CFrame.new(0, 2, 4) end
+                    task.wait(0.3)
+                    
+                    -- Gosok kuda terus-terusan sampai MudBody-nya lenyap
+                    while autoWash and isWashingPhase do
+                        local stillDirty = false
+                        for _, desc in pairs(dirtyHorse:GetDescendants()) do
+                            if desc.Name == "MudBody" then stillDirty = true; break end
+                        end
+                        
+                        if not stillDirty then break end -- Kalau lumpurnya ilang, udahan mandinya
+                        
+                        pcall(function() FireRemote:FireServer("Interact", dirtyHorse) end)
+                        task.wait(0.25)
+                    end
+                    
+                    isWashingPhase = false
+                elseif not hasSponge then
+                    StatusTxt.Text = "Status: Beli Sponge Dulu Woi! ❌🧽"
+                    isWashingPhase = false
+                    task.wait(2)
+                end
+            else
+                isWashingPhase = false
+            end
+        else
+            isWashingPhase = false
+        end
+    end
+end)
+
+-- ==========================================
+-- LOGIKA 2: V13 MACHINE GUN FEED (PRIORITAS 3)
 -- ==========================================
 task.spawn(function()
     while task.wait(0.5) do 
         if autoFeed and titikKandang then
             local shouldFeed = false
-            if autoCollect then
-                shouldFeed = isFeedingPhase 
-            else
-                shouldFeed = true 
-            end
+            if autoCollect then shouldFeed = isFeedingPhase else shouldFeed = true end
 
-            if shouldFeed then
-                local hasApple, targetApple = checkApples()
+            if shouldFeed and not isCleaningPhase and not isWashingPhase then
+                local hasApple, targetApple = checkItem("apple")
                 
                 if not hasApple then
                     if autoCollect then isFeedingPhase = false end
@@ -276,18 +414,48 @@ task.spawn(function()
                     local horse = getNearestHorse(titikKandang)
                     if horse then
                         StatusTxt.Text = "Status: CEKOKIN APEL KILAT! 💥🐴"
-                        
-                        -- Nyuapin kuda tetep brutal (gak error di server)
-                        while autoFeed do
-                            local stillHas = checkApples()
+                        while autoFeed and not isCleaningPhase and not isWashingPhase do
+                            local stillHas = checkItem("apple")
                             if not stillHas then break end 
-                            
                             pcall(function() FireRemote:FireServer("Interact", horse) end)
                             task.wait(0.05) 
                         end
                         isFeedingPhase = false 
                     else
                         StatusTxt.Text = "Status: Gak ada kuda! Nyari ulang... 🔍"
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- ==========================================
+-- LOGIKA 1: V13 AK47 COLLECT (PRIORITAS 4)
+-- ==========================================
+task.spawn(function()
+    while task.wait(0.1) do 
+        if autoCollect then
+            if not autoFeed then isFeedingPhase = false end
+            if bagIsFull then
+                if autoFeed and titikKandang then isFeedingPhase = true
+                else StatusTxt.Text = "Status: Tas Penuh! Aktifin Auto Feed! 🎒"; task.wait(1) end
+            end
+            
+            if not isFeedingPhase and not bagIsFull and not isCleaningPhase and not isWashingPhase then
+                local tree, treePart = getReadyTree()
+                local char = LP.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                
+                if tree and hrp then
+                    hrp.CFrame = treePart.CFrame * CFrame.new(0, 0, 4) 
+                    task.wait(0.2) 
+                    StatusTxt.Text = "Status: AK47 PANEN! 🍎🔫"
+                    
+                    while autoCollect and not isFeedingPhase and not bagIsFull and not isCleaningPhase and not isWashingPhase do
+                        if isTreeEmpty(tree) then break end 
+                        pcall(function() FireRemote:FireServer("Interact", tree) end)
+                        task.wait(0.25) 
                     end
                 end
             end
