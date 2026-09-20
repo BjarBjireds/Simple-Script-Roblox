@@ -1,0 +1,296 @@
+-- SSR Race Horses V13 (AK47 HARVEST & MACHINE GUN FEED)
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CoreGui = game:GetService("CoreGui")
+
+local NetworkRemotes = ReplicatedStorage:WaitForChild("NetworkRemotes")
+local FireRemote = NetworkRemotes:WaitForChild("Fire")
+
+-- BERSINKAN UI LAMA
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "SSRRaceHorsesGUI"
+ScreenGui.Parent = CoreGui or LP:WaitForChild("PlayerGui")
+for _, gui in pairs(ScreenGui.Parent:GetChildren()) do
+    if gui.Name == "SSRRaceHorsesGUI" and gui ~= ScreenGui then gui:Destroy() end
+end
+
+-- ==========================================
+-- SYSTEM ANTI-AFK 
+-- ==========================================
+local VirtualUser = game:GetService("VirtualUser")
+LP.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
+-- ==========================================
+-- SETUP UI UTAMA (TEMA AK47 / GUNMETAL)
+-- ==========================================
+local OpenIcon = Instance.new("ImageButton", ScreenGui)
+OpenIcon.Name = "OpenIcon"; OpenIcon.Size = UDim2.new(0, 50, 0, 50); OpenIcon.Position = UDim2.new(0.5, -100, 0.1, 0)
+OpenIcon.BackgroundTransparency = 1; OpenIcon.Image = "rbxassetid://102866112057826"
+OpenIcon.Active = true; OpenIcon.Draggable = true; OpenIcon.Visible = false 
+
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 220, 0, 240) 
+MainFrame.Position = UDim2.new(0.5, -110, 0.2, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 25, 20) 
+MainFrame.BorderSizePixel = 2; MainFrame.BorderColor3 = Color3.fromRGB(255, 150, 50)
+MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.ClipsDescendants = true
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -30, 0, 25); Title.BackgroundColor3 = Color3.fromRGB(20, 15, 10)
+Title.Text = " SSR Race Horses V13 (AK47)"; Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextColor3 = Color3.fromRGB(255, 150, 50); Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 13
+
+local MinBtn = Instance.new("TextButton", MainFrame)
+MinBtn.Size = UDim2.new(0, 30, 0, 25); MinBtn.Position = UDim2.new(1, -30, 0, 0)
+MinBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50); MinBtn.Text = "-"; MinBtn.TextColor3 = Color3.new(1, 1, 1)
+
+MinBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false; OpenIcon.Visible = true; OpenIcon.Position = MainFrame.Position end)
+OpenIcon.MouseButton1Click:Connect(function() OpenIcon.Visible = false; MainFrame.Visible = true; MainFrame.Position = OpenIcon.Position end)
+
+-- ==========================================
+-- TOMBOL FITUR & WAYPOINT
+-- ==========================================
+local SetKandangBtn = Instance.new("TextButton", MainFrame)
+SetKandangBtn.Size = UDim2.new(1, -20, 0, 35); SetKandangBtn.Position = UDim2.new(0, 10, 0, 35)
+SetKandangBtn.BackgroundColor3 = Color3.fromRGB(150, 100, 0)
+SetKandangBtn.Text = "SET TITIK KANDANG (+)"
+SetKandangBtn.TextColor3 = Color3.new(1, 1, 1); SetKandangBtn.Font = Enum.Font.SourceSansBold
+
+local AutoCollectBtn = Instance.new("TextButton", MainFrame)
+AutoCollectBtn.Size = UDim2.new(1, -20, 0, 35); AutoCollectBtn.Position = UDim2.new(0, 10, 0, 75)
+AutoCollectBtn.BackgroundColor3 = Color3.fromRGB(40, 30, 20)
+AutoCollectBtn.Text = "AK47 Collect: OFF"
+AutoCollectBtn.TextColor3 = Color3.new(1, 1, 1); AutoCollectBtn.Font = Enum.Font.SourceSansBold
+
+local AutoFeedBtn = Instance.new("TextButton", MainFrame)
+AutoFeedBtn.Size = UDim2.new(1, -20, 0, 35); AutoFeedBtn.Position = UDim2.new(0, 10, 0, 115)
+AutoFeedBtn.BackgroundColor3 = Color3.fromRGB(40, 30, 20)
+AutoFeedBtn.Text = "AK47 Feed: OFF"
+AutoFeedBtn.TextColor3 = Color3.new(1, 1, 1); AutoFeedBtn.Font = Enum.Font.SourceSansBold
+
+local StatusTxt = Instance.new("TextLabel", MainFrame)
+StatusTxt.Size = UDim2.new(1, -20, 0, 50); StatusTxt.Position = UDim2.new(0, 10, 0, 155)
+StatusTxt.BackgroundTransparency = 1; StatusTxt.Text = "Status: Idle\nTitik Kandang: Belum Diset!"
+StatusTxt.TextColor3 = Color3.fromRGB(200, 200, 200); StatusTxt.Font = Enum.Font.SourceSans; StatusTxt.TextScaled = true
+
+-- ==========================================
+-- VARIABEL GLOBAL & SYNC PROTOCOL
+-- ==========================================
+local autoCollect, autoFeed = false, false
+local titikKandang = nil 
+local isFeedingPhase = false 
+local bagIsFull = false
+
+SetKandangBtn.MouseButton1Click:Connect(function()
+    local char = LP.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        titikKandang = hrp.Position
+        SetKandangBtn.Text = "TITIK KANDANG DISET!"
+        SetKandangBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+        task.wait(1)
+        SetKandangBtn.Text = "UPDATE TITIK KANDANG"
+        SetKandangBtn.BackgroundColor3 = Color3.fromRGB(150, 100, 0)
+    end
+end)
+
+AutoCollectBtn.MouseButton1Click:Connect(function()
+    autoCollect = not autoCollect
+    AutoCollectBtn.Text = autoCollect and "AK47 Collect: ON" or "AK47 Collect: OFF"
+    AutoCollectBtn.BackgroundColor3 = autoCollect and Color3.fromRGB(255, 150, 50) or Color3.fromRGB(40, 30, 20)
+    AutoCollectBtn.TextColor3 = autoCollect and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
+end)
+
+AutoFeedBtn.MouseButton1Click:Connect(function()
+    if not titikKandang then
+        StatusTxt.Text = "Status: SET KANDANG DULU BOS! ❌"
+        return
+    end
+    autoFeed = not autoFeed
+    AutoFeedBtn.Text = autoFeed and "AK47 Feed: ON" or "AK47 Feed: OFF"
+    AutoFeedBtn.BackgroundColor3 = autoFeed and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(40, 30, 20)
+    AutoFeedBtn.TextColor3 = autoFeed and Color3.new(1, 1, 1) or Color3.new(1, 1, 1)
+end)
+
+-- ==========================================
+-- FUNGSI BANTUAN
+-- ==========================================
+local function checkApples()
+    local char = LP.Character
+    local backpack = LP:FindFirstChild("Backpack")
+    if not char or not backpack then return false, nil end
+    for _, item in pairs(char:GetChildren()) do
+        if item.Name:lower():match("apple") then return true, item end
+    end
+    for _, item in pairs(backpack:GetChildren()) do
+        if item.Name:lower():match("apple") then return true, item end
+    end
+    return false, nil
+end
+
+-- Cek apakah pohon kosong secara akurat (Baca UI Pohon)
+local function isTreeEmpty(tree)
+    if not tree then return true end
+    for _, desc in pairs(tree:GetDescendants()) do
+        if desc:IsA("TextLabel") and (desc.Text:match("0/") or desc.Text:match("0 /")) then
+            return true
+        end
+    end
+    return false
+end
+
+-- Cari pohon berbuah
+local function getReadyTree()
+    local treesFolder = Workspace:FindFirstChild("Trees")
+    if not treesFolder then return nil, nil end
+    for _, tree in pairs(treesFolder:GetChildren()) do
+        if not isTreeEmpty(tree) then
+            local treePart = tree:FindFirstChildWhichIsA("BasePart", true)
+            if treePart then return tree, treePart end
+        end
+    end
+    return nil, nil
+end
+
+local function getNearestHorse(pos)
+    local targetHorse = nil
+    local nearestDist = 100 
+    local horsesFolder = Workspace:FindFirstChild("Horses")
+    if horsesFolder then
+        for _, horse in pairs(horsesFolder:GetChildren()) do
+            local horsePos = nil
+            if horse.PrimaryPart then horsePos = horse.PrimaryPart.Position
+            else
+                local part = horse:FindFirstChildWhichIsA("BasePart", true)
+                if part then horsePos = part.Position end
+            end
+            if horsePos then
+                local dist = (pos - horsePos).Magnitude
+                if dist < nearestDist then
+                    nearestDist = dist; targetHorse = horse
+                end
+            end
+        end
+    end
+    return targetHorse
+end
+
+-- ==========================================
+-- SENSOR UI ANTI-SPAM (BACA TAS PENUH SAJA)
+-- ==========================================
+task.spawn(function()
+    while task.wait(0.2) do 
+        local detectedFull = false
+        for _, gui in pairs(LP.PlayerGui:GetDescendants()) do
+            if gui:IsA("TextLabel") and gui.Visible and gui.Text ~= "" then
+                local txt = gui.Text:lower()
+                if txt:match("you can only carry 10 apples") then
+                    detectedFull = true
+                    break
+                end
+            end
+        end
+        bagIsFull = detectedFull
+    end
+end)
+
+-- ==========================================
+-- LOGIKA 1: V13 AK47 COLLECT (RITMIK & PASTI)
+-- ==========================================
+task.spawn(function()
+    while task.wait(0.1) do 
+        if autoCollect then
+            if not autoFeed then isFeedingPhase = false end
+            
+            if bagIsFull then
+                if autoFeed and titikKandang then
+                    isFeedingPhase = true
+                else
+                    StatusTxt.Text = "Status: Tas Penuh! Aktifin Auto Feed! 🎒"
+                    task.wait(1)
+                end
+            end
+            
+            if not isFeedingPhase and not bagIsFull then
+                local tree, treePart = getReadyTree()
+                local char = LP.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                
+                if tree and hrp then
+                    -- TELEPORT KE POHON
+                    hrp.CFrame = treePart.CFrame * CFrame.new(0, 0, 4) 
+                    task.wait(0.2) 
+                    StatusTxt.Text = "Status: AK47 PANEN! 🍎🔫"
+                    
+                    -- TEMBAK SATU-SATU (AK47 MODE) SAMPAI KOSONG ATAU PENUH
+                    while autoCollect and not isFeedingPhase and not bagIsFull do
+                        if isTreeEmpty(tree) then break end -- Stop kalau pohon udah beneran 0/6
+                        
+                        pcall(function() FireRemote:FireServer("Interact", tree) end)
+                        task.wait(0.25) -- Jeda AK47 (Tembak tiap 0.25 detik) biar server lancar
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- ==========================================
+-- LOGIKA 2: V13 MACHINE GUN FEED
+-- ==========================================
+task.spawn(function()
+    while task.wait(0.5) do 
+        if autoFeed and titikKandang then
+            local shouldFeed = false
+            if autoCollect then
+                shouldFeed = isFeedingPhase 
+            else
+                shouldFeed = true 
+            end
+
+            if shouldFeed then
+                local hasApple, targetApple = checkApples()
+                
+                if not hasApple then
+                    if autoCollect then isFeedingPhase = false end
+                    StatusTxt.Text = "Status: Apel Ludes! Balik Panen! ⚡"
+                    continue
+                end
+
+                local char = LP.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                local hum = char and char:FindFirstChildOfClass("Humanoid")
+                
+                if hrp and hum and targetApple then
+                    hum:EquipTool(targetApple)
+                    task.wait(0.1)
+
+                    hrp.CFrame = CFrame.new(titikKandang)
+                    task.wait(0.2) 
+                    
+                    local horse = getNearestHorse(titikKandang)
+                    if horse then
+                        StatusTxt.Text = "Status: CEKOKIN APEL KILAT! 💥🐴"
+                        
+                        -- Nyuapin kuda tetep brutal (gak error di server)
+                        while autoFeed do
+                            local stillHas = checkApples()
+                            if not stillHas then break end 
+                            
+                            pcall(function() FireRemote:FireServer("Interact", horse) end)
+                            task.wait(0.05) 
+                        end
+                        isFeedingPhase = false 
+                    else
+                        StatusTxt.Text = "Status: Gak ada kuda! Nyari ulang... 🔍"
+                    end
+                end
+            end
+        end
+    end
+end)
