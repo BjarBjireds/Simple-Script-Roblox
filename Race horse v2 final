@@ -1,4 +1,4 @@
--- SSR Race Horses V21 (TRUE MATH PROTOCOL & AUTO BUY VIP)
+-- SSR Race Horses V22 (DEEP UI SCANNER & ANTI-STUCK FAILSAFE)
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
@@ -37,14 +37,14 @@ OpenIcon.Active = true; OpenIcon.Draggable = true; OpenIcon.Visible = false
 local MainFrame = Instance.new("Frame", ScreenGui)
 MainFrame.Size = UDim2.new(0, 220, 0, 360) 
 MainFrame.Position = UDim2.new(0.5, -110, 0.2, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(20, 15, 30) 
-MainFrame.BorderSizePixel = 2; MainFrame.BorderColor3 = Color3.fromRGB(255, 0, 150)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 20, 25) 
+MainFrame.BorderSizePixel = 2; MainFrame.BorderColor3 = Color3.fromRGB(255, 100, 100)
 MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.ClipsDescendants = true
 
 local Title = Instance.new("TextLabel", MainFrame)
-Title.Size = UDim2.new(1, -30, 0, 25); Title.BackgroundColor3 = Color3.fromRGB(15, 10, 20)
-Title.Text = " SSR Race Horses V21"; Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.TextColor3 = Color3.fromRGB(255, 0, 150); Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 13
+Title.Size = UDim2.new(1, -30, 0, 25); Title.BackgroundColor3 = Color3.fromRGB(10, 15, 20)
+Title.Text = " SSR Race Horses V22"; Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextColor3 = Color3.fromRGB(255, 100, 100); Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 13
 
 local MinBtn = Instance.new("TextButton", MainFrame)
 MinBtn.Size = UDim2.new(0, 30, 0, 25); MinBtn.Position = UDim2.new(1, -30, 0, 0)
@@ -64,31 +64,31 @@ SetKandangBtn.TextColor3 = Color3.new(1, 1, 1); SetKandangBtn.Font = Enum.Font.S
 
 local AutoCollectBtn = Instance.new("TextButton", MainFrame)
 AutoCollectBtn.Size = UDim2.new(1, -20, 0, 35); AutoCollectBtn.Position = UDim2.new(0, 10, 0, 75)
-AutoCollectBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 50)
+AutoCollectBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 AutoCollectBtn.Text = "AK47 Collect: OFF"
 AutoCollectBtn.TextColor3 = Color3.new(1, 1, 1); AutoCollectBtn.Font = Enum.Font.SourceSansBold
 
 local AutoFeedBtn = Instance.new("TextButton", MainFrame)
 AutoFeedBtn.Size = UDim2.new(1, -20, 0, 35); AutoFeedBtn.Position = UDim2.new(0, 10, 0, 115)
-AutoFeedBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 50)
+AutoFeedBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 AutoFeedBtn.Text = "AK47 Feed: OFF"
 AutoFeedBtn.TextColor3 = Color3.new(1, 1, 1); AutoFeedBtn.Font = Enum.Font.SourceSansBold
 
 local AutoCleanBtn = Instance.new("TextButton", MainFrame)
 AutoCleanBtn.Size = UDim2.new(1, -20, 0, 35); AutoCleanBtn.Position = UDim2.new(0, 10, 0, 155)
-AutoCleanBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 50)
+AutoCleanBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 AutoCleanBtn.Text = "Private Clean Poop: OFF"
 AutoCleanBtn.TextColor3 = Color3.new(1, 1, 1); AutoCleanBtn.Font = Enum.Font.SourceSansBold
 
 local AutoWashBtn = Instance.new("TextButton", MainFrame)
 AutoWashBtn.Size = UDim2.new(1, -20, 0, 35); AutoWashBtn.Position = UDim2.new(0, 10, 0, 195)
-AutoWashBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 50)
+AutoWashBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 AutoWashBtn.Text = "MudBody Wash: OFF"
 AutoWashBtn.TextColor3 = Color3.new(1, 1, 1); AutoWashBtn.Font = Enum.Font.SourceSansBold
 
 local AutoBuyBtn = Instance.new("TextButton", MainFrame)
 AutoBuyBtn.Size = UDim2.new(1, -20, 0, 35); AutoBuyBtn.Position = UDim2.new(0, 10, 0, 235)
-AutoBuyBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 50)
+AutoBuyBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 AutoBuyBtn.Text = "Auto Buy Tools: OFF"
 AutoBuyBtn.TextColor3 = Color3.new(1, 1, 1); AutoBuyBtn.Font = Enum.Font.SourceSansBold
 
@@ -125,7 +125,7 @@ end)
 AutoCollectBtn.MouseButton1Click:Connect(function()
     autoCollect = not autoCollect
     AutoCollectBtn.Text = autoCollect and "AK47 Collect: ON" or "AK47 Collect: OFF"
-    AutoCollectBtn.BackgroundColor3 = autoCollect and Color3.fromRGB(255, 0, 150) or Color3.fromRGB(40, 20, 50)
+    AutoCollectBtn.BackgroundColor3 = autoCollect and Color3.fromRGB(255, 0, 100) or Color3.fromRGB(30, 30, 40)
     AutoCollectBtn.TextColor3 = autoCollect and Color3.new(1, 1, 1) or Color3.new(1, 1, 1)
 end)
 
@@ -133,7 +133,7 @@ AutoFeedBtn.MouseButton1Click:Connect(function()
     if not titikKandang then StatusTxt.Text = "Status: SET KANDANG DULU BOS! ❌"; return end
     autoFeed = not autoFeed
     AutoFeedBtn.Text = autoFeed and "AK47 Feed: ON" or "AK47 Feed: OFF"
-    AutoFeedBtn.BackgroundColor3 = autoFeed and Color3.fromRGB(255, 100, 50) or Color3.fromRGB(40, 20, 50)
+    AutoFeedBtn.BackgroundColor3 = autoFeed and Color3.fromRGB(255, 150, 0) or Color3.fromRGB(30, 30, 40)
     AutoFeedBtn.TextColor3 = autoFeed and Color3.new(1, 1, 1) or Color3.new(1, 1, 1)
 end)
 
@@ -141,7 +141,7 @@ AutoCleanBtn.MouseButton1Click:Connect(function()
     if not titikKandang then StatusTxt.Text = "Status: SET KANDANG DULU BOS! ❌"; return end
     autoClean = not autoClean
     AutoCleanBtn.Text = autoClean and "Private Clean Poop: ON" or "Private Clean Poop: OFF"
-    AutoCleanBtn.BackgroundColor3 = autoClean and Color3.fromRGB(160, 80, 40) or Color3.fromRGB(40, 20, 50) 
+    AutoCleanBtn.BackgroundColor3 = autoClean and Color3.fromRGB(160, 80, 40) or Color3.fromRGB(30, 30, 40) 
     AutoCleanBtn.TextColor3 = autoClean and Color3.new(1, 1, 1) or Color3.new(1, 1, 1)
 end)
 
@@ -149,14 +149,14 @@ AutoWashBtn.MouseButton1Click:Connect(function()
     if not titikKandang then StatusTxt.Text = "Status: SET KANDANG DULU BOS! ❌"; return end
     autoWash = not autoWash
     AutoWashBtn.Text = autoWash and "MudBody Wash: ON" or "MudBody Wash: OFF"
-    AutoWashBtn.BackgroundColor3 = autoWash and Color3.fromRGB(0, 200, 255) or Color3.fromRGB(40, 20, 50) 
+    AutoWashBtn.BackgroundColor3 = autoWash and Color3.fromRGB(0, 200, 255) or Color3.fromRGB(30, 30, 40) 
     AutoWashBtn.TextColor3 = autoWash and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
 end)
 
 AutoBuyBtn.MouseButton1Click:Connect(function()
     autoBuy = not autoBuy
     AutoBuyBtn.Text = autoBuy and "Auto Buy Tools: ON" or "Auto Buy Tools: OFF"
-    AutoBuyBtn.BackgroundColor3 = autoBuy and Color3.fromRGB(0, 255, 100) or Color3.fromRGB(40, 20, 50) 
+    AutoBuyBtn.BackgroundColor3 = autoBuy and Color3.fromRGB(0, 255, 100) or Color3.fromRGB(30, 30, 40) 
     AutoBuyBtn.TextColor3 = autoBuy and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
 end)
 
@@ -176,29 +176,26 @@ local function checkItem(itemName)
     return false, nil
 end
 
--- V21: FUNGSI NGITUNG MATEMATIKA MURNI (ANTI GHOST TEXT)
-local function countApples()
-    local char = LP.Character
-    local backpack = LP:FindFirstChild("Backpack")
-    local totalApples = 0
+-- V22: DEEP UI SCANNER (NGAMBIL ANGKA DARI TEKS LAYAR UI)
+local function getRealAppleCount()
+    local hasApple = checkItem("apple")
+    if not hasApple then return 0 end
     
-    if not char or not backpack then return 0 end
-    
-    local function processItem(item)
-        if item.Name:lower():match("apple") then
-            local amount = item.Name:match("%(x(%d+)%)")
-            if amount then
-                totalApples = totalApples + tonumber(amount)
-            else
-                totalApples = totalApples + 1
+    local maxCount = 1
+    for _, gui in pairs(LP.PlayerGui:GetDescendants()) do
+        if gui:IsA("TextLabel") or gui:IsA("TextButton") then
+            if gui.Visible and gui.Text ~= "" then
+                local txt = gui.Text:lower()
+                -- Cari format (x1), (x2) ... (x10) dari layar
+                local amount = txt:match("%(x(%d+)%)")
+                if amount then
+                    local num = tonumber(amount)
+                    if num > maxCount then maxCount = num end
+                end
             end
         end
     end
-    
-    for _, item in pairs(char:GetChildren()) do processItem(item) end
-    for _, item in pairs(backpack:GetChildren()) do processItem(item) end
-    
-    return totalApples
+    return maxCount
 end
 
 local function isTreeEmpty(tree)
@@ -289,12 +286,11 @@ local function getDirtyHorseWithMud(pos)
 end
 
 -- ==========================================
--- SENSOR UI (V21: TRUE MATH PROTOCOL)
+-- SENSOR UI (V22: TRUE GUI SCANNER)
 -- ==========================================
 task.spawn(function()
     while task.wait(0.1) do 
-        -- Nggak peduli tulisan merah, cuma peduli JUMLAH ASLI DI TAS!
-        if countApples() >= 10 then
+        if getRealAppleCount() >= 10 then
             bagIsFull = true
         else
             bagIsFull = false
@@ -517,7 +513,7 @@ task.spawn(function()
 end)
 
 -- ==========================================
--- LOGIKA 4: V13 AK47 COLLECT (PRIORITAS 4)
+-- LOGIKA 4: V22 AK47 COLLECT (PRIORITAS 4) + ANTI-STUCK
 -- ==========================================
 task.spawn(function()
     while task.wait(0.1) do 
@@ -539,9 +535,20 @@ task.spawn(function()
                     task.wait(0.2) 
                     StatusTxt.Text = "Status: AK47 PANEN! 🍎🔫"
                     
+                    local harvestAttempts = 0
                     while autoCollect and not isFeedingPhase and not bagIsFull and not isCleaningPhase and not isWashingPhase and not isBuyingPhase do
                         if isTreeEmpty(tree) then break end 
                         pcall(function() FireRemote:FireServer("Interact", tree) end)
+                        
+                        -- V22: SELF-HEALING ANTI STUCK
+                        -- Kalau nembak pohon 25 kali (sekitar 6 detik) tapi buahnya ga abis-abis (berarti ditolak server)
+                        harvestAttempts = harvestAttempts + 1
+                        if harvestAttempts > 25 then
+                            StatusTxt.Text = "Status: Pohon Ngebug! Paksa Balik! ⚠️"
+                            bagIsFull = true -- Memaksa script nganggep tas udah penuh
+                            break
+                        end
+                        
                         task.wait(0.25) 
                     end
                 end
