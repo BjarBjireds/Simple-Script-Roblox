@@ -1,0 +1,223 @@
+-- ==========================================
+-- 1 MILLION VACUUM V3 (THE ULTIMATE AFK MACHINE)
+-- ==========================================
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+local CoreGui = game:GetService("CoreGui")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- AMBIL REMOTES DARI SERVER
+local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+local BuyRebirth = Remotes:WaitForChild("BuyRebirth")
+local BuyUpgrade = Remotes:WaitForChild("BuyUpgrade")
+local ClaimIndex = Remotes:WaitForChild("ClaimIndexReward")
+
+-- BERSINKAN UI LAMA
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "OneMillionVacuumGUI"
+ScreenGui.Parent = CoreGui or LP:WaitForChild("PlayerGui")
+for _, gui in pairs(ScreenGui.Parent:GetChildren()) do
+    if gui.Name == "OneMillionVacuumGUI" and gui ~= ScreenGui then gui:Destroy() end
+end
+
+-- ==========================================
+-- SYSTEM ANTI-AFK 
+-- ==========================================
+local VirtualUser = game:GetService("VirtualUser")
+LP.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
+-- ==========================================
+-- SETUP UI UTAMA 
+-- ==========================================
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 220, 0, 300) -- Tinggi ditambah biar muat 5 tombol
+MainFrame.Position = UDim2.new(0.5, -110, 0.2, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20) 
+MainFrame.BorderSizePixel = 2; MainFrame.BorderColor3 = Color3.fromRGB(0, 255, 255)
+MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.ClipsDescendants = true
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -30, 0, 25); Title.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
+Title.Text = " 1M Vacuum V3"; Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextColor3 = Color3.fromRGB(0, 255, 255); Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 14
+
+local MinBtn = Instance.new("TextButton", MainFrame)
+MinBtn.Size = UDim2.new(0, 30, 0, 25); MinBtn.Position = UDim2.new(1, -30, 0, 0)
+MinBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50); MinBtn.Text = "-"; MinBtn.TextColor3 = Color3.new(1, 1, 1)
+
+local OpenIcon = Instance.new("TextButton", ScreenGui)
+OpenIcon.Size = UDim2.new(0, 50, 0, 50); OpenIcon.Position = UDim2.new(0.5, -100, 0.1, 0)
+OpenIcon.BackgroundColor3 = Color3.fromRGB(15, 15, 20); OpenIcon.BorderColor3 = Color3.fromRGB(0, 255, 255)
+OpenIcon.Text = "OPEN\nVACUUM"; OpenIcon.TextColor3 = Color3.new(1, 1, 1); OpenIcon.Font = Enum.Font.SourceSansBold
+OpenIcon.Active = true; OpenIcon.Draggable = true; OpenIcon.Visible = false 
+
+MinBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false; OpenIcon.Visible = true; OpenIcon.Position = MainFrame.Position end)
+OpenIcon.MouseButton1Click:Connect(function() OpenIcon.Visible = false; MainFrame.Visible = true; MainFrame.Position = OpenIcon.Position end)
+
+-- ==========================================
+-- TOMBOL FITUR
+-- ==========================================
+local SetHoleBtn = Instance.new("TextButton", MainFrame)
+SetHoleBtn.Size = UDim2.new(1, -20, 0, 35); SetHoleBtn.Position = UDim2.new(0, 10, 0, 35)
+SetHoleBtn.BackgroundColor3 = Color3.fromRGB(150, 100, 0)
+SetHoleBtn.Text = "1. SET TITIK SOLOKAN"
+SetHoleBtn.TextColor3 = Color3.new(1, 1, 1); SetHoleBtn.Font = Enum.Font.SourceSansBold
+
+local VacuumBtn = Instance.new("TextButton", MainFrame)
+VacuumBtn.Size = UDim2.new(1, -20, 0, 35); VacuumBtn.Position = UDim2.new(0, 10, 0, 75)
+VacuumBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 50)
+VacuumBtn.Text = "2. VACUUM MODE: OFF"
+VacuumBtn.TextColor3 = Color3.new(1, 1, 1); VacuumBtn.Font = Enum.Font.SourceSansBold
+
+local UpgradeBtn = Instance.new("TextButton", MainFrame)
+UpgradeBtn.Size = UDim2.new(1, -20, 0, 35); UpgradeBtn.Position = UDim2.new(0, 10, 0, 115)
+UpgradeBtn.BackgroundColor3 = Color3.fromRGB(20, 50, 30)
+UpgradeBtn.Text = "Auto Upgrade: OFF"
+UpgradeBtn.TextColor3 = Color3.new(1, 1, 1); UpgradeBtn.Font = Enum.Font.SourceSansBold
+
+local RebirthBtn = Instance.new("TextButton", MainFrame)
+RebirthBtn.Size = UDim2.new(1, -20, 0, 35); RebirthBtn.Position = UDim2.new(0, 10, 0, 155)
+RebirthBtn.BackgroundColor3 = Color3.fromRGB(50, 20, 20)
+RebirthBtn.Text = "Auto Rebirth: OFF"
+RebirthBtn.TextColor3 = Color3.new(1, 1, 1); RebirthBtn.Font = Enum.Font.SourceSansBold
+
+local IndexBtn = Instance.new("TextButton", MainFrame)
+IndexBtn.Size = UDim2.new(1, -20, 0, 35); IndexBtn.Position = UDim2.new(0, 10, 0, 195)
+IndexBtn.BackgroundColor3 = Color3.fromRGB(20, 40, 60)
+IndexBtn.Text = "Auto Claim Index: OFF"
+IndexBtn.TextColor3 = Color3.new(1, 1, 1); IndexBtn.Font = Enum.Font.SourceSansBold
+
+local StatusTxt = Instance.new("TextLabel", MainFrame)
+StatusTxt.Size = UDim2.new(1, -20, 0, 50); StatusTxt.Position = UDim2.new(0, 10, 0, 235)
+StatusTxt.BackgroundTransparency = 1; StatusTxt.Text = "Status: Set Titik Dulu!"
+StatusTxt.TextColor3 = Color3.fromRGB(200, 200, 200); StatusTxt.Font = Enum.Font.SourceSans; StatusTxt.TextScaled = true
+
+-- ==========================================
+-- VARIABEL GLOBAL 
+-- ==========================================
+local isVacuuming = false
+local autoUpgrade = false
+local autoRebirth = false
+local autoIndex = false
+local holePosition = nil 
+
+-- ==========================================
+-- LOGIKA TOMBOL UI
+-- ==========================================
+SetHoleBtn.MouseButton1Click:Connect(function()
+    local char = LP.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        holePosition = hrp.Position + Vector3.new(0, 3, 0) 
+        SetHoleBtn.Text = "TITIK DISET!"
+        SetHoleBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+        StatusTxt.Text = "Status: Titik aman! Gas Vacuum."
+        task.wait(1.5)
+        SetHoleBtn.Text = "UPDATE TITIK SOLOKAN"
+        SetHoleBtn.BackgroundColor3 = Color3.fromRGB(150, 100, 0)
+    end
+end)
+
+VacuumBtn.MouseButton1Click:Connect(function()
+    if not holePosition then
+        StatusTxt.Text = "Status: ERROR! Set titik kocak! ❌"
+        return
+    end
+    isVacuuming = not isVacuuming
+    VacuumBtn.Text = isVacuuming and "2. VACUUM MODE: ON" or "2. VACUUM MODE: OFF"
+    VacuumBtn.BackgroundColor3 = isVacuuming and Color3.fromRGB(255, 0, 100) or Color3.fromRGB(40, 20, 50)
+    StatusTxt.Text = isVacuuming and "Status: MENYEDOT ITEM... 🌪️" or "Status: Vacuum Idle."
+end)
+
+UpgradeBtn.MouseButton1Click:Connect(function()
+    autoUpgrade = not autoUpgrade
+    UpgradeBtn.Text = autoUpgrade and "Auto Upgrade: ON" or "Auto Upgrade: OFF"
+    UpgradeBtn.BackgroundColor3 = autoUpgrade and Color3.fromRGB(0, 255, 100) or Color3.fromRGB(20, 50, 30)
+    UpgradeBtn.TextColor3 = autoUpgrade and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
+end)
+
+RebirthBtn.MouseButton1Click:Connect(function()
+    autoRebirth = not autoRebirth
+    RebirthBtn.Text = autoRebirth and "Auto Rebirth: ON" or "Auto Rebirth: OFF"
+    RebirthBtn.BackgroundColor3 = autoRebirth and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(50, 20, 20)
+end)
+
+IndexBtn.MouseButton1Click:Connect(function()
+    autoIndex = not autoIndex
+    IndexBtn.Text = autoIndex and "Auto Claim Index: ON" or "Auto Claim Index: OFF"
+    IndexBtn.BackgroundColor3 = autoIndex and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(20, 40, 60)
+end)
+
+-- ==========================================
+-- LOOP 1: VACUUM BLACKHOLE 🌪️
+-- ==========================================
+task.spawn(function()
+    RunService.Heartbeat:Connect(function()
+        if isVacuuming and holePosition then
+            local itemsFolder = Workspace:FindFirstChild("LocalItems")
+            if itemsFolder then
+                for _, item in pairs(itemsFolder:GetChildren()) do
+                    if item:IsA("BasePart") then
+                        item.CFrame = CFrame.new(holePosition)
+                        item.CanCollide = false 
+                    elseif item:IsA("Model") and item.PrimaryPart then
+                        item:SetPrimaryPartCFrame(CFrame.new(holePosition))
+                    else
+                        local part = item:FindFirstChildWhichIsA("BasePart")
+                        if part then
+                            part.CFrame = CFrame.new(holePosition)
+                            part.CanCollide = false
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+-- ==========================================
+-- LOOP 2: AUTO UPGRADE 📈 (Ditambah DropAmount)
+-- ==========================================
+task.spawn(function()
+    while task.wait(1) do 
+        if autoUpgrade then
+            pcall(function()
+                BuyUpgrade:FireServer("CashMultiplier")
+                BuyUpgrade:FireServer("SpawnSpeed")
+                BuyUpgrade:FireServer("CapacityLimit")
+                BuyUpgrade:FireServer("DropAmount") -- Boom! Makin deres itemnya!
+            end)
+        end
+    end
+end)
+
+-- ==========================================
+-- LOOP 3: AUTO REBIRTH 🔄
+-- ==========================================
+task.spawn(function()
+    while task.wait(2) do 
+        if autoRebirth then
+            pcall(function()
+                BuyRebirth:FireServer()
+            end)
+        end
+    end
+end)
+
+-- ==========================================
+-- LOOP 4: AUTO CLAIM INDEX 🎁
+-- ==========================================
+task.spawn(function()
+    while task.wait(3) do -- Cek/klaim tiap 3 detik biar ga spam banget ke server
+        if autoIndex then
+            pcall(function()
+                ClaimIndex:FireServer("Tix")
+            end)
+        end
+    end
+end)
