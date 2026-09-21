@@ -1,4 +1,4 @@
--- SSR Race Horses V20 (THE ULTIMATE AUTO-SUPPLIER)
+-- SSR Race Horses V21 (TRUE MATH PROTOCOL & AUTO BUY VIP)
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
@@ -7,7 +7,7 @@ local CoreGui = game:GetService("CoreGui")
 
 local NetworkRemotes = ReplicatedStorage:WaitForChild("NetworkRemotes")
 local FireRemote = NetworkRemotes:WaitForChild("Fire")
-local ClientCallRemote = NetworkRemotes:WaitForChild("ClientCall") -- Remote Toko
+local ClientCallRemote = NetworkRemotes:WaitForChild("ClientCall") 
 
 -- BERSINKAN UI LAMA
 local ScreenGui = Instance.new("ScreenGui")
@@ -35,16 +35,16 @@ OpenIcon.BackgroundTransparency = 1; OpenIcon.Image = "rbxassetid://102866112057
 OpenIcon.Active = true; OpenIcon.Draggable = true; OpenIcon.Visible = false 
 
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 220, 0, 360) -- Tinggi ditambah biar muat
+MainFrame.Size = UDim2.new(0, 220, 0, 360) 
 MainFrame.Position = UDim2.new(0.5, -110, 0.2, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(25, 20, 35) 
-MainFrame.BorderSizePixel = 2; MainFrame.BorderColor3 = Color3.fromRGB(255, 215, 0) -- Tema Emas VIP
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 15, 30) 
+MainFrame.BorderSizePixel = 2; MainFrame.BorderColor3 = Color3.fromRGB(255, 0, 150)
 MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.ClipsDescendants = true
 
 local Title = Instance.new("TextLabel", MainFrame)
-Title.Size = UDim2.new(1, -30, 0, 25); Title.BackgroundColor3 = Color3.fromRGB(15, 10, 25)
-Title.Text = " SSR Race Horses V20 (VIP)"; Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.TextColor3 = Color3.fromRGB(255, 215, 0); Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 13
+Title.Size = UDim2.new(1, -30, 0, 25); Title.BackgroundColor3 = Color3.fromRGB(15, 10, 20)
+Title.Text = " SSR Race Horses V21"; Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextColor3 = Color3.fromRGB(255, 0, 150); Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 13
 
 local MinBtn = Instance.new("TextButton", MainFrame)
 MinBtn.Size = UDim2.new(0, 30, 0, 25); MinBtn.Position = UDim2.new(1, -30, 0, 0)
@@ -64,31 +64,31 @@ SetKandangBtn.TextColor3 = Color3.new(1, 1, 1); SetKandangBtn.Font = Enum.Font.S
 
 local AutoCollectBtn = Instance.new("TextButton", MainFrame)
 AutoCollectBtn.Size = UDim2.new(1, -20, 0, 35); AutoCollectBtn.Position = UDim2.new(0, 10, 0, 75)
-AutoCollectBtn.BackgroundColor3 = Color3.fromRGB(40, 30, 50)
+AutoCollectBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 50)
 AutoCollectBtn.Text = "AK47 Collect: OFF"
 AutoCollectBtn.TextColor3 = Color3.new(1, 1, 1); AutoCollectBtn.Font = Enum.Font.SourceSansBold
 
 local AutoFeedBtn = Instance.new("TextButton", MainFrame)
 AutoFeedBtn.Size = UDim2.new(1, -20, 0, 35); AutoFeedBtn.Position = UDim2.new(0, 10, 0, 115)
-AutoFeedBtn.BackgroundColor3 = Color3.fromRGB(40, 30, 50)
+AutoFeedBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 50)
 AutoFeedBtn.Text = "AK47 Feed: OFF"
 AutoFeedBtn.TextColor3 = Color3.new(1, 1, 1); AutoFeedBtn.Font = Enum.Font.SourceSansBold
 
 local AutoCleanBtn = Instance.new("TextButton", MainFrame)
 AutoCleanBtn.Size = UDim2.new(1, -20, 0, 35); AutoCleanBtn.Position = UDim2.new(0, 10, 0, 155)
-AutoCleanBtn.BackgroundColor3 = Color3.fromRGB(40, 30, 50)
+AutoCleanBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 50)
 AutoCleanBtn.Text = "Private Clean Poop: OFF"
 AutoCleanBtn.TextColor3 = Color3.new(1, 1, 1); AutoCleanBtn.Font = Enum.Font.SourceSansBold
 
 local AutoWashBtn = Instance.new("TextButton", MainFrame)
 AutoWashBtn.Size = UDim2.new(1, -20, 0, 35); AutoWashBtn.Position = UDim2.new(0, 10, 0, 195)
-AutoWashBtn.BackgroundColor3 = Color3.fromRGB(40, 30, 50)
+AutoWashBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 50)
 AutoWashBtn.Text = "MudBody Wash: OFF"
 AutoWashBtn.TextColor3 = Color3.new(1, 1, 1); AutoWashBtn.Font = Enum.Font.SourceSansBold
 
 local AutoBuyBtn = Instance.new("TextButton", MainFrame)
 AutoBuyBtn.Size = UDim2.new(1, -20, 0, 35); AutoBuyBtn.Position = UDim2.new(0, 10, 0, 235)
-AutoBuyBtn.BackgroundColor3 = Color3.fromRGB(40, 30, 50)
+AutoBuyBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 50)
 AutoBuyBtn.Text = "Auto Buy Tools: OFF"
 AutoBuyBtn.TextColor3 = Color3.new(1, 1, 1); AutoBuyBtn.Font = Enum.Font.SourceSansBold
 
@@ -105,9 +105,9 @@ local titikKandang = nil
 local isFeedingPhase = false 
 local isCleaningPhase = false 
 local isWashingPhase = false 
-local isBuyingPhase = false -- Prioritas Tertinggi!
+local isBuyingPhase = false 
 local bagIsFull = false
-local callIdCounter = math.random(1000, 9999) -- Biar ID remote-nya unik terus
+local callIdCounter = math.random(1000, 9999) 
 
 SetKandangBtn.MouseButton1Click:Connect(function()
     local char = LP.Character
@@ -125,7 +125,7 @@ end)
 AutoCollectBtn.MouseButton1Click:Connect(function()
     autoCollect = not autoCollect
     AutoCollectBtn.Text = autoCollect and "AK47 Collect: ON" or "AK47 Collect: OFF"
-    AutoCollectBtn.BackgroundColor3 = autoCollect and Color3.fromRGB(200, 50, 255) or Color3.fromRGB(40, 30, 50)
+    AutoCollectBtn.BackgroundColor3 = autoCollect and Color3.fromRGB(255, 0, 150) or Color3.fromRGB(40, 20, 50)
     AutoCollectBtn.TextColor3 = autoCollect and Color3.new(1, 1, 1) or Color3.new(1, 1, 1)
 end)
 
@@ -133,7 +133,7 @@ AutoFeedBtn.MouseButton1Click:Connect(function()
     if not titikKandang then StatusTxt.Text = "Status: SET KANDANG DULU BOS! ❌"; return end
     autoFeed = not autoFeed
     AutoFeedBtn.Text = autoFeed and "AK47 Feed: ON" or "AK47 Feed: OFF"
-    AutoFeedBtn.BackgroundColor3 = autoFeed and Color3.fromRGB(255, 50, 100) or Color3.fromRGB(40, 30, 50)
+    AutoFeedBtn.BackgroundColor3 = autoFeed and Color3.fromRGB(255, 100, 50) or Color3.fromRGB(40, 20, 50)
     AutoFeedBtn.TextColor3 = autoFeed and Color3.new(1, 1, 1) or Color3.new(1, 1, 1)
 end)
 
@@ -141,7 +141,7 @@ AutoCleanBtn.MouseButton1Click:Connect(function()
     if not titikKandang then StatusTxt.Text = "Status: SET KANDANG DULU BOS! ❌"; return end
     autoClean = not autoClean
     AutoCleanBtn.Text = autoClean and "Private Clean Poop: ON" or "Private Clean Poop: OFF"
-    AutoCleanBtn.BackgroundColor3 = autoClean and Color3.fromRGB(160, 80, 40) or Color3.fromRGB(40, 30, 50) 
+    AutoCleanBtn.BackgroundColor3 = autoClean and Color3.fromRGB(160, 80, 40) or Color3.fromRGB(40, 20, 50) 
     AutoCleanBtn.TextColor3 = autoClean and Color3.new(1, 1, 1) or Color3.new(1, 1, 1)
 end)
 
@@ -149,14 +149,14 @@ AutoWashBtn.MouseButton1Click:Connect(function()
     if not titikKandang then StatusTxt.Text = "Status: SET KANDANG DULU BOS! ❌"; return end
     autoWash = not autoWash
     AutoWashBtn.Text = autoWash and "MudBody Wash: ON" or "MudBody Wash: OFF"
-    AutoWashBtn.BackgroundColor3 = autoWash and Color3.fromRGB(0, 200, 255) or Color3.fromRGB(40, 30, 50) 
+    AutoWashBtn.BackgroundColor3 = autoWash and Color3.fromRGB(0, 200, 255) or Color3.fromRGB(40, 20, 50) 
     AutoWashBtn.TextColor3 = autoWash and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
 end)
 
 AutoBuyBtn.MouseButton1Click:Connect(function()
     autoBuy = not autoBuy
     AutoBuyBtn.Text = autoBuy and "Auto Buy Tools: ON" or "Auto Buy Tools: OFF"
-    AutoBuyBtn.BackgroundColor3 = autoBuy and Color3.fromRGB(0, 255, 100) or Color3.fromRGB(40, 30, 50) 
+    AutoBuyBtn.BackgroundColor3 = autoBuy and Color3.fromRGB(0, 255, 100) or Color3.fromRGB(40, 20, 50) 
     AutoBuyBtn.TextColor3 = autoBuy and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
 end)
 
@@ -174,6 +174,31 @@ local function checkItem(itemName)
         if item.Name:lower():match(itemName:lower()) then return true, item end
     end
     return false, nil
+end
+
+-- V21: FUNGSI NGITUNG MATEMATIKA MURNI (ANTI GHOST TEXT)
+local function countApples()
+    local char = LP.Character
+    local backpack = LP:FindFirstChild("Backpack")
+    local totalApples = 0
+    
+    if not char or not backpack then return 0 end
+    
+    local function processItem(item)
+        if item.Name:lower():match("apple") then
+            local amount = item.Name:match("%(x(%d+)%)")
+            if amount then
+                totalApples = totalApples + tonumber(amount)
+            else
+                totalApples = totalApples + 1
+            end
+        end
+    end
+    
+    for _, item in pairs(char:GetChildren()) do processItem(item) end
+    for _, item in pairs(backpack:GetChildren()) do processItem(item) end
+    
+    return totalApples
 end
 
 local function isTreeEmpty(tree)
@@ -264,25 +289,16 @@ local function getDirtyHorseWithMud(pos)
 end
 
 -- ==========================================
--- SENSOR UI (V19: ANTI-GHOST TEXT & REALITY CHECK)
+-- SENSOR UI (V21: TRUE MATH PROTOCOL)
 -- ==========================================
 task.spawn(function()
     while task.wait(0.1) do 
-        local detectedFull = false
-        local hasAppleInBag = checkItem("apple")
-        
-        if hasAppleInBag then
-            for _, gui in pairs(LP.PlayerGui:GetDescendants()) do
-                if gui:IsA("TextLabel") and gui.Visible and gui.Text ~= "" then
-                    if gui.Text:lower():match("you can only carry 10 apples") then
-                        detectedFull = true; break
-                    end
-                end
-            end
+        -- Nggak peduli tulisan merah, cuma peduli JUMLAH ASLI DI TAS!
+        if countApples() >= 10 then
+            bagIsFull = true
         else
-            detectedFull = false
+            bagIsFull = false
         end
-        bagIsFull = detectedFull
     end
 end)
 
@@ -295,7 +311,6 @@ task.spawn(function()
             local hasShovel = checkItem("Shovel")
             local hasSponge = checkItem("Sponge")
             
-            -- Cuma ke toko kalau salah satu alat beneran habis (0/5 dan hilang dari tas)
             if not hasShovel or not hasSponge then
                 isBuyingPhase = true
                 StatusTxt.Text = "Status: Alat Rusak! OTW Toko... 🛒🏃‍♂️"
@@ -307,15 +322,12 @@ task.spawn(function()
                 if shopTools and hrp then
                     local shopPart = shopTools:IsA("BasePart") and shopTools or shopTools:FindFirstChildWhichIsA("BasePart", true)
                     if shopPart then
-                        -- Teleport ke Toko
                         hrp.CFrame = shopPart.CFrame * CFrame.new(0, 0, 4)
                         task.wait(0.4)
                         
-                        -- Klik Interaksi Toko
                         pcall(function() FireRemote:FireServer("Interact", shopTools) end)
                         task.wait(0.3)
                         
-                        -- Eksekusi Pembelian pakai Remote
                         if not hasShovel then
                             callIdCounter = callIdCounter + 1
                             pcall(function()
@@ -341,7 +353,7 @@ task.spawn(function()
                         end
                         
                         StatusTxt.Text = "Status: Selesai Belanja! 💸"
-                        task.wait(0.5) -- Tunggu alat masuk tas sebelum lanjut kerja
+                        task.wait(0.5) 
                     end
                 end
             else
@@ -395,7 +407,7 @@ task.spawn(function()
                             for i = 1, 3 do pcall(function() FireRemote:FireServer("Interact", poopObj) end); task.wait(0.2) end
                             task.wait(0.8) 
                         else
-                            isCleaningPhase = false -- Tunggu dibeliin sama Auto Buy
+                            isCleaningPhase = false 
                         end
                     else
                         isCleaningPhase = false
@@ -445,7 +457,7 @@ task.spawn(function()
                     
                     isWashingPhase = false
                 else
-                    isWashingPhase = false -- Tunggu dibeliin sama Auto Buy
+                    isWashingPhase = false 
                 end
             else
                 isWashingPhase = false
