@@ -1,5 +1,5 @@
 -- ==========================================
--- 1 MILLION VACUUM V3 (THE ULTIMATE AFK MACHINE)
+-- 1 MILLION VACUUM V9 (SILENT PRESTIGE & NO UI SPAM)
 -- ==========================================
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
@@ -13,6 +13,9 @@ local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local BuyRebirth = Remotes:WaitForChild("BuyRebirth")
 local BuyUpgrade = Remotes:WaitForChild("BuyUpgrade")
 local ClaimIndex = Remotes:WaitForChild("ClaimIndexReward")
+local BuyTrail = Remotes:WaitForChild("BuyEquipTrail")
+local BuyPrestige = Remotes:WaitForChild("BuyPrestige")
+local FreezeStreak = Remotes:WaitForChild("SetStreakUIFrozen")
 
 -- BERSINKAN UI LAMA
 local ScreenGui = Instance.new("ScreenGui")
@@ -35,16 +38,16 @@ end)
 -- SETUP UI UTAMA 
 -- ==========================================
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 220, 0, 300) -- Tinggi ditambah biar muat 5 tombol
+MainFrame.Size = UDim2.new(0, 220, 0, 300) 
 MainFrame.Position = UDim2.new(0.5, -110, 0.2, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20) 
-MainFrame.BorderSizePixel = 2; MainFrame.BorderColor3 = Color3.fromRGB(0, 255, 255)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 20, 25) 
+MainFrame.BorderSizePixel = 2; MainFrame.BorderColor3 = Color3.fromRGB(0, 255, 100) 
 MainFrame.Active = true; MainFrame.Draggable = true; MainFrame.ClipsDescendants = true
 
 local Title = Instance.new("TextLabel", MainFrame)
-Title.Size = UDim2.new(1, -30, 0, 25); Title.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
-Title.Text = " 1M Vacuum V3"; Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.TextColor3 = Color3.fromRGB(0, 255, 255); Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 14
+Title.Size = UDim2.new(1, -30, 0, 25); Title.BackgroundColor3 = Color3.fromRGB(10, 15, 20)
+Title.Text = " 1M Vacuum V9"; Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextColor3 = Color3.fromRGB(0, 255, 100); Title.Font = Enum.Font.SourceSansBold; Title.TextSize = 14
 
 local MinBtn = Instance.new("TextButton", MainFrame)
 MinBtn.Size = UDim2.new(0, 30, 0, 25); MinBtn.Position = UDim2.new(1, -30, 0, 0)
@@ -52,7 +55,7 @@ MinBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50); MinBtn.Text = "-"; MinBtn
 
 local OpenIcon = Instance.new("TextButton", ScreenGui)
 OpenIcon.Size = UDim2.new(0, 50, 0, 50); OpenIcon.Position = UDim2.new(0.5, -100, 0.1, 0)
-OpenIcon.BackgroundColor3 = Color3.fromRGB(15, 15, 20); OpenIcon.BorderColor3 = Color3.fromRGB(0, 255, 255)
+OpenIcon.BackgroundColor3 = Color3.fromRGB(15, 20, 25); OpenIcon.BorderColor3 = Color3.fromRGB(0, 255, 100)
 OpenIcon.Text = "OPEN\nVACUUM"; OpenIcon.TextColor3 = Color3.new(1, 1, 1); OpenIcon.Font = Enum.Font.SourceSansBold
 OpenIcon.Active = true; OpenIcon.Draggable = true; OpenIcon.Visible = false 
 
@@ -77,13 +80,13 @@ VacuumBtn.TextColor3 = Color3.new(1, 1, 1); VacuumBtn.Font = Enum.Font.SourceSan
 local UpgradeBtn = Instance.new("TextButton", MainFrame)
 UpgradeBtn.Size = UDim2.new(1, -20, 0, 35); UpgradeBtn.Position = UDim2.new(0, 10, 0, 115)
 UpgradeBtn.BackgroundColor3 = Color3.fromRGB(20, 50, 30)
-UpgradeBtn.Text = "Auto Upgrade: OFF"
+UpgradeBtn.Text = "Auto Upgrade & Trail: OFF"
 UpgradeBtn.TextColor3 = Color3.new(1, 1, 1); UpgradeBtn.Font = Enum.Font.SourceSansBold
 
 local RebirthBtn = Instance.new("TextButton", MainFrame)
 RebirthBtn.Size = UDim2.new(1, -20, 0, 35); RebirthBtn.Position = UDim2.new(0, 10, 0, 155)
 RebirthBtn.BackgroundColor3 = Color3.fromRGB(50, 20, 20)
-RebirthBtn.Text = "Auto Rebirth: OFF"
+RebirthBtn.Text = "Auto Rebirth/Prestige: OFF"
 RebirthBtn.TextColor3 = Color3.new(1, 1, 1); RebirthBtn.Font = Enum.Font.SourceSansBold
 
 local IndexBtn = Instance.new("TextButton", MainFrame)
@@ -113,7 +116,7 @@ SetHoleBtn.MouseButton1Click:Connect(function()
     local char = LP.Character
     local hrp = char and char:FindFirstChild("HumanoidRootPart")
     if hrp then
-        holePosition = hrp.Position + Vector3.new(0, 3, 0) 
+        holePosition = hrp.Position + Vector3.new(0, 1, 0) 
         SetHoleBtn.Text = "TITIK DISET!"
         SetHoleBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
         StatusTxt.Text = "Status: Titik aman! Gas Vacuum."
@@ -130,21 +133,22 @@ VacuumBtn.MouseButton1Click:Connect(function()
     end
     isVacuuming = not isVacuuming
     VacuumBtn.Text = isVacuuming and "2. VACUUM MODE: ON" or "2. VACUUM MODE: OFF"
-    VacuumBtn.BackgroundColor3 = isVacuuming and Color3.fromRGB(255, 0, 100) or Color3.fromRGB(40, 20, 50)
-    StatusTxt.Text = isVacuuming and "Status: MENYEDOT ITEM... 🌪️" or "Status: Vacuum Idle."
+    VacuumBtn.BackgroundColor3 = isVacuuming and Color3.fromRGB(255, 100, 0) or Color3.fromRGB(40, 20, 50)
+    StatusTxt.Text = isVacuuming and "Status: MENGHANCURKAN MENARA... 🌪️" or "Status: Vacuum Idle."
 end)
 
 UpgradeBtn.MouseButton1Click:Connect(function()
     autoUpgrade = not autoUpgrade
-    UpgradeBtn.Text = autoUpgrade and "Auto Upgrade: ON" or "Auto Upgrade: OFF"
+    UpgradeBtn.Text = autoUpgrade and "Auto Upgrade & Trail: ON" or "Auto Upgrade & Trail: OFF"
     UpgradeBtn.BackgroundColor3 = autoUpgrade and Color3.fromRGB(0, 255, 100) or Color3.fromRGB(20, 50, 30)
     UpgradeBtn.TextColor3 = autoUpgrade and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
 end)
 
 RebirthBtn.MouseButton1Click:Connect(function()
     autoRebirth = not autoRebirth
-    RebirthBtn.Text = autoRebirth and "Auto Rebirth: ON" or "Auto Rebirth: OFF"
-    RebirthBtn.BackgroundColor3 = autoRebirth and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(50, 20, 20)
+    RebirthBtn.Text = autoRebirth and "Auto Prestige: ON" or "Auto Prestige: OFF"
+    RebirthBtn.BackgroundColor3 = autoRebirth and Color3.fromRGB(0, 255, 100) or Color3.fromRGB(50, 20, 20)
+    RebirthBtn.TextColor3 = autoRebirth and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
 end)
 
 IndexBtn.MouseButton1Click:Connect(function()
@@ -154,7 +158,7 @@ IndexBtn.MouseButton1Click:Connect(function()
 end)
 
 -- ==========================================
--- LOOP 1: VACUUM BLACKHOLE 🌪️
+-- LOOP 1: VACUUM GRAVITY CRUSH 🌪️ 
 -- ==========================================
 task.spawn(function()
     RunService.Heartbeat:Connect(function()
@@ -162,17 +166,24 @@ task.spawn(function()
             local itemsFolder = Workspace:FindFirstChild("LocalItems")
             if itemsFolder then
                 for _, item in pairs(itemsFolder:GetChildren()) do
+                    local partToMove = nil
+                    
                     if item:IsA("BasePart") then
-                        item.CFrame = CFrame.new(holePosition)
-                        item.CanCollide = false 
+                        partToMove = item
                     elseif item:IsA("Model") and item.PrimaryPart then
-                        item:SetPrimaryPartCFrame(CFrame.new(holePosition))
+                        partToMove = item.PrimaryPart
                     else
-                        local part = item:FindFirstChildWhichIsA("BasePart")
-                        if part then
-                            part.CFrame = CFrame.new(holePosition)
-                            part.CanCollide = false
-                        end
+                        partToMove = item:FindFirstChildWhichIsA("BasePart")
+                    end
+                    
+                    if partToMove then
+                        local offsetX = math.random(-2, 2)
+                        local offsetZ = math.random(-2, 2)
+                        local dropPos = holePosition + Vector3.new(offsetX, 0, offsetZ)
+                        
+                        partToMove.CFrame = CFrame.new(dropPos)
+                        partToMove.CanCollide = false 
+                        partToMove.AssemblyLinearVelocity = Vector3.new(0, -500, 0) 
                     end
                 end
             end
@@ -181,42 +192,77 @@ task.spawn(function()
 end)
 
 -- ==========================================
--- LOOP 2: AUTO UPGRADE 📈 (Ditambah DropAmount)
+-- LOOP 2: AUTO UPGRADE & SMART TRAILS 📈 
 -- ==========================================
 task.spawn(function()
+    local trailList = {
+        "White", "Blue", "Green", "Yellow", "Orange", 
+        "Red", "Black", "Rainbow", "Monochrome", "Opalescent"
+    }
+
     while task.wait(1) do 
         if autoUpgrade then
             pcall(function()
                 BuyUpgrade:FireServer("CashMultiplier")
                 BuyUpgrade:FireServer("SpawnSpeed")
                 BuyUpgrade:FireServer("CapacityLimit")
-                BuyUpgrade:FireServer("DropAmount") -- Boom! Makin deres itemnya!
+                BuyUpgrade:FireServer("DropAmount")
+                
+                for _, trailName in ipairs(trailList) do
+                    BuyTrail:FireServer(trailName)
+                end
             end)
         end
     end
 end)
 
 -- ==========================================
--- LOOP 3: AUTO REBIRTH 🔄
+-- LOOP 3: PURE REMOTE AUTO REBIRTH & PRESTIGE 🔄
 -- ==========================================
 task.spawn(function()
-    while task.wait(2) do 
+    while task.wait(3) do -- Cek tiap 3 detik
         if autoRebirth then
+            -- Murni nembak server langsung dari belakang layar, gak butuh klik UI!
             pcall(function()
                 BuyRebirth:FireServer()
+                FreezeStreak:FireServer(true)
+                BuyPrestige:FireServer()
             end)
         end
     end
 end)
 
 -- ==========================================
--- LOOP 4: AUTO CLAIM INDEX 🎁
+-- LOOP 4: PHANTOM UI CLICKER (CLAIM ALL INDEX DOANG) 🎁
 -- ==========================================
 task.spawn(function()
-    while task.wait(3) do -- Cek/klaim tiap 3 detik biar ga spam banget ke server
+    -- Yang ini tetep dipertahanin karena remote "Claim All" nya diacak server
+    while task.wait(5) do 
         if autoIndex then
             pcall(function()
                 ClaimIndex:FireServer("Tix")
+                
+                for _, gui in pairs(LP.PlayerGui:GetDescendants()) do
+                    if (gui:IsA("TextLabel") or gui:IsA("TextButton")) and gui.Text ~= "" then
+                        if gui.Text:lower():match("claim all") then
+                            local btn = nil
+                            if gui:IsA("GuiButton") then 
+                                btn = gui
+                            elseif gui.Parent and gui.Parent:IsA("GuiButton") then 
+                                btn = gui.Parent
+                            elseif gui.Parent and gui.Parent.Parent and gui.Parent.Parent:IsA("GuiButton") then 
+                                btn = gui.Parent.Parent 
+                            end
+                            
+                            if btn and getconnections then
+                                for _, conn in pairs(getconnections(btn.MouseButton1Click)) do
+                                    pcall(function() conn:Fire() end)
+                                    pcall(function() conn.Function() end)
+                                end
+                            end
+                        end
+                    end
+                end
             end)
         end
     end
