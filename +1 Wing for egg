@@ -1,0 +1,215 @@
+-- ==========================================
+-- WINGS AUTO FLY V6 (SMART RADIUS & MAX ALTITUDE)
+-- ==========================================
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- AMBIL REMOTES DARI SERVER
+local SharedRemotes = ReplicatedStorage:WaitForChild("SharedModules"):WaitForChild("Network"):WaitForChild("Remotes")
+local BuyUpgrade = SharedRemotes:FindFirstChild("Buy Upgrade")
+local DoRebirth = SharedRemotes:FindFirstChild("Rebirth")
+
+-- BERSINKAN UI LAMA
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "WingsAutoFlyGUI"
+ScreenGui.Parent = CoreGui or LP:WaitForChild("PlayerGui")
+for _, gui in pairs(ScreenGui.Parent:GetChildren()) do
+    if gui.Name == "WingsAutoFlyGUI" and gui ~= ScreenGui then gui:Destroy() end
+end
+
+-- ==========================================
+-- SETUP UI
+-- ==========================================
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 220, 0, 275)
+MainFrame.Position = UDim2.new(0.5, -110, 0.2, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 20, 30)
+MainFrame.BorderSizePixel = 2
+MainFrame.BorderColor3 = Color3.fromRGB(0, 255, 100) -- Tema Hijau Pro
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -30, 0, 25)
+Title.BackgroundColor3 = Color3.fromRGB(10, 15, 20)
+Title.Text = " Wings Auto Fly V6"
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextColor3 = Color3.fromRGB(0, 255, 100)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 14
+
+local MinBtn = Instance.new("TextButton", MainFrame)
+MinBtn.Size = UDim2.new(0, 30, 0, 25)
+MinBtn.Position = UDim2.new(1, -30, 0, 0)
+MinBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+MinBtn.Text = "-"
+MinBtn.TextColor3 = Color3.new(1, 1, 1)
+
+-- TOMBOL TERBANG
+local BtnOcean = Instance.new("TextButton", MainFrame)
+BtnOcean.Size = UDim2.new(1, -20, 0, 35); BtnOcean.Position = UDim2.new(0, 10, 0, 40)
+BtnOcean.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
+BtnOcean.Text = "1. Fly Telur 1 (Ocean Zone)"
+BtnOcean.TextColor3 = Color3.new(1, 1, 1); BtnOcean.Font = Enum.Font.SourceSansBold
+
+local BtnCloud = Instance.new("TextButton", MainFrame)
+BtnCloud.Size = UDim2.new(1, -20, 0, 35); BtnCloud.Position = UDim2.new(0, 10, 0, 85)
+BtnCloud.BackgroundColor3 = Color3.fromRGB(200, 150, 0)
+BtnCloud.Text = "2. Fly Telur 2 (Cloud Zone)"
+BtnCloud.TextColor3 = Color3.new(1, 1, 1); BtnCloud.Font = Enum.Font.SourceSansBold
+
+local BtnBase = Instance.new("TextButton", MainFrame)
+BtnBase.Size = UDim2.new(1, -20, 0, 35); BtnBase.Position = UDim2.new(0, 10, 0, 130)
+BtnBase.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+BtnBase.Text = "3. Fly Base (Speed: 250)"
+BtnBase.TextColor3 = Color3.new(1, 1, 1); BtnBase.Font = Enum.Font.SourceSansBold
+
+-- TOMBOL AUTO PROGRESSION
+local BtnProgression = Instance.new("TextButton", MainFrame)
+BtnProgression.Size = UDim2.new(1, -20, 0, 35); BtnProgression.Position = UDim2.new(0, 10, 0, 175)
+BtnProgression.BackgroundColor3 = Color3.fromRGB(80, 20, 20)
+BtnProgression.Text = "4. Auto Rebirth/Speed: OFF"
+BtnProgression.TextColor3 = Color3.new(1, 1, 1); BtnProgression.Font = Enum.Font.SourceSansBold
+
+local StatusTxt = Instance.new("TextLabel", MainFrame)
+StatusTxt.Size = UDim2.new(1, -20, 0, 40); StatusTxt.Position = UDim2.new(0, 10, 0, 220)
+StatusTxt.BackgroundTransparency = 1
+StatusTxt.Text = "Status: Idle\nSafe Y: 146.5"
+StatusTxt.TextColor3 = Color3.fromRGB(200, 255, 255)
+StatusTxt.Font = Enum.Font.SourceSans
+StatusTxt.TextScaled = true
+
+-- ==========================================
+-- LOGIKA BUKA TUTUP UI
+-- ==========================================
+local OpenIcon = Instance.new("TextButton", ScreenGui)
+OpenIcon.Size = UDim2.new(0, 50, 0, 50); OpenIcon.Position = UDim2.new(0.5, -100, 0.1, 0)
+OpenIcon.BackgroundColor3 = Color3.fromRGB(15, 20, 30); OpenIcon.BorderColor3 = Color3.fromRGB(0, 255, 100)
+OpenIcon.Text = "OPEN\nFLY"; OpenIcon.TextColor3 = Color3.new(1, 1, 1); OpenIcon.Font = Enum.Font.SourceSansBold
+OpenIcon.Active = true; OpenIcon.Draggable = true; OpenIcon.Visible = false
+
+MinBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false; OpenIcon.Visible = true; OpenIcon.Position = MainFrame.Position end)
+OpenIcon.MouseButton1Click:Connect(function() OpenIcon.Visible = false; MainFrame.Visible = true; MainFrame.Position = OpenIcon.Position end)
+
+-- ==========================================
+-- DATA KOORDINAT INTEL & VARIABEL
+-- ==========================================
+local BasePos = Vector3.new(229.3, 4.0, 466.9)
+local Egg2Pos = Vector3.new(245.6, 4.7, -9829.6)
+local Egg1Pos = Vector3.new(219.1, 4.7, -16783.8)
+local SafeY = 146.5 -- UPDATE BARU DARI SCREENSHOT
+local isFlying = false
+local autoProgression = false
+
+-- ==========================================
+-- FUNGSI CEK RADIUS BASE
+-- ==========================================
+local function IsAtBase()
+    local char = LP.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        -- Cek apakah karakter berada dalam radius 150 stud dari titik Base
+        local distance = (hrp.Position - BasePos).Magnitude
+        return distance < 150 
+    end
+    return false
+end
+
+-- ==========================================
+-- FUNGSI TERBANG ANTI LASER 
+-- ==========================================
+local function FlyToDestination(targetPos, destName, currentSpeed)
+    if isFlying then 
+        StatusTxt.Text = "Status: Sabar bos, lagi terbang! ✈️"
+        return 
+    end
+    
+    local char = LP.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    
+    isFlying = true
+    StatusTxt.Text = string.format("Menuju: %s\nKecepatan: %d SPs", destName, currentSpeed)
+    
+    hrp.Anchored = true
+    
+    local startPos = hrp.Position
+    local ascendPos = Vector3.new(startPos.X, SafeY, startPos.Z)
+    local dist1 = (ascendPos - startPos).Magnitude
+    if dist1 > 2 then
+        local tween1 = TweenService:Create(hrp, TweenInfo.new(dist1/currentSpeed, Enum.EasingStyle.Linear), {CFrame = CFrame.new(ascendPos)})
+        tween1:Play(); tween1.Completed:Wait()
+    end
+    
+    local cruisePos = Vector3.new(targetPos.X, SafeY, targetPos.Z)
+    local dist2 = (cruisePos - hrp.Position).Magnitude
+    if dist2 > 2 then
+        local tween2 = TweenService:Create(hrp, TweenInfo.new(dist2/currentSpeed, Enum.EasingStyle.Linear), {CFrame = CFrame.new(cruisePos)})
+        tween2:Play(); tween2.Completed:Wait()
+    end
+    
+    local dist3 = (targetPos - hrp.Position).Magnitude
+    if dist3 > 2 then
+        local tween3 = TweenService:Create(hrp, TweenInfo.new(dist3/currentSpeed, Enum.EasingStyle.Linear), {CFrame = CFrame.new(targetPos)})
+        tween3:Play(); tween3.Completed:Wait()
+    end
+    
+    hrp.Anchored = false
+    isFlying = false
+    StatusTxt.Text = "Status: Berhasil Mendarat! ✅\nSiap Berangkat Lagi."
+end
+
+-- ==========================================
+-- EKSEKUSI TOMBOL TERBANG
+-- ==========================================
+BtnOcean.MouseButton1Click:Connect(function() task.spawn(FlyToDestination, Egg1Pos, "Ocean Zone", 320) end)
+BtnCloud.MouseButton1Click:Connect(function() task.spawn(FlyToDestination, Egg2Pos, "Cloud Zone", 320) end)
+BtnBase.MouseButton1Click:Connect(function() task.spawn(FlyToDestination, BasePos, "Base", 250) end) -- Update Speed 250
+
+-- ==========================================
+-- EKSEKUSI TOMBOL AUTO PROGRESSION
+-- ==========================================
+BtnProgression.MouseButton1Click:Connect(function()
+    autoProgression = not autoProgression
+    BtnProgression.Text = autoProgression and "4. Auto Rebirth/Speed: ON" or "4. Auto Rebirth/Speed: OFF"
+    BtnProgression.BackgroundColor3 = autoProgression and Color3.fromRGB(0, 200, 100) or Color3.fromRGB(80, 20, 20)
+end)
+
+-- LOOP 1: SMART AUTO UPGRADE (HANYA AKTIF SAAT DI BASE)
+task.spawn(function()
+    while task.wait(0.5) do 
+        if autoProgression and IsAtBase() then
+            pcall(function()
+                if BuyUpgrade then BuyUpgrade:FireServer("Speed") end
+                if DoRebirth then DoRebirth:FireServer() end
+            end)
+        end
+    end
+end)
+
+-- LOOP 2: ULTIMATE PHANTOM CLEANER 
+task.spawn(function()
+    while task.wait(0.1) do 
+        if autoProgression then
+            pcall(function()
+                for _, gui in pairs(LP.PlayerGui:GetDescendants()) do
+                    if gui:IsA("TextLabel") and gui.Text then
+                        local textLower = gui.Text:lower()
+                        if textLower:match("more speed to rebirth") or 
+                           textLower:match("increased speed") or 
+                           textLower:match("don't have enough money") or
+                           textLower:match("not enough money") or
+                           textLower:match("closer to the upgrades stand") then -- TAMBAHAN DAFTAR HITAM
+                            
+                            gui.Visible = false
+                            pcall(function() gui:Destroy() end)
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
