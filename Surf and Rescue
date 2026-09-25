@@ -1,0 +1,366 @@
+-- ==========================================
+-- SURF AND RESCUE 🌊 : HUB V11 (TARGET LOCK)
+-- ==========================================
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local CoreGui = game:GetService("CoreGui")
+local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+-- AMBIL REMOTES
+local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+local GrabTap = Remotes:WaitForChild("GrabTap")
+local CleanRemove = Remotes:WaitForChild("CleanRemove")
+local CleanLeave = Remotes:WaitForChild("CleanLeave")
+
+-- BERSINKAN UI LAMA
+local parent = CoreGui or LP:WaitForChild("PlayerGui")
+for _, gui in pairs(parent:GetChildren()) do
+    if gui.Name:match("SurfRescue") then gui:Destroy() end
+end
+
+-- ==========================================
+-- SETUP UI UTAMA & HALAMAN
+-- ==========================================
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "SurfRescueHubV11"
+ScreenGui.Parent = parent
+
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 240, 0, 320)
+MainFrame.Position = UDim2.new(0.5, -120, 0.1, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 80, 150)
+MainFrame.BorderSizePixel = 2
+MainFrame.BorderColor3 = Color3.fromRGB(0, 200, 255)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -30, 0, 30)
+Title.BackgroundColor3 = Color3.fromRGB(10, 50, 100)
+Title.Text = " 🌊 Surf Hub V11"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 14
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local MinBtn = Instance.new("TextButton", MainFrame)
+MinBtn.Size = UDim2.new(0, 30, 0, 30)
+MinBtn.Position = UDim2.new(1, -30, 0, 0)
+MinBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+MinBtn.Text = "-"
+MinBtn.TextColor3 = Color3.new(1, 1, 1)
+MinBtn.Font = Enum.Font.SourceSansBold
+MinBtn.TextSize = 18
+
+-- TABS
+local TabFrame = Instance.new("Frame", MainFrame)
+TabFrame.Size = UDim2.new(1, 0, 0, 30)
+TabFrame.Position = UDim2.new(0, 0, 0, 30)
+TabFrame.BackgroundColor3 = Color3.fromRGB(20, 60, 120)
+TabFrame.BorderSizePixel = 0
+
+local Tab1Btn = Instance.new("TextButton", TabFrame)
+Tab1Btn.Size = UDim2.new(0.5, 0, 1, 0)
+Tab1Btn.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+Tab1Btn.Text = "PAGE 1 (Farm)"
+Tab1Btn.TextColor3 = Color3.new(1, 1, 1)
+Tab1Btn.Font = Enum.Font.SourceSansBold
+
+local Tab2Btn = Instance.new("TextButton", TabFrame)
+Tab2Btn.Size = UDim2.new(0.5, 0, 1, 0)
+Tab2Btn.Position = UDim2.new(0.5, 0, 0, 0)
+Tab2Btn.BackgroundColor3 = Color3.fromRGB(10, 50, 100)
+Tab2Btn.Text = "PAGE 2 (Player)"
+Tab2Btn.TextColor3 = Color3.new(1, 1, 1)
+Tab2Btn.Font = Enum.Font.SourceSansBold
+
+-- PAGES CONTAINER 
+local Page1 = Instance.new("ScrollingFrame", MainFrame)
+Page1.Size = UDim2.new(1, -10, 1, -70)
+Page1.Position = UDim2.new(0, 5, 0, 65)
+Page1.BackgroundTransparency = 1
+Page1.ScrollBarThickness = 4
+Page1.CanvasSize = UDim2.new(0, 0, 0, 320)
+
+local Page2 = Instance.new("Frame", MainFrame)
+Page2.Size = UDim2.new(1, -20, 1, -70)
+Page2.Position = UDim2.new(0, 10, 0, 65)
+Page2.BackgroundTransparency = 1
+Page2.Visible = false
+
+local UILayout1 = Instance.new("UIListLayout", Page1)
+UILayout1.Padding = UDim.new(0, 5)
+local UILayout2 = Instance.new("UIListLayout", Page2)
+UILayout2.Padding = UDim.new(0, 5)
+
+-- LOGIKA TABS & MINIMIZE
+Tab1Btn.MouseButton1Click:Connect(function()
+    Page1.Visible = true; Page2.Visible = false
+    Tab1Btn.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+    Tab2Btn.BackgroundColor3 = Color3.fromRGB(10, 50, 100)
+end)
+Tab2Btn.MouseButton1Click:Connect(function()
+    Page1.Visible = false; Page2.Visible = true
+    Tab1Btn.BackgroundColor3 = Color3.fromRGB(10, 50, 100)
+    Tab2Btn.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+end)
+
+local OpenIcon = Instance.new("TextButton", ScreenGui)
+OpenIcon.Size = UDim2.new(0, 50, 0, 50)
+OpenIcon.Position = UDim2.new(0.5, -110, 0.1, 0)
+OpenIcon.BackgroundColor3 = Color3.fromRGB(10, 50, 100)
+OpenIcon.BorderColor3 = Color3.fromRGB(0, 200, 255)
+OpenIcon.Text = "OPEN"
+OpenIcon.TextColor3 = Color3.new(1, 1, 1)
+OpenIcon.Font = Enum.Font.SourceSansBold
+OpenIcon.Active = true; OpenIcon.Draggable = true; OpenIcon.Visible = false
+
+MinBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false; OpenIcon.Visible = true; OpenIcon.Position = MainFrame.Position end)
+OpenIcon.MouseButton1Click:Connect(function() OpenIcon.Visible = false; MainFrame.Visible = true; MainFrame.Position = OpenIcon.Position end)
+
+-- ==========================================
+-- ISI PAGE 1: FARMING & FAST TELEPORT
+-- ==========================================
+local function MakeBtn(parent, text, color)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(1, -5, 0, 32)
+    btn.BackgroundColor3 = color
+    btn.Text = text
+    btn.TextColor3 = Color3.new(1, 1, 1)
+    btn.Font = Enum.Font.SourceSansBold
+    return btn
+end
+
+local BtnGrab = MakeBtn(Page1, "⛏️ AUTO GRAB: OFF", Color3.fromRGB(200, 50, 50))
+local BtnClean = MakeBtn(Page1, "🧽 AUTO CLEAN: OFF", Color3.fromRGB(200, 50, 50))
+
+local Spacer1 = MakeBtn(Page1, "--- DYNAMIC BASE ---", Color3.fromRGB(30, 30, 30))
+Spacer1.TextTransparency = 0.5; Spacer1.Active = false
+local BtnSaveBase = MakeBtn(Page1, "📍 SAVE BASE POINT", Color3.fromRGB(150, 100, 0))
+local BtnToBase = MakeBtn(Page1, "⚡ TO BASE", Color3.fromRGB(0, 100, 200))
+
+local Spacer2 = MakeBtn(Page1, "--- FAST TRAVEL ---", Color3.fromRGB(30, 30, 30))
+Spacer2.TextTransparency = 0.5; Spacer2.Active = false
+local BtnTPRock = MakeBtn(Page1, "🌊 1. Rock Bottom", Color3.fromRGB(0, 120, 150))
+local BtnTPWhale = MakeBtn(Page1, "🐋 2. Whale Deep", Color3.fromRGB(0, 130, 160))
+local BtnTPShip = MakeBtn(Page1, "⚓ 3. ShipWreck", Color3.fromRGB(0, 140, 170))
+
+-- LOGIKA TELEPORT DYNAMIC BASE
+local savedBase = nil
+BtnSaveBase.MouseButton1Click:Connect(function()
+    local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        savedBase = hrp.CFrame
+        BtnSaveBase.Text = "✅ BASE SAVED!"
+        task.wait(1)
+        BtnSaveBase.Text = "📍 SAVE BASE POINT"
+    end
+end)
+
+BtnToBase.MouseButton1Click:Connect(function()
+    local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+    if hrp and savedBase then hrp.CFrame = savedBase end
+end)
+
+-- LOGIKA FAST TRAVEL HARDCODE (Instant)
+local function FastTravel(cframeTarget)
+    local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+    if hrp then hrp.CFrame = cframeTarget end
+end
+BtnTPRock.MouseButton1Click:Connect(function() FastTravel(CFrame.new(-1533.4, 10.1, -7.7)) end)
+BtnTPWhale.MouseButton1Click:Connect(function() FastTravel(CFrame.new(-1223.7, 6.3, -10.7)) end)
+BtnTPShip.MouseButton1Click:Connect(function() FastTravel(CFrame.new(-925.1, 8.4, -26.7)) end)
+
+-- ==========================================
+-- LOGIKA AUTO FARM (TARGET LOCK SYSTEM)
+-- ==========================================
+local autoGrab = false
+local autoClean = false
+local isCurrentlyCleaning = false
+
+task.spawn(function()
+    while task.wait(0.01) do 
+        if autoGrab then pcall(function() GrabTap:FireServer() end) end
+    end
+end)
+
+task.spawn(function()
+    while task.wait(0.1) do
+        if autoClean then
+            pcall(function()
+                local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    local closestDirtDist = 35 -- Radius awal aman
+                    local targetAnimal = nil
+                    
+                    -- FASE 1: TARGET LOCK (Cari hewan milik kita yang paling dekat)
+                    for _, obj in pairs(Workspace:GetDescendants()) do
+                        if (obj:IsA("BasePart") or obj:IsA("MeshPart")) and tonumber(obj.Name) and not obj:IsDescendantOf(LP.Character) and obj.Transparency < 1 then
+                            local dist = (hrp.Position - obj.Position).Magnitude
+                            if dist < closestDirtDist then
+                                closestDirtDist = dist
+                                targetAnimal = obj.Parent -- Mengunci model hewannya
+                            end
+                        end
+                    end
+                    
+                    -- FASE 2: AMBIL SEMUA KOTORAN (Hanya dari hewan yang dikunci)
+                    local validDirtIDs = {}
+                    if targetAnimal then
+                        for _, obj in pairs(targetAnimal:GetChildren()) do
+                            if (obj:IsA("BasePart") or obj:IsA("MeshPart")) and tonumber(obj.Name) and obj.Transparency < 1 then
+                                table.insert(validDirtIDs, tonumber(obj.Name))
+                            end
+                        end
+                    end
+                    
+                    -- FASE 3: EKSEKUSI PEMBERSIHAN
+                    if #validDirtIDs > 0 then
+                        CleanRemove:FireServer(validDirtIDs)
+                        isCurrentlyCleaning = true
+                    else
+                        if isCurrentlyCleaning then
+                            task.wait(0.2)
+                            CleanLeave:FireServer()
+                            isCurrentlyCleaning = false
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+BtnGrab.MouseButton1Click:Connect(function()
+    autoGrab = not autoGrab
+    BtnGrab.Text = autoGrab and "⛏️ AUTO GRAB: ON" or "⛏️ AUTO GRAB: OFF"
+    BtnGrab.BackgroundColor3 = autoGrab and Color3.fromRGB(50, 150, 50) or Color3.fromRGB(200, 50, 50)
+end)
+BtnClean.MouseButton1Click:Connect(function()
+    autoClean = not autoClean
+    BtnClean.Text = autoClean and "🧽 AUTO CLEAN: ON" or "🧽 AUTO CLEAN: OFF"
+    BtnClean.BackgroundColor3 = autoClean and Color3.fromRGB(50, 150, 50) or Color3.fromRGB(200, 50, 50)
+end)
+
+-- ==========================================
+-- ISI PAGE 2: PLAYER MODS (SPEED & MOBILE FLY)
+-- ==========================================
+local SpeedContainer = Instance.new("Frame", Page2)
+SpeedContainer.Size = UDim2.new(1, 0, 0, 32); SpeedContainer.BackgroundTransparency = 1
+local SpeedBox = Instance.new("TextBox", SpeedContainer)
+SpeedBox.Size = UDim2.new(0.6, -5, 1, 0); SpeedBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+SpeedBox.TextColor3 = Color3.new(1, 1, 1); SpeedBox.PlaceholderText = "Speed (Ex: 50)"
+local BtnSpeed = MakeBtn(SpeedContainer, "Set Speed", Color3.fromRGB(0, 150, 100))
+BtnSpeed.Size = UDim2.new(0.4, 0, 1, 0); BtnSpeed.Position = UDim2.new(0.6, 5, 0, 0)
+
+local customSpeed = nil
+BtnSpeed.MouseButton1Click:Connect(function()
+    customSpeed = tonumber(SpeedBox.Text)
+    if customSpeed and LP.Character and LP.Character:FindFirstChild("Humanoid") then
+        LP.Character.Humanoid.WalkSpeed = customSpeed
+    end
+end)
+task.spawn(function()
+    while task.wait(0.5) do
+        if customSpeed and LP.Character and LP.Character:FindFirstChild("Humanoid") then
+            LP.Character.Humanoid.WalkSpeed = customSpeed
+        end
+    end
+end)
+
+local FlyBtn = MakeBtn(Page2, "🦅 FLY: OFF", Color3.fromRGB(200, 50, 50))
+local FlySpeedContainer = Instance.new("Frame", Page2)
+FlySpeedContainer.Size = UDim2.new(1, 0, 0, 32); FlySpeedContainer.BackgroundTransparency = 1
+local FlySpeedBox = Instance.new("TextBox", FlySpeedContainer)
+FlySpeedBox.Size = UDim2.new(1, 0, 1, 0); FlySpeedBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+FlySpeedBox.TextColor3 = Color3.new(1, 1, 1); FlySpeedBox.PlaceholderText = "Fly Speed (Default: 50)"
+
+local FlyControlUI = Instance.new("Frame", ScreenGui)
+FlyControlUI.Size = UDim2.new(0, 60, 0, 130)
+FlyControlUI.Position = UDim2.new(1, -80, 0.5, -65) 
+FlyControlUI.BackgroundTransparency = 1
+FlyControlUI.Visible = false
+
+local BtnUp = Instance.new("TextButton", FlyControlUI)
+BtnUp.Size = UDim2.new(1, 0, 0, 60); BtnUp.Position = UDim2.new(0, 0, 0, 0)
+BtnUp.BackgroundColor3 = Color3.fromRGB(50, 150, 255); BtnUp.Text = "⬆️ NAIK"
+BtnUp.TextColor3 = Color3.new(1, 1, 1); BtnUp.Font = Enum.Font.SourceSansBold
+
+local BtnDown = Instance.new("TextButton", FlyControlUI)
+BtnDown.Size = UDim2.new(1, 0, 0, 60); BtnDown.Position = UDim2.new(0, 0, 0, 70)
+BtnDown.BackgroundColor3 = Color3.fromRGB(50, 150, 255); BtnDown.Text = "⬇️ TURUN"
+BtnDown.TextColor3 = Color3.new(1, 1, 1); BtnDown.Font = Enum.Font.SourceSansBold
+
+local isFlying = false
+local flySpeed = 50
+local bg, bv
+local holdingUp, holdingDown = false, false
+
+BtnUp.MouseButton1Down:Connect(function() holdingUp = true end)
+BtnUp.MouseButton1Up:Connect(function() holdingUp = false end)
+BtnUp.MouseLeave:Connect(function() holdingUp = false end)
+
+BtnDown.MouseButton1Down:Connect(function() holdingDown = true end)
+BtnDown.MouseButton1Up:Connect(function() holdingDown = false end)
+BtnDown.MouseLeave:Connect(function() holdingDown = false end)
+
+local function StartFly()
+    local char = LP.Character; local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    
+    bg = Instance.new("BodyGyro", hrp)
+    bg.P = 9e4; bg.MaxTorque = Vector3.new(9e9, 9e9, 9e9); bg.CFrame = hrp.CFrame
+    
+    bv = Instance.new("BodyVelocity", hrp)
+    bv.MaxForce = Vector3.new(9e9, 9e9, 9e9); bv.Velocity = Vector3.new(0, 0, 0)
+    
+    char.Humanoid.PlatformStand = true
+    FlyControlUI.Visible = true 
+end
+
+local function StopFly()
+    if bg then bg:Destroy() end
+    if bv then bv:Destroy() end
+    if LP.Character and LP.Character:FindFirstChild("Humanoid") then
+        LP.Character.Humanoid.PlatformStand = false
+    end
+    FlyControlUI.Visible = false 
+end
+
+FlyBtn.MouseButton1Click:Connect(function()
+    isFlying = not isFlying
+    if isFlying then
+        FlyBtn.Text = "🦅 FLY: ON"; FlyBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+        StartFly()
+    else
+        FlyBtn.Text = "🦅 FLY: OFF"; FlyBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+        StopFly()
+    end
+end)
+
+RunService.RenderStepped:Connect(function()
+    if isFlying and LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
+        local cam = Workspace.CurrentCamera
+        local hum = LP.Character:FindFirstChild("Humanoid")
+        local moveDir = Vector3.new(0, 0, 0)
+        
+        if hum and hum.MoveDirection.Magnitude > 0 then
+            moveDir = hum.MoveDirection
+        end
+        
+        if holdingUp then moveDir = moveDir + Vector3.new(0, 1, 0) end
+        if holdingDown then moveDir = moveDir - Vector3.new(0, 1, 0) end
+        
+        if moveDir.Magnitude > 0 then moveDir = moveDir.Unit end
+        
+        flySpeed = tonumber(FlySpeedBox.Text) or 50
+        
+        if bg and bv then
+            bv.Velocity = moveDir * flySpeed
+            bg.CFrame = cam.CFrame
+        end
+    end
+end)
