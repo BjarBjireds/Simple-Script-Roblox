@@ -1,0 +1,184 @@
+-- ==========================================
+-- 8 BALL DUELS 🎱 : PERFECT MOD V5 (MINIMIZE)
+-- ==========================================
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local CoreGui = game:GetService("CoreGui")
+local RunService = game:GetService("RunService")
+
+-- ==========================================
+-- PEMBERSIH SISA LASER DARI VERSI SEBELUMNYA
+-- ==========================================
+pcall(function()
+    local pg = LP:FindFirstChild("PlayerGui")
+    if pg then
+        local aimOverlay = pg:FindFirstChild("AimOverlay", true)
+        if aimOverlay then
+            for _, child in pairs(aimOverlay:GetDescendants()) do
+                if child.Name == "HackerLaser" then
+                    child:Destroy()
+                end
+            end
+        end
+    end
+end)
+
+-- BERSINKAN UI LAMA
+local parent = CoreGui or LP:WaitForChild("PlayerGui")
+for _, gui in pairs(parent:GetChildren()) do
+    if gui.Name == "8BallModGUI" then gui:Destroy() end
+end
+
+-- ==========================================
+-- SETUP UI MOD MENU (DENGAN MINIMIZE)
+-- ==========================================
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "8BallModGUI"
+ScreenGui.Parent = parent
+
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 200, 0, 100)
+MainFrame.Position = UDim2.new(0.5, -100, 0.1, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainFrame.BorderSizePixel = 2
+MainFrame.BorderColor3 = Color3.fromRGB(0, 200, 255)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -30, 0, 30)
+Title.BackgroundColor3 = Color3.fromRGB(10, 30, 80)
+Title.Text = " 🎱 8 Ball Mod V5"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 15
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- TOMBOL MINIMIZE
+local MinBtn = Instance.new("TextButton", MainFrame)
+MinBtn.Size = UDim2.new(0, 30, 0, 30)
+MinBtn.Position = UDim2.new(1, -30, 0, 0)
+MinBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+MinBtn.Text = "-"
+MinBtn.TextColor3 = Color3.new(1, 1, 1)
+MinBtn.Font = Enum.Font.SourceSansBold
+MinBtn.TextSize = 18
+
+-- IKON BUKA (Saat di-minimize)
+local OpenIcon = Instance.new("TextButton", ScreenGui)
+OpenIcon.Size = UDim2.new(0, 50, 0, 50)
+OpenIcon.Position = UDim2.new(0.5, -100, 0.1, 0)
+OpenIcon.BackgroundColor3 = Color3.fromRGB(10, 30, 80)
+OpenIcon.BorderColor3 = Color3.fromRGB(0, 200, 255)
+OpenIcon.Text = "OPEN"
+OpenIcon.TextColor3 = Color3.new(1, 1, 1)
+OpenIcon.Font = Enum.Font.SourceSansBold
+OpenIcon.Active = true
+OpenIcon.Draggable = true
+OpenIcon.Visible = false
+
+MinBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+    OpenIcon.Visible = true
+    OpenIcon.Position = MainFrame.Position
+end)
+
+OpenIcon.MouseButton1Click:Connect(function()
+    OpenIcon.Visible = false
+    MainFrame.Visible = true
+    MainFrame.Position = OpenIcon.Position
+end)
+
+-- TOMBOL KONTROL MOD
+local BtnLines = Instance.new("TextButton", MainFrame)
+BtnLines.Size = UDim2.new(1, -20, 0, 40)
+BtnLines.Position = UDim2.new(0, 10, 0, 45)
+BtnLines.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+BtnLines.Text = "📏 LONG LINES: OFF"
+BtnLines.TextColor3 = Color3.new(1, 1, 1)
+BtnLines.Font = Enum.Font.SourceSansBold
+BtnLines.TextSize = 15
+
+-- ==========================================
+-- LOGIKA INJEKSI PARASIT (HANYA 2 GARIS!)
+-- ==========================================
+local longLinesActive = false
+
+-- AimLine dihapus dari daftar agar tidak tembus lurus
+local allowedLines = {
+    ["CueLine"] = true,    -- Pantulan Bola Putih
+    ["ObjectLine"] = true  -- Arah Bola Target
+}
+
+local function InjectLaser(line)
+    if not line:IsA("GuiObject") then return end
+    
+    local laser = line:FindFirstChild("HackerLaser")
+    if not laser then
+        laser = Instance.new("Frame")
+        laser.Name = "HackerLaser"
+        laser.BorderSizePixel = 0
+        laser.Parent = line
+    end
+    
+    if longLinesActive then
+        laser.Visible = true
+        
+        if line:IsA("ImageLabel") then
+            laser.BackgroundColor3 = line.ImageColor3
+        else
+            laser.BackgroundColor3 = line.BackgroundColor3
+        end
+        
+        local isX = (line.Size.X.Offset + (line.Size.X.Scale * 1000)) >= (line.Size.Y.Offset + (line.Size.Y.Scale * 1000))
+        
+        if isX then
+            laser.Size = UDim2.new(0, 3000, 1, 0)
+            laser.Position = UDim2.new(0.5, 0, 0.5, 0)
+            laser.AnchorPoint = Vector2.new(0, 0.5)
+        else
+            laser.Size = UDim2.new(1, 0, 0, 3000)
+            laser.Position = UDim2.new(0.5, 0, 0.5, 0)
+            laser.AnchorPoint = Vector2.new(0.5, 0)
+        end
+    else
+        laser.Visible = false
+    end
+end
+
+local function ScanAndInject()
+    local pg = LP:FindFirstChild("PlayerGui")
+    if not pg then return end
+    
+    local aimOverlay = pg:FindFirstChild("AimOverlay", true)
+    
+    if aimOverlay then
+        aimOverlay.ClipsDescendants = false
+        if aimOverlay.Parent then aimOverlay.Parent.ClipsDescendants = false end
+        
+        for _, child in pairs(aimOverlay:GetChildren()) do
+            -- Hanya menyuntik garis yang ada di allowedLines
+            if allowedLines[child.Name] then
+                InjectLaser(child)
+            end
+        end
+    end
+end
+
+RunService.RenderStepped:Connect(function()
+    ScanAndInject()
+end)
+
+-- ==========================================
+-- TOMBOL KONTROL
+-- ==========================================
+BtnLines.MouseButton1Click:Connect(function()
+    longLinesActive = not longLinesActive
+    if longLinesActive then
+        BtnLines.Text = "📏 LONG LINES: ON"
+        BtnLines.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+    else
+        BtnLines.Text = "📏 LONG LINES: OFF"
+        BtnLines.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    end
+end)
