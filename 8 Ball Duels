@@ -1,5 +1,5 @@
 -- ==========================================
--- 8 BALL DUELS 🎱 : BOUNCE V10 FINAL (CUSTOM PRESET)
+-- 8 BALL DUELS 🎱 : BOUNCE V10.1 (PURE BACKUP + AIM LINE)
 -- ==========================================
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
@@ -22,7 +22,7 @@ ScreenGui.Name = "8BallModGUI"
 ScreenGui.Parent = parent
 
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 250, 0, 260) 
+MainFrame.Size = UDim2.new(0, 250, 0, 295) -- Dipertinggi sedikit untuk tombol baru
 MainFrame.Position = UDim2.new(0.5, -125, 0.1, 0)
 MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 MainFrame.BorderSizePixel = 2
@@ -33,7 +33,7 @@ MainFrame.Draggable = true
 local Title = Instance.new("TextLabel", MainFrame)
 Title.Size = UDim2.new(1, -30, 0, 30)
 Title.BackgroundColor3 = Color3.fromRGB(80, 50, 0)
-Title.Text = " 🎱 Bounce Mod V10"
+Title.Text = " 🎱 Bounce Mod V10.1"
 Title.TextColor3 = Color3.new(1, 1, 1)
 Title.Font = Enum.Font.SourceSansBold
 Title.TextSize = 15
@@ -71,9 +71,18 @@ BtnLines.Text = "📐 AUTO BOUNCE: OFF"
 BtnLines.TextColor3 = Color3.new(1, 1, 1)
 BtnLines.Font = Enum.Font.SourceSansBold
 
+-- TOMBOL BARU: GARIS LURUS (AIM LINE)
+local BtnAimLine = Instance.new("TextButton", MainFrame)
+BtnAimLine.Size = UDim2.new(1, -20, 0, 30)
+BtnAimLine.Position = UDim2.new(0, 10, 0, 75)
+BtnAimLine.BackgroundColor3 = Color3.fromRGB(150, 100, 50)
+BtnAimLine.Text = "📏 GARIS LURUS: OFF"
+BtnAimLine.TextColor3 = Color3.new(1, 1, 1)
+BtnAimLine.Font = Enum.Font.SourceSansBold
+
 local BtnShowWalls = Instance.new("TextButton", MainFrame)
 BtnShowWalls.Size = UDim2.new(1, -20, 0, 30)
-BtnShowWalls.Position = UDim2.new(0, 10, 0, 75)
+BtnShowWalls.Position = UDim2.new(0, 10, 0, 110)
 BtnShowWalls.BackgroundColor3 = Color3.fromRGB(50, 50, 150)
 BtnShowWalls.Text = "🛠️ TAMPILKAN TEMBOK (OFF)"
 BtnShowWalls.TextColor3 = Color3.new(1, 1, 1)
@@ -128,17 +137,17 @@ local function CreateAdjuster(parent, yPos, labelText, isEditable)
 end
 
 -- ==========================================
--- VARIABEL DEFAULT (Disetel sesuai Screenshot 8.4, 14.7, 0.0, 0.4)
+-- VARIABEL DEFAULT
 -- ==========================================
 local padXVal = 0.084 
 local padYVal = 0.147 
 local offsetXVal = 0.0 
 local offsetYVal = 0.4 
 
-local xMin, xPlus, xBox = CreateAdjuster(MainFrame, 110, "Tembok Kiri/Kanan", true)
-local yMin, yPlus, yBox = CreateAdjuster(MainFrame, 145, "Tembok Atas/Bawah", true)
-local offXMin, offXPlus, offXLbl = CreateAdjuster(MainFrame, 180, "🎯 Offset Garis X", false)
-local offYMin, offYPlus, offYLbl = CreateAdjuster(MainFrame, 215, "🎯 Offset Garis Y", false)
+local xMin, xPlus, xBox = CreateAdjuster(MainFrame, 145, "Tembok Kiri/Kanan", true)
+local yMin, yPlus, yBox = CreateAdjuster(MainFrame, 180, "Tembok Atas/Bawah", true)
+local offXMin, offXPlus, offXLbl = CreateAdjuster(MainFrame, 215, "🎯 Offset Garis X", false)
+local offYMin, offYPlus, offYLbl = CreateAdjuster(MainFrame, 250, "🎯 Offset Garis Y", false)
 
 local function UpdateLabels()
     xBox.Text = string.format("%.1f", padXVal * 100)
@@ -150,13 +159,12 @@ end
 -- Inisialisasi awal
 UpdateLabels()
 
--- Logika Tembok (Step 0.1% = 0.001)
+-- Logika Tembok
 xMin.MouseButton1Click:Connect(function() padXVal = math.max(0, padXVal - 0.001); UpdateLabels() end)
 xPlus.MouseButton1Click:Connect(function() padXVal = math.min(0.4, padXVal + 0.001); UpdateLabels() end)
 yMin.MouseButton1Click:Connect(function() padYVal = math.max(0, padYVal - 0.001); UpdateLabels() end)
 yPlus.MouseButton1Click:Connect(function() padYVal = math.min(0.4, padYVal + 0.001); UpdateLabels() end)
 
--- Fitur Custom Input untuk Tembok
 xBox.FocusLost:Connect(function()
     local val = tonumber(xBox.Text)
     if val then padXVal = math.clamp(val / 100, 0, 0.4) end
@@ -168,7 +176,7 @@ yBox.FocusLost:Connect(function()
     UpdateLabels()
 end)
 
--- Logika Offset (Step 0.1)
+-- Logika Offset
 offXMin.MouseButton1Click:Connect(function() offsetXVal = offsetXVal - 0.1; UpdateLabels() end)
 offXPlus.MouseButton1Click:Connect(function() offsetXVal = offsetXVal + 0.1; UpdateLabels() end)
 offYMin.MouseButton1Click:Connect(function() offsetYVal = offsetYVal - 0.1; UpdateLabels() end)
@@ -208,6 +216,7 @@ end
 -- LOGIKA GEOMETRI
 -- ==========================================
 local bounceActive = false
+local aimLineActive = false
 local showWallsActive = false
 local allowedLines = {["CueLine"] = true, ["ObjectLine"] = true}
 
@@ -263,7 +272,10 @@ local function ProcessGeometryBouncing()
         end
         
         for _, line in pairs(aimOverlay:GetChildren()) do
-            if allowedLines[line.Name] and line:IsA("GuiObject") then
+            -- MENAMBAHKAN PENGECEKAN AIM LINE
+            local isValidLine = allowedLines[line.Name] or (aimLineActive and line.Name == "AimLine")
+            
+            if isValidLine and line:IsA("GuiObject") then
                 local color = line:IsA("ImageLabel") and line.ImageColor3 or line.BackgroundColor3
                 
                 local isX = (line.Size.X.Offset + line.Size.X.Scale * 1000) >= (line.Size.Y.Offset + line.Size.Y.Scale * 1000)
@@ -315,6 +327,17 @@ BtnLines.MouseButton1Click:Connect(function()
     else
         BtnLines.Text = "📐 AUTO BOUNCE: OFF"
         BtnLines.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    end
+end)
+
+BtnAimLine.MouseButton1Click:Connect(function()
+    aimLineActive = not aimLineActive
+    if aimLineActive then
+        BtnAimLine.Text = "📏 GARIS LURUS: ON"
+        BtnAimLine.BackgroundColor3 = Color3.fromRGB(150, 150, 50)
+    else
+        BtnAimLine.Text = "📏 GARIS LURUS: OFF"
+        BtnAimLine.BackgroundColor3 = Color3.fromRGB(150, 100, 50)
     end
 end)
 
