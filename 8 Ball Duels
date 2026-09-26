@@ -1,5 +1,5 @@
 -- ==========================================
--- 8 BALL DUELS 🎱 : BOUNCE V10 (ULTRA PRECISION & CUSTOM INPUT)
+-- 8 BALL DUELS 🎱 : BOUNCE V10 FINAL (CUSTOM PRESET)
 -- ==========================================
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
@@ -22,7 +22,7 @@ ScreenGui.Name = "8BallModGUI"
 ScreenGui.Parent = parent
 
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 250, 0, 260) -- Sedikit dilebarkan agar input text leluasa
+MainFrame.Size = UDim2.new(0, 250, 0, 260) 
 MainFrame.Position = UDim2.new(0.5, -125, 0.1, 0)
 MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 MainFrame.BorderSizePixel = 2
@@ -105,11 +105,9 @@ local function CreateAdjuster(parent, yPos, labelText, isEditable)
     
     local ValUI
     if isEditable then
-        -- Jika editable, gunakan TextBox agar bisa diketik
         ValUI = Instance.new("TextBox", Frame)
         ValUI.ClearTextOnFocus = false
     else
-        -- Jika bukan, gunakan TextLabel biasa
         ValUI = Instance.new("TextLabel", Frame)
     end
     
@@ -117,9 +115,7 @@ local function CreateAdjuster(parent, yPos, labelText, isEditable)
     ValUI.Position = UDim2.new(0.6, 15, 0, 2)
     ValUI.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     ValUI.TextColor3 = Color3.new(1,1,1)
-    if isEditable then
-        ValUI.PlaceholderText = "..."
-    end
+    if isEditable then ValUI.PlaceholderText = "..." end
     
     local BtnPlus = Instance.new("TextButton", Frame)
     BtnPlus.Size = UDim2.new(0, 25, 0, 25)
@@ -131,11 +127,13 @@ local function CreateAdjuster(parent, yPos, labelText, isEditable)
     return BtnMin, BtnPlus, ValUI
 end
 
--- Variabel Default (Mengikuti data screenshot terakhirmu)
-local padXVal = 0.085 
-local padYVal = 0.140 
-local offsetXVal = 0 
-local offsetYVal = 1 
+-- ==========================================
+-- VARIABEL DEFAULT (Disetel sesuai Screenshot 8.4, 14.7, 0.0, 0.4)
+-- ==========================================
+local padXVal = 0.084 
+local padYVal = 0.147 
+local offsetXVal = 0.0 
+local offsetYVal = 0.4 
 
 local xMin, xPlus, xBox = CreateAdjuster(MainFrame, 110, "Tembok Kiri/Kanan", true)
 local yMin, yPlus, yBox = CreateAdjuster(MainFrame, 145, "Tembok Atas/Bawah", true)
@@ -175,7 +173,6 @@ offXMin.MouseButton1Click:Connect(function() offsetXVal = offsetXVal - 0.1; Upda
 offXPlus.MouseButton1Click:Connect(function() offsetXVal = offsetXVal + 0.1; UpdateLabels() end)
 offYMin.MouseButton1Click:Connect(function() offsetYVal = offsetYVal - 0.1; UpdateLabels() end)
 offYPlus.MouseButton1Click:Connect(function() offsetYVal = offsetYVal + 0.1; UpdateLabels() end)
-
 
 -- ==========================================
 -- KANVAS UNTUK GARIS & KOTAK TEMBOK
@@ -279,7 +276,6 @@ local function ProcessGeometryBouncing()
                     Dx, Dy = math.cos(rot + math.pi/2), math.sin(rot + math.pi/2)
                 end
                 
-                -- PENERAPAN OFFSET PRESISI (SEKARANG BISA DESIMAL 0.1)
                 local Px = line.AbsolutePosition.X + (line.AbsoluteSize.X / 2) + offsetXVal
                 local Py = line.AbsolutePosition.Y + (line.AbsoluteSize.Y / 2) + offsetYVal
                 
