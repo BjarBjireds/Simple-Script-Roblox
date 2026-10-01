@@ -299,7 +299,7 @@ local WordDB = {
         "xbacksuspenders", "xrayvisionglasses", "xiapecapecollar", "xmasjumpersweater",
         "yogapantsleggings", "yarmulkeskullcap", "yarndyedcottonshirt", "yokedpeasantblouse",
         "zipuphoodiesweatshirt", "zebrastripedleggings", "zootsuitjacket", "zorisandals"
-    }
+    },
 
     ["sport"] = {
         "associationfootball", "aerobicgymnastics", "artisticswimming", "alpinesnowboarding",
