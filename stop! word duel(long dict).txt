@@ -1,4 +1,4 @@
-local WordDB = {
+return {
     ["country"] = {
         "antiguaandbarbuda", "aguascalientes", "alexandroupoli", "antananarivo",
         "bosniaandherzegovina", "bandarseribegawan", "barrancabermeja", "brazzaville",
