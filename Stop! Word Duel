@@ -20,7 +20,7 @@ local WordDB = {
         "fiji", "faroe", "falkland", "fukuoka",
         "gabon", "gambia", "guyana", "gaborone",
         "honduras", "hungary", "hobart", "harare",
-        "iceland", "ivory coast", "ibadan", "incheon",
+        "iceland", "ivorycoast", "ibadan", "incheon",
         "jordan", "juneau", "juba", "jinan",
         "kiribati", "kosovo", "kigali", "kampala",
         "lesotho", "liechtenstein", "latvia", "lusaka",
@@ -64,7 +64,7 @@ local WordDB = {
         "ukulele", "urn", "unicycle", "upholstery",
         "vellum", "vial", "vise", "visor",
         "washboard", "windchime", "wrench", "winch",
-        "xylophone", "xebec", "xerograph", "x-ray",
+        "xylophone", "xebec", "xerograph", "xray",
         "yoke", "yurt", "yardstick", "yoyo",
         "zither", "zamboni", "zeppelin", "zipper"
     },
@@ -105,21 +105,21 @@ local WordDB = {
         "drab", "dun", "dianthus", "desert",
         "ecru", "eburnean", "eggplant", "emerald",
         "fulvous", "falu", "feldgrau", "fuchsia",
-        "glaucous", "gamboge", "grullo", "glaucous",
+        "glaucous", "gamboge", "grullo",
         "heliotrope", "harlequin", "honeydew", "hazel",
         "isabelline", "icterine", "indigo", "ivory",
         "jonquil", "jet", "jade", "jasmine",
         "kobicha", "kombu", "keppel", "khaki",
         "lapis", "liver", "lilac",
-        "malachite", "mauve",
+        "malachite", "mauve", "magenta", "mahogany",
         "nattier", "navajo", "nadeshiko", "navy",
         "onyx", "olivine", "orpiment", "ochre",
-        "periwinkle", "puce",
+        "periwinkle", "puce", "porphyry", "peridot", "phlox",
         "quartz", "quicksilver", "quince",
-        "rufous", "rust",
-        "sepia",
+        "rufous", "rust", "rosewood", "razzmatazz",
+        "sepia", "sienna", "shamrock",
         "taupe", "tenne", "thistle",
-        "ultramarine", "umber", "urobilin", "umber",
+        "ultramarine", "umber", "urobilin",
         "viridian", "vanilla", "vermilion", "violet",
         "wenge", "wisteria", "wheat", "wine",
         "xanthic", "xanadu", "xanthin",
@@ -162,7 +162,7 @@ local WordDB = {
         "calamansi", "cherimoya", "cloudberry", "cupuacu",
         "damson", "dekopon", "dewberry", "durian",
         "entawak", "elderberry", "etrog",
-        "feijoa", "finger lime", "farkleberry",
+        "feijoa", "fingerlime", "farkleberry",
         "grumichama", "goumi", "genip", "guarana",
         "hackberry", "hala", "honeyberry", "huito",
         "ilama", "imbe", "icaco",
@@ -178,18 +178,18 @@ local WordDB = {
         "salak", "santol", "sapote", "soursop",
         "tamarillo", "tamarind", "tangelo", "tayberry",
         "ugni", "umbu", "ugli",
-        "velvet apple", "voavanga", "vaccinium",
-        "wampee", "wax apple", "wolfberry",
+        "velvetapple", "voavanga", "vaccinium",
+        "wampee", "waxapple", "wolfberry",
         "xigua", "ximenia", "xylocarpus",
         "yali", "yamamomo", "yuzu",
-        "zabergau", "zigzag vine", "ziziphus"
+        "zabergau", "zigzagvine", "ziziphus"
     },
 
     ["animal"] = { 
         "aardvark", "axolotl", "addax", "agouti",
         "babirusa", "binturong", "bandicoot", "bilby",
         "capybara", "cassowary", "coelacanth", "caracal",
-        "dugong", "dhole", "desman", "dik-dik",
+        "dugong", "dhole", "desman", "dikdik",
         "echidna", "eland", "ermine", "egret",
         "fossa", "fennec", "fulmar", "francolin",
         "gerenuk", "gharial", "guanaco", "grackle",
@@ -234,13 +234,13 @@ local WordDB = {
         "quadricycle", "quinquereme", "quadbike",
         "rickshaw", "runabout", "rover", "roadster",
         "submersible", "skiff", "schooner", "sloop", "snowmobile", "sidecar",
-        "tramcar", "trimaran", "troika", "tumbril", "trireme", "tuk-tuk",
-        "u-boat", "ultralight", "unicycle", "ute",
+        "tramcar", "trimaran", "troika", "tumbril", "trireme", "tuktuk",
+        "uboat", "ultralight", "unicycle", "ute",
         "velocipede", "vittoria", "vardo", "velomobile",
         "wagonette", "wheelbarrow", "whaler", "windjammer",
-        "xebec",
-        "yawl", "yacht",
-        "zeppelin", "zamboni"
+        "xebec", "xcraft",
+        "yawl", "yacht", "yuloh",
+        "zeppelin", "zamboni", "zephyr", "zodiac"
     },
     
     ["job"] = { 
@@ -254,7 +254,7 @@ local WordDB = {
         "haberdasher", "harper", "hawker", "hooper", "horologist",
         "ichthyologist", "illuminator", "illusionist", "invigilator",
         "joiner", "jongleur", "jurist", "jouster",
-        "knapper", "keelman",
+        "knapper", "keelman", "kayaker", "keyboardist", "kinesiologist",
         "lapidary", "luthier", "limner", "lexicographer", "lineman",
         "milliner", "mercer", "mason", "mycologist",
         "numismatist", "navigator", "notary", "nephrologist",
@@ -268,8 +268,8 @@ local WordDB = {
         "vintner", "vulcanologist", "valet", "vexillologist",
         "wainwright", "weaver", "wheelwright", "wrangler", "wayfarer",
         "xylophonist", "xylographer",
-        "yeoman", "yardmaster",
-        "zoologist", "zymologist"
+        "yeoman", "yardmaster", "yachtsman", "yodeler",
+        "zoologist", "zymologist", "zitherist"
     },
     
     ["wear"] = { 
@@ -281,7 +281,7 @@ local WordDB = {
         "fascinator", "fedora", "frock", "fleece", "footwear",
         "gaiters", "galoshes", "guayabera", "gauntlets", "gilet",
         "halter", "haori", "homburg", "hijab", "havelock",
-        "inverness", "insole", "infinity scarf", "intimates",
+        "inverness", "insole", "infinityscarf", "intimates",
         "jabot", "jodhpurs", "jerkin", "jumper", "jilbab",
         "kilt", "kimono", "knickers", "keffiyeh", "kurta",
         "leotard", "lorgnette", "loafers", "loincloth", "lingerie",
@@ -289,16 +289,16 @@ local WordDB = {
         "neckerchief", "negligee", "necktie", "nightgown", "nylons",
         "obi", "overcoat", "oxfords", "overalls", "onesie",
         "pashmina", "petticoat", "pinafore", "poncho", "plimsolls",
-        "qipao", "quarter-zip", "quilted jacket", "quarter-socks",
+        "qipao", "quarterzip", "quiltedjacket", "quartersocks",
         "romper", "ruana", "ruff", "raglan", "raincoat",
         "sabot", "sarong", "snood", "sombrero", "suspenders",
         "tabard", "tam", "tiara", "toga", "tunic",
         "ulster", "unitard", "ushanka", "undergarment", "uniform",
-        "veil", "vestments", "visor", "v-neck", "vambrace",
+        "veil", "vestments", "visor", "vneck", "vambrace",
         "waders", "waistcoat", "wellingtons", "wimple", "windbreaker",
-        "x-back suspenders", "xl shirt", "xray glasses",
-        "yarmulke", "yashmak", "yukata", "yoga pants",
-        "zoot suit", "zori", "zip-up", "zipper"
+        "xbacksuspenders", "xlshirt", "xrayglasses",
+        "yarmulke", "yashmak", "yukata", "yogapants",
+        "zootsuit", "zori", "zipup", "zipper"
     },
 
     ["sports"] = { 
@@ -306,28 +306,451 @@ local WordDB = {
         "biathlon", "bobsleigh", "bocce", "badminton", "basejump",
         "curling", "cricket", "croquet", "calisthenics", "capoeira",
         "dressage", "dodgeball", "decathlon", "duathlon",
-        "equestrian", "enduro", "e-sports", "eight-ball",
+        "equestrian", "enduro", "esports", "eightball",
         "fencing", "futsal", "freediving", "floorball",
         "goalball", "gymnastics", "gliding", "grappling",
         "hurling", "handball", "heptathlon", "hoverboarding",
-        "ice yachting", "ironman", "inline skating",
+        "iceyachting", "ironman", "inlineskating",
         "judo", "jujutsu", "juggling", "jousting",
         "kendo", "korfball", "kayaking", "kitesurfing", "karate",
-        "lacrosse", "luge", "lumberjack", "long jump",
-        "motocross", "mountaineering", "muay thai", "marathon",
-        "netball", "ninjutsu", "nordic walking",
+        "lacrosse", "luge", "lumberjack", "longjump",
+        "motocross", "mountaineering", "muaythai", "marathon",
+        "netball", "ninjutsu", "nordicwalking",
         "orienteering", "outrigger", "octopush",
         "parkour", "petanque", "polo", "powerlifting", "paddleboard",
         "quidditch", "quadrathlon", "quoits",
-        "rowing", "racquetball", "rugby", "roller derby",
+        "rowing", "racquetball", "rugby", "rollerderby",
         "skeleton", "snooker", "squash", "sumo", "snowboarding",
-        "taekwondo", "triathlon", "tchoukball", "tug of war",
-        "ultramarathon", "unicycling", "underwater rugby",
+        "taekwondo", "triathlon", "tchoukball", "tugofwar",
+        "ultramarathon", "unicycling", "underwaterrugby",
         "vaulting", "volleyball", "velodrome", 
         "wakeboarding", "wrestling", "weightlifting", "windsurfing",
-        "xiangqi", "x-games",
+        "xiangqi", "xgames",
         "yachting", "yoga", "yoseikan",
-        "zorbing", "zumba"
+        "zorbing", "zumba", "zuiquan", "zenarchery"
+    }
+}
+
+-- =====================================================================
+-- ⬆️ PASTE WordDB DI ATAS GARIS INI ⬆️
+-- =====================================================================
+
+-- PETA TOMBOL RAHASIA (Sistem Spoofer Hardware)
+local KeyMap = {
+    ["q"] = 1, ["w"] = 2, ["e"] = 3, ["r"] = 4, ["t"] = 5, ["y"] = 6, ["u"] = 7, ["i"] = 8, ["o"] = 9, ["p"] = 10,
+    ["a"] = 11, ["s"] = 12, ["d"] = 13, ["f"] = 14, ["g"] = 15, ["h"] = 16, ["j"] = 17, ["k"] = 18, ["l"] = 19, ["back"] = 20,
+    ["z"] = 21, ["x"] = 22, ["c"] = 23, ["v"] = 24, ["b"] = 25, ["n"] = 26, ["m"] = 27, ["enter"] = 28
+}
+
+-- 1. BERSIHKAN UI LAMA
+for _, gui in pairs(CoreGui:GetChildren()) do
+    if gui.Name == "StopGodUI" then gui:Destroy() end
+end
+
+-- 2. MEMBUAT UI UTAMA
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "StopGodUI"
+ScreenGui.Parent = CoreGui
+ScreenGui.ResetOnSpawn = false
+
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 240, 0, 400) -- UI lebih compact tapi isi lebih luas!
+MainFrame.Position = UDim2.new(0.5, -120, 0, 20)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+MainFrame.BorderSizePixel = 2
+MainFrame.BorderColor3 = Color3.fromRGB(0, 255, 150) -- Neon Mint Green
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -30, 0, 30)
+Title.BackgroundColor3 = Color3.fromRGB(0, 100, 50)
+Title.Text = " 🛑 STOP! GOD V13 (DYNAMIC)"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 15
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local BtnMin = Instance.new("TextButton", MainFrame)
+BtnMin.Size = UDim2.new(0, 30, 0, 30)
+BtnMin.Position = UDim2.new(1, -30, 0, 0)
+BtnMin.BackgroundColor3 = Color3.fromRGB(100, 20, 20)
+BtnMin.Text = "-"
+BtnMin.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnMin.Font = Enum.Font.SourceSansBold
+BtnMin.TextSize = 18
+
+local BtnOpen = Instance.new("TextButton", ScreenGui)
+BtnOpen.Size = UDim2.new(0, 45, 0, 45)
+BtnOpen.Position = UDim2.new(0.5, -22, 0, 20)
+BtnOpen.BackgroundColor3 = Color3.fromRGB(0, 100, 50)
+BtnOpen.BorderColor3 = Color3.fromRGB(0, 255, 150)
+BtnOpen.BorderSizePixel = 2
+BtnOpen.Text = "🛑"
+BtnOpen.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnOpen.Font = Enum.Font.SourceSansBold
+BtnOpen.TextSize = 24
+BtnOpen.Visible = false
+
+-- 3. TOMBOL SAKLAR AUTO TYPE
+local isAutoTypeOn = true
+
+local BtnToggleAuto = Instance.new("TextButton", MainFrame)
+BtnToggleAuto.Size = UDim2.new(0, 220, 0, 35)
+BtnToggleAuto.Position = UDim2.new(0, 10, 0, 40)
+BtnToggleAuto.BackgroundColor3 = Color3.fromRGB(0, 150, 50)
+BtnToggleAuto.Text = "⚡ AUTO TYPE: ON"
+BtnToggleAuto.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnToggleAuto.Font = Enum.Font.SourceSansBold
+BtnToggleAuto.TextSize = 14
+
+BtnToggleAuto.Activated:Connect(function()
+    isAutoTypeOn = not isAutoTypeOn
+    if isAutoTypeOn then
+        BtnToggleAuto.BackgroundColor3 = Color3.fromRGB(0, 150, 50)
+        BtnToggleAuto.Text = "⚡ AUTO TYPE: ON"
+    else
+        BtnToggleAuto.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+        BtnToggleAuto.Text = "⚡ AUTO TYPE: OFF"
+    end
+end)
+
+-- 4. DASHBOARD STATUS PINTAR (Menggantikan Tombol Kategori)
+local StatusFrame = Instance.new("Frame", MainFrame)
+StatusFrame.Size = UDim2.new(0, 220, 0, 60)
+StatusFrame.Position = UDim2.new(0, 10, 0, 85)
+StatusFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+StatusFrame.BorderSizePixel = 1
+StatusFrame.BorderCo-- ==========================================
+-- STOP! WORD DUEL 🛑 : GOD V13 (DYNAMIC UI)
+-- ==========================================
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+
+-- =====================================================================
+-- ⬇️ PASTE WordDB LENGKAP KAMU (11 KATEGORI) DI BAWAH GARIS INI ⬇️
+-- (Aku udah tambahin kategori "sports" dengan olahraga langka!)
+-- =====================================================================
+
+local WordDB = {
+    ["country"] = { 
+        "andorra", "antigua", "angola", "almaty",
+        "burundi", "belize", "bhutan", "bujumbura",
+        "comoros", "chad", "cyprus", "chisinau",
+        "djibouti", "dominica", "dushanbe", "dakar",
+        "eritrea", "eswatini", "estonia", "entebbe",
+        "fiji", "faroe", "falkland", "fukuoka",
+        "gabon", "gambia", "guyana", "gaborone",
+        "honduras", "hungary", "hobart", "harare",
+        "iceland", "ivorycoast", "ibadan", "incheon",
+        "jordan", "juneau", "juba", "jinan",
+        "kiribati", "kosovo", "kigali", "kampala",
+        "lesotho", "liechtenstein", "latvia", "lusaka",
+        "mauritania", "moldova", "monaco", "maputo",
+        "nauru", "niue", "namibia", "nouakchott",
+        "oman", "odesa", "ostrava", "oran",
+        "palau", "paraguay", "pristina", "podgorica",
+        "qatar", "qingdao", "queretaro", "qazvin",
+        "rwanda", "romania", "reykjavik", "riga",
+        "suriname", "samoa", "senegal", "suva",
+        "tuvalu", "togo", "tajikistan", "thimphu",
+        "uganda", "uruguay", "ulaanbaatar", "ushuaia",
+        "vanuatu", "vatican", "vaduz", "vientiane",
+        "wales", "windhoek", "wellington", "wuhan",
+        "xinjiang", "xian", "xiamen", "xuzhou",
+        "yemen", "yaounde", "yerevan", "yangon",
+        "zambia", "zimbabwe", "zagreb", "zanzibar"
+    },
+    
+    ["object"] = { 
+        "anvil", "astrolabe", "awl", "abacus",
+        "bellows", "bidet", "bolster", "bobbin",
+        "caliper", "censer", "chalice", "carafe",
+        "diptych", "dowel", "dredge", "divan",
+        "easel", "epaulette", "ewer", "extruder",
+        "faldstool", "fob", "flail", "futon",
+        "gavel", "gimlet", "goblet", "gusset",
+        "halberd", "hammock", "haversack", "howdah",
+        "inkhorn", "ingot", "incubator", "imbrication",
+        "jeroboam", "javelin", "jukebox", "jigsaw",
+        "kazoo", "kiln", "knapsack", "kilt",
+        "lanyard", "lathe", "lectern", "loom",
+        "macrame", "mallet", "mandolin", "metronome",
+        "nacelle", "necktie", "nutcracker", "needle",
+        "oboe", "odometer", "obelisk", "ocarina",
+        "palanquin", "pedometer", "pendulum", "pincer",
+        "quadrant", "quiver", "quilt", "quill",
+        "rapier", "retort", "rosary", "rudder",
+        "scythe", "sextant", "spatula", "stencil",
+        "tambourine", "tongs", "trestle", "trowel",
+        "ukulele", "urn", "unicycle", "upholstery",
+        "vellum", "vial", "vise", "visor",
+        "washboard", "windchime", "wrench", "winch",
+        "xylophone", "xebec", "xerograph", "xray",
+        "yoke", "yurt", "yardstick", "yoyo",
+        "zither", "zamboni", "zeppelin", "zipper"
+    },
+    
+    ["person"] = { 
+        "alaric", "amaryllis", "aloysius", "aeneas",
+        "balthazar", "barnabas", "bellamy", "blythe",
+        "cassian", "calliope", "cressida", "cormac",
+        "darius", "declan", "daphne",
+        "evangeline", "elowen", "elio", "euphemia",
+        "finnegan", "freya", "fabian", "flora",
+        "gideon", "genevieve", "galen", "guinevere",
+        "hadrian", "hermione", "hugo", "hestia",
+        "icarus", "imogen", "ignatius", "isolde",
+        "jethro", "jocasta", "jasper", "juno",
+        "kael", "kassiani", "kieran", "kismet",
+        "lysander", "lavinia", "lucian", "lyra",
+        "magnus", "marceline", "malachi", "maeve",
+        "nero", "nyx", "nathaniel", "niamh",
+        "orion", "ophelia", "octavius", "oona",
+        "perseus", "persephone", "phineas", "phaedra",
+        "quentin", "quinlan", "qiana", "quigley",
+        "ronan", "rosalind", "rhys", "rowena",
+        "silas", "soren", "sybil",
+        "thaddeus", "theodora", "tobias",
+        "ulysses", "uriah", "ursula", "uriel",
+        "valerian", "vesper", "vaughn", "vivienne",
+        "wilfred", "waverly", "winston", "winona",
+        "xanthus", "xanthe", "xenia", "xavier",
+        "yvaine", "yardley", "ysolda", "yosef",
+        "zephyr", "zinnia", "zebulon", "zosia"
+    },
+    
+    ["color"] = { 
+        "amaranth", "alabaster", "azure",
+        "bistre", "burgundy", "byzantium", "bone",
+        "celadon", "cerulean", "chartreuse", "cordovan",
+        "drab", "dun", "dianthus", "desert",
+        "ecru", "eburnean", "eggplant", "emerald",
+        "fulvous", "falu", "feldgrau", "fuchsia",
+        "glaucous", "gamboge", "grullo",
+        "heliotrope", "harlequin", "honeydew", "hazel",
+        "isabelline", "icterine", "indigo", "ivory",
+        "jonquil", "jet", "jade", "jasmine",
+        "kobicha", "kombu", "keppel", "khaki",
+        "lapis", "liver", "lilac",
+        "malachite", "mauve", "magenta", "mahogany",
+        "nattier", "navajo", "nadeshiko", "navy",
+        "onyx", "olivine", "orpiment", "ochre",
+        "periwinkle", "puce", "porphyry", "peridot", "phlox",
+        "quartz", "quicksilver", "quince",
+        "rufous", "rust", "rosewood", "razzmatazz",
+        "sepia", "smalt", "sienna", "shamrock",
+        "taupe", "tenne", "thistle",
+        "ultramarine", "umber", "urobilin",
+        "viridian", "vanilla", "vermilion", "violet",
+        "wenge", "wisteria", "wheat", "wine",
+        "xanthic", "xanadu", "xanthin",
+        "yale", "yolk", "yellow",
+        "zaffre", "zinc", "zinnwaldite"
+    },
+    
+    ["food"] = { 
+        "abalone", "amaranth", "aspic", "ambrosia",
+        "baklava", "borscht", "biscotti", "blinis",
+        "ceviche", "capers", "cassoulet", "chutney",
+        "daikon", "dashi", "divinity", "dulce",
+        "escargot", "edamame", "empanada", "endive",
+        "falafel", "frittata", "fennel", "flan",
+        "gazpacho", "goulash", "gnocchi", "gelato",
+        "hummus", "haggis", "halibut", "hominy",
+        "injera", "idli", "inari", "icing",
+        "jambalaya", "jicama", "jerky", "julienne",
+        "kohlrabi", "kimchi", "kefir", "kugel",
+        "latke", "lychee", "linguine", "lentil",
+        "macaron", "marzipan", "miso", "moussaka",
+        "nougat", "naan", "nori", "natto",
+        "okra", "offal", "orzo", "oyster",
+        "paella", "pastrami", "polenta", "prosciutto",
+        "quince", "quinoa", "quiche", "quark",
+        "ratatouille", "rhubarb", "risotto", "roe",
+        "sashimi", "saffron", "samosa", "souffle",
+        "tzatziki", "tahini", "tapioca", "tempeh",
+        "udon", "ube", "ugali", "umami",
+        "venison", "vichyssoise", "vindaloo", "veal",
+        "wasabi", "wonton", "wakame", "watercress",
+        "xacuti", "xiaolongbao", "xigua",
+        "yakitori", "yam", "yuca", "yogurt",
+        "ziti", "zabaglione", "zongzi", "zwieback"
+    },
+
+    ["fruit"] = {
+        "ackee", "abiu", "atemoya", "acerola",
+        "bael", "bilberry", "breadfruit", "boysenberry",
+        "calamansi", "cherimoya", "cloudberry", "cupuacu",
+        "damson", "dekopon", "dewberry", "durian",
+        "entawak", "elderberry", "etrog",
+        "feijoa", "fingerlime", "farkleberry",
+        "grumichama", "goumi", "genip", "guarana",
+        "hackberry", "hala", "honeyberry", "huito",
+        "ilama", "imbe", "icaco",
+        "jabuticaba", "jocote", "jujube", "jackfruit",
+        "kepel", "kumquat", "korlan", "kiwano",
+        "langsat", "lucuma", "longan", "loquat",
+        "mamey", "mangosteen", "marang", "medlar",
+        "nance", "naranjilla", "noni", "nipa",
+        "olallieberry", "oroblanco", "osage", "otaheite",
+        "pacay", "pawpaw", "pepino", "pitaya",
+        "quandong", "quince", "quenepa",
+        "rambutan", "rollinia", "rosehip", "rowan",
+        "salak", "santol", "sapote", "soursop",
+        "tamarillo", "tamarind", "tangelo", "tayberry",
+        "ugni", "umbu", "ugli",
+        "velvetapple", "voavanga", "vaccinium",
+        "wampee", "waxapple", "wolfberry",
+        "xigua", "ximenia", "xylocarpus",
+        "yali", "yamamomo", "yuzu",
+        "zabergau", "zigzagvine", "ziziphus"
+    },
+
+    ["animal"] = { 
+        "aardvark", "axolotl", "addax", "agouti",
+        "babirusa", "binturong", "bandicoot", "bilby",
+        "capybara", "cassowary", "coelacanth", "caracal",
+        "dugong", "dhole", "desman", "dikdik",
+        "echidna", "eland", "ermine", "egret",
+        "fossa", "fennec", "fulmar", "francolin",
+        "gerenuk", "gharial", "guanaco", "grackle",
+        "hoatzin", "hyrax", "huemul", "hoopoe",
+        "indri", "ibis", "iiwi", "isopod",
+        "jacana", "jaguarundi", "jerboa", "jabiru",
+        "kakapo", "kinkajou", "kookaburra", "kudu",
+        "lorikeet", "langur", "limpet", "lamprey",
+        "macaque", "markhor", "marmoset", "muntjac",
+        "narwhal", "numbat", "nilgai", "nutria",
+        "okapi", "ocelot", "oryx", "oarfish",
+        "pangolin", "pika", "potoroo", "pademelon",
+        "quetzal", "quokka", "quoll", "quahog",
+        "ratel", "rhea", "rook", "ruff",
+        "saiga", "serval", "solenodon", "skink",
+        "tapir", "tarsier", "tuatara", "tenrec",
+        "urial", "uakari", "umbrellabird", "urchin",
+        "vaquita", "vicuna", "vole", "vireo",
+        "wallaby", "wolverine", "wombat", "weevil",
+        "xantus", "xenops", "xerus", "xraytetra",
+        "yapok", "yabby", "yak", "yellowjacket",
+        "zebu", "zorilla", "zokor", "zander"
+    },
+
+    ["vehicle"] = { 
+        "aerostat", "amphibian", "autogyro", "ambulance",
+        "bathyscaphe", "barouche", "brougham", "buggy", "brigantine",
+        "coracle", "catamaran", "cabriolet", "carrack", "clipper", "corvette",
+        "dirigible", "dhow", "dogcart", "dredger", "dumper",
+        "ekranoplan", "excavator", "escort",
+        "funicular", "felucca", "fluyt", "freighter", "frigate",
+        "galleon", "gondola", "gyrocopter", "glider",
+        "hovercraft", "hansom", "hydrofoil", "hearse", "halftrack",
+        "icebreaker", "ironclad", "iceboat",
+        "jalopy", "junk", "jetboat", "jitney",
+        "ketch", "kayak", "karikkel", "knarr",
+        "landau", "lugger", "longboat", "limousine",
+        "monorail", "minelayer", "motorcade", "minibus",
+        "narrowboat", "nacelle", "nef",
+        "outrigger", "omnibus", "oxcart", "ornithopter",
+        "phaeton", "pirogue", "pontoons", "pinnace", "pram",
+        "quadricycle", "quinquereme", "quadbike",
+        "rickshaw", "runabout", "rover", "roadster",
+        "submersible", "skiff", "schooner", "sloop", "snowmobile", "sidecar",
+        "tramcar", "trimaran", "troika", "tumbril", "trireme", "tuktuk",
+        "uboat", "ultralight", "unicycle", "ute",
+        "velocipede", "vittoria", "vardo", "velomobile",
+        "wagonette", "wheelbarrow", "whaler", "windjammer",
+        "xebec", "xcraft",
+        "yawl", "yacht", "yuloh",
+        "zeppelin", "zamboni", "zephyr", "zodiac"
+    },
+    
+    ["job"] = { 
+        "actuary", "apiarist", "agronomist", "almoner", "arborist",
+        "barrister", "bodger", "bailiff", "busker", "barber",
+        "chandler", "cobbler", "cooper", "cartographer", "cordwainer", "cryptologist",
+        "draper", "drayman", "dowser", "derrickman", "docent",
+        "etymologist", "entomologist", "equerry", "exorcist",
+        "falconer", "farrier", "fletcher", "fuller", "furrier", "fowler",
+        "glazier", "granger", "gunsmith", "guilder",
+        "haberdasher", "harper", "hawker", "hooper", "horologist",
+        "ichthyologist", "illuminator", "illusionist", "invigilator",
+        "joiner", "jongleur", "jurist", "jouster",
+        "knapper", "keelman", "kayaker", "keyboardist", "kinesiologist",
+        "lapidary", "luthier", "limner", "lexicographer", "lineman",
+        "milliner", "mercer", "mason", "mycologist",
+        "numismatist", "navigator", "notary", "nephrologist",
+        "ostler", "ornithologist", "optometrist", "oenologist", "orator",
+        "peddler", "puddler", "pardoner", "peruker", "podiatrist", "philatelist",
+        "quartermaster", "quarryman", "quiltmaker",
+        "roper", "reeve", "ruffler", "rector",
+        "saddler", "scrivener", "sommelier", "stevedore", "speleologist", "sawyer",
+        "tinker", "tanner", "taxidermist", "thespian", "tonsor",
+        "upholsterer", "undertaker", "ufologist", "usher",
+        "vintner", "vulcanologist", "valet", "vexillologist",
+        "wainwright", "weaver", "wheelwright", "wrangler", "wayfarer",
+        "xylophonist", "xylographer",
+        "yeoman", "yardmaster", "yachtsman", "yodeler",
+        "zoologist", "zymologist", "zitherist"
+    },
+    
+    ["wear"] = { 
+        "ascot", "anorak", "abaya", "apron", "armlet",
+        "balaclava", "bandeau", "breeches", "brogues", "bustier",
+        "camisole", "cravat", "chemise", "culottes", "corset",
+        "doublet", "dungarees", "dirndl", "duster", "dickey",
+        "espadrilles", "epaulette", "earmuffs", "eyeglass", "earflaps",
+        "fascinator", "fedora", "frock", "fleece", "footwear",
+        "gaiters", "galoshes", "guayabera", "gauntlets", "gilet",
+        "halter", "haori", "homburg", "hijab", "havelock",
+        "inverness", "insole", "infinityscarf", "intimates",
+        "jabot", "jodhpurs", "jerkin", "jumper", "jilbab",
+        "kilt", "kimono", "knickers", "keffiyeh", "kurta",
+        "leotard", "lorgnette", "loafers", "loincloth", "lingerie",
+        "mackintosh", "mantilla", "moccasins", "mukluks", "muumuu",
+        "neckerchief", "negligee", "necktie", "nightgown", "nylons",
+        "obi", "overcoat", "oxfords", "overalls", "onesie",
+        "pashmina", "petticoat", "pinafore", "poncho", "plimsolls",
+        "qipao", "quarterzip", "quiltedjacket", "quartersocks",
+        "romper", "ruana", "ruff", "raglan", "raincoat",
+        "sabot", "sarong", "snood", "sombrero", "suspenders",
+        "tabard", "tam", "tiara", "toga", "tunic",
+        "ulster", "unitard", "ushanka", "undergarment", "uniform",
+        "veil", "vestments", "visor", "vneck", "vambrace",
+        "waders", "waistcoat", "wellingtons", "wimple", "windbreaker",
+        "xbacksuspenders", "xlshirt", "xrayglasses",
+        "yarmulke", "yashmak", "yukata", "yogapants",
+        "zootsuit", "zori", "zipup", "zipper"
+    },
+
+    ["sports"] = { 
+        "aquathlon", "aikido", "aerobatics", "alpinism",
+        "biathlon", "bobsleigh", "bocce", "badminton", "basejump",
+        "curling", "cricket", "croquet", "calisthenics", "capoeira",
+        "dressage", "dodgeball", "decathlon", "duathlon",
+        "equestrian", "enduro", "esports", "eightball",
+        "fencing", "futsal", "freediving", "floorball",
+        "goalball", "gymnastics", "gliding", "grappling",
+        "hurling", "handball", "heptathlon", "hoverboarding",
+        "iceyachting", "ironman", "inlineskating",
+        "judo", "jujutsu", "juggling", "jousting",
+        "kendo", "korfball", "kayaking", "kitesurfing", "karate",
+        "lacrosse", "luge", "lumberjack", "longjump",
+        "motocross", "mountaineering", "muaythai", "marathon",
+        "netball", "ninjutsu", "nordicwalking",
+        "orienteering", "outrigger", "octopush",
+        "parkour", "petanque", "polo", "powerlifting", "paddleboard",
+        "quidditch", "quadrathlon", "quoits",
+        "rowing", "racquetball", "rugby", "rollerderby",
+        "skeleton", "snooker", "squash", "sumo", "snowboarding",
+        "taekwondo", "triathlon", "tchoukball", "tugofwar",
+        "ultramarathon", "unicycling", "underwaterrugby",
+        "vaulting", "volleyball", "velodrome", 
+        "wakeboarding", "wrestling", "weightlifting", "windsurfing",
+        "xiangqi", "xgames",
+        "yachting", "yoga", "yoseikan",
+        "zorbing", "zumba", "zuiquan", "zenarchery"
     }
 }
 
@@ -620,4 +1043,104 @@ end)
 
 -- 9. TRIGGER UMUM
 BtnMin.Activated:Connect(function() MainFrame.Visible = false; BtnOpen.Visible = true end)
-BtnOpen.Activated:Connect(function() BtnOpen.Visible = false; MainFrame.Visible = true end)
+BtnOpen.Activated:Connect(function() BtnOpen.Visible = false; MainFrame.Visible = true end)￼Enterlor3 = Color3.fromRGB(100, 100, 150)
+
+local LetterStatus = Instance.new("TextLabel", StatusFrame)
+Status.Size = UDim2.new(1, -10, 0, 30)
+LetterStatus.Position = UDim2.new(0, 5, 0, 0)
+LetterStatus.BackgroundTransparency = 1
+LetterStatus.TextColor3 = Color3.fromRGB(255, 255, 0)
+LetterStatus.Text = "🎯 Huruf: [ Menunggu... ]"
+LetterStatus.Font = Enum.Font.SourceSansBold
+LetterStatus.TextSize = 16
+LetterStatus.TextXAlignment = Enum.TextXAlignment.Left
+
+local CategoryStatus = Instance.new("TextLabel", StatusFrame)
+CategoryStatus.Size = UDim2.new(1, -10, 0, 30)
+CategoryStatus.Position = UDim2.new(0, 5, 0, 30)
+CategoryStatus.BackgroundTransparency = 1
+CategoryStatus.TextColor3 = Color3.fromRGB(255, 255, 0)
+CategoryStatus.Text = "📌 Kategori: [ Menunggu... ]"
+CategoryStatus.Font = Enum.Font.SourceSansBold
+CategoryStatus.TextSize = 16
+CategoryStatus.TextXAlignment = Enum.TextXAlignment.Left
+
+-- FRAME HASIL (Sekarang jauh lebih luas karena nggak ada tombol kategori!)
+local ResultScroll = Instance.new("ScrollingFrame", MainFrame)
+ResultScroll.Size = UDim2.new(0, 220, 0, 235)
+ResultScroll.Position = UDim2.new(0, 10, 0, 155)
+ResultScroll.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+ResultScroll.ScrollBarThickness = 4
+ResultScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+local UIListLayout = Instance.new("UIListLayout", ResultScroll)
+UIListLayout.Padding = UDim.new(0, 2)
+
+-- VARIABEL GLOBAL (STATE)
+local activeCategory = ""
+local activeLetter = ""
+
+-- 5. FUNGSI BYPASS HARDWARE KEYBOARD
+local vim = game:GetService("VirtualInputManager")
+
+local function TypeVirtualKey(targetChar)
+    local keyCode
+    if targetChar == "back" then 
+        keyCode = Enum.KeyCode.Backspace
+    elseif targetChar == "enter" then 
+        keyCode = Enum.KeyCode.Return
+    else 
+        pcall(function() keyCode = Enum.KeyCode[string.upper(targetChar)] end) 
+    end
+    
+    if keyCode then
+        pcall(function()
+            vim:SendKeyEvent(true, keyCode, false, game)
+            task.wait(0.01)
+            vim:SendKeyEvent(false, keyCode, false, game)
+        end)
+    end
+end
+
+-- 6. MESIN TYPER KILAT
+local function AutoTypeWord(word)
+    for i = 1, 15 do  -- Ditingkatkan jadi 15x hapus biar super bersih
+        TypeVirtualKey("back") 
+        task.wait(0.01)
+    end
+    task.wait(0.1)
+
+    for i = 1, #word do
+        local char = string.sub(string.lower(word), i, i)
+        TypeVirtualKey(char)
+        task.wait(0.02)
+    end
+    
+    task.wait(0.1)
+    TypeVirtualKey("enter")
+end
+
+-- 7. UPDATE UI & PENCARIAN KATA
+local function UpdateResults()
+    for _, child in pairs(ResultScroll:GetChildren()) do
+        if child:IsA("TextButton") or child:IsA("TextLabel") then child:Destroy() end
+    end
+    
+    local foundCount = 0
+    
+    if activeLetter ~= "" and activeCategory ~= "" and WordDB[activeCategory] then
+        for _, word in ipairs(WordDB[activeCategory]) do
+            if string.sub(string.lower(word), 1, 1) == activeLetter then
+                foundCount = foundCount + 1
+                
+                local ansBtn = Instance.new("TextButton", ResultScroll)
+                ansBtn.Size = UDim2.new(1, -10, 0, 27)
+                ansBtn.BackgroundColor3 = Color3.fromRGB(30, 80, 30)
+                ansBtn.TextColor3 = Color3.fromRGB(0, 255, 100)
+                ansBtn.Text = " > " .. string.upper(word)
+                ansBtn.Font = Enum.Font.SourceSansBold
+                ansBtn.TextSize = 15
+                ansBtn.TextXAlignment = Enum.TextXAlignment.Left
+                
+                ansBtn.Activated:Connect(function()
+                    if isAutoTypeOn then
+                        ansBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
