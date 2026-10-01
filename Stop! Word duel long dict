@@ -1,0 +1,623 @@
+-- ==========================================
+-- STOP! WORD DUEL 🛑 : GOD V13 (DYNAMIC UI)
+-- ==========================================
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+
+-- =====================================================================
+-- ⬇️ PASTE WordDB LENGKAP KAMU (11 KATEGORI) DI BAWAH GARIS INI ⬇️
+-- (Aku udah tambahin kategori "sports" dengan olahraga langka!)
+-- =====================================================================
+
+local WordDB = {
+    ["country"] = {
+        "antiguaandbarbuda", "aguascalientes", "alexandroupoli", "antananarivo",
+        "bosniaandherzegovina", "bandarseribegawan", "barrancabermeja", "brazzaville",
+        "centralafricanrepublic", "chichicastenango", "charlotteamalie", "ciudadguayana",
+        "dominicanrepublic", "dnipropetrovsk", "daressalaam", "druskininkai",
+        "equatorialguinea", "ekaterinburg", "emmenbruecke", "encarnacion",
+        "frenchpolynesia", "fortlauderdale", "friedrichshafen", "francistown",
+        "guineabissau", "guatemalacity", "gelsenkirchen", "grevenmacher",
+        "hochiminhcity", "hublidharwad", "huntingtonbeach", "harrisonburg",
+        "ivanofrankivsk", "indianapolis", "invercargill", "ivorycoast",
+        "johannesburg", "jacksonville", "jeffersoncity", "jamshedpur",
+        "komsomolsknaamure", "kualalumpur", "kanyakumari", "kaliningrad",
+        "laspalmasdegrancanaria", "liechtenstein", "ljubljana", "luangprabang", "ludwigshafen",
+        "muenchengladbach", "marshallislands", "mahabaleshwar", "makhachkala",
+        "northernmarianaislands", "nizhnevartovsk", "newcaledonia", "novosibirsk",
+        "oklahomacity", "ouagadougou", "ouarzazate", "oberhausen",
+        "petropavlovskkamchatsky", "papuanewguinea", "portauprince", "puntaarenas",
+        "quetzaltenango", "quatrebornes", "quebeccity", "qinhuangdao",
+        "republicofthecongo", "recklinghausen", "riodejaneiro", "rostovondon",
+        "saintvincentandthegrenadines", "saotomeandprincipe", "szekesfehervar", "saintkittsandnevis",
+        "thiruvananthapuram", "trinidadandtobago", "tiruchirappalli", "tegucigalpa",
+        "unitedarabemirates", "ustkamenogorsk", "unitedkingdom", "ulaanbaatar",
+        "villavicencio", "visakhapatnam", "valenciennes", "vladivostok",
+        "wallisandfutuna", "wolverhampton", "wilhelmshaven", "winstonsalem",
+        "xishuangbanna", "xochimilco", "xiangyang", "xinxiang",
+        "yuzhnosakhalinsk", "yekaterinburg", "yamoussoukro", "yogyakartacity",
+        "zheleznogorsk", "zaporizhzhia", "zhangjiakou", "ziguinchor"
+    },
+    
+    ["object"] = {
+        "atomicabsorptionspectrometer", "autotransformer", "acousticinterferometer", "anemometer",
+        "bulletproofvest", "backgammonboard", "bathythermograph", "bubblechamber",
+        "chromatographychamber", "cathoderayoscilloscope", "counterbalanceweight", "chronometer",
+        "diffractometer", "dehumidifier", "decompressionchamber", "defibrillator",
+        "electrocardiograph", "electronmicroscope", "electromagnet", "extinguisher",
+        "fireextinguisher", "fluorescencespectrometer", "fluoroscope", "frenchhorn",
+        "grandfatherclock", "galvanometer", "glockenspiel", "geigercounter",
+        "harpsichord", "hydroelectricturbine", "heterodynegenerator", "hoverboard",
+        "interferometer", "inclinometer", "incandescentlamp", "incubator",
+        "jackhammer", "jigsawpuzzle", "jacuzzitub", "jukebox",
+        "kaleidoscope", "kymograph", "kitchencabinet", "kettledrum",
+        "laryngoscope", "lithotripter", "loudspeaker", "lawnmower",
+        "massspectrometer", "magnetometer", "microscope", "metronome",
+        "nephelometer", "nuclearreactor", "nightstand", "nanotube",
+        "oscilloscope", "ophthalmoscope", "odometer", "obelisk",
+        "potentiometer", "photomultipliertube", "pneumaticjackhammer", "periscope",
+        "quarterstaff", "quadrupolemagnet", "quiltblanket", "quadrant",
+        "radiotelescope", "refractometer", "refrigerationunit", "rheostat",
+        "spectrophotometer", "seismograph", "stethoscope", "synthesizer",
+        "tachistoscope", "teleprompter", "thermometer", "telescope",
+        "ultracentrifuge", "ultrasoundmachine", "ultravioletlamp", "ukulele",
+        "vacuumcleaner", "velocimeter", "vibraphone", "vaporizer",
+        "weatherballoon", "waterpurifier", "wheelbarrow", "windchime",
+        "xeroxmachine", "xylophone", "xraytube", "xylograph",
+        "yardstick", "yarnspinner", "yarmulke", "yogamat",
+        "zootrope", "zither", "zincplate", "zipperpull"
+    },
+    
+    ["person"] = { 
+        "alaric", "amaryllis", "aloysius", "aeneas",
+        "balthazar", "barnabas", "bellamy", "blythe",
+        "cassian", "calliope", "cressida", "cormac",
+        "darius", "declan", "daphne",
+        "evangeline", "elowen", "elio", "euphemia",
+        "finnegan", "freya", "fabian", "flora",
+        "gideon", "genevieve", "galen", "guinevere",
+        "hadrian", "hermione", "hugo", "hestia",
+        "icarus", "imogen", "ignatius", "isolde",
+        "jethro", "jocasta", "jasper", "juno",
+        "kael", "kassiani", "kieran", "kismet",
+        "lysander", "lavinia", "lucian", "lyra",
+        "magnus", "marceline", "malachi", "maeve",
+        "nero", "nyx", "nathaniel", "niamh",
+        "orion", "ophelia", "octavius", "oona",
+        "perseus", "persephone", "phineas", "phaedra",
+        "quentin", "quinlan", "qiana", "quigley",
+        "ronan", "rosalind", "rhys", "rowena",
+        "silas", "soren", "sybil",
+        "thaddeus", "theodora", "tobias",
+        "ulysses", "uriah", "ursula", "uriel",
+        "valerian", "vesper", "vaughn", "vivienne",
+        "wilfred", "waverly", "winston", "winona",
+        "xanthus", "xanthe", "xenia", "xavier",
+        "yvaine", "yardley", "ysolda", "yosef",
+        "zephyr", "zinnia", "zebulon", "zosia"
+    },
+    
+    ["color"] = {
+        "amaranthpurple", "aureolinyellow", "aquamarineblue", "antiquebrass",
+        "burntsienna", "blanchedalmond", "burntumber", "bittersweetshimmer",
+        "cadmiumpurple", "chartreuseyellow", "ceruleanblue", "carminepink",
+        "darkolivegreen", "deepskyblue", "desertsand", "darkgoldenrod",
+        "electricindigo", "englishvermillion", "egyptianblue", "emeraldgreen",
+        "fluorescentpink", "forestgreen", "firebrickred", "fuchsiamagenta",
+        "grannysmithapple", "goldenrodyellow", "glaucousblue", "gambogeorange",
+        "heliotropepurple", "harlequingreen", "huntergreen", "hollywoodcerise",
+        "internationalkleinblue", "isabelline", "icterineyellow", "iridescentwhite",
+        "japaneseindigo", "junglecyan", "jacartapurple", "jasmineyellow",
+        "kellygreen", "khakibrown", "kobichabrown", "kombugreen",
+        "lightgoldenrodyellow", "lemonchiffon", "lavendermagenta", "lapislazuliblue",
+        "mediumaquamarine", "mediumspringgreen", "macaroniandcheese", "majorelleblue",
+        "navajowhite", "naplesyellow", "neoncarrot", "nonphotoblue",
+        "outerspaceblue", "olivinedrab", "orchidpurple", "orangepeel",
+        "palevioletred", "papayawhip", "peachpuff", "periwinkleblue",
+        "quinacridonemagenta", "quartzgrey", "quetzalgreen", "quicksilver",
+        "razzmatazz", "rosewoodbrown", "rawumber", "royalazure",
+        "smaltblue", "saffronyellow", "shamrockgreen", "sinopiared",
+        "thulianpink", "tiffanyblue", "terracotta", "tangerineyellow",
+        "ultramarineblue", "umberbrown", "urobilinyellow", "unbleachedsilk",
+        "viridiangreen", "venetianred", "vermilionred", "violetred",
+        "wisteriapurple", "wheatbrown", "winsoryellow", "wildstrawberry",
+        "xanadugreen", "xanthicyellow", "xanthousbrown", "xiketicblack",
+        "yaleblue", "yellowgreen", "yanoliteblue", "yellowochre",
+        "zaffreblue", "zompcyan", "zinnwalditebrown", "zircondiamond"
+    },
+    
+    ["food"] = {
+        "appenzellercheese", "avgolemonosoup", "albondigassoup", "artichokehearts",
+        "beefwellington", "bouillabaissesoup", "blackforestcake", "babaganoushdip",
+        "croquembouche", "chickencacciatore", "clamchowdersoup", "carpacciodimanzo",
+        "dulcedelechecake", "dobostortecake", "duckalorange", "dumaloomasala",
+        "escargotdebourgogne", "eggsflorentine", "eggdropnoodlesoup", "empanadasdepino",
+        "fettuccinealfredo", "filetmignonsteak", "frankfurterwurstchen", "frenchonionsoup",
+        "gnocchialpesto", "gazpachoandaluz", "goulaschsouppe", "galaktoboureko",
+        "hasselbackpotatoes", "hachisparmentier", "huevosrancheros", "haggisneepsandtatties",
+        "imambayildistew", "irishstewwithlamb", "icecreamprofiterole", "insalatacaprese",
+        "jambalayastew", "jalapenopoppers", "jaegerschnitzel", "jelliedeelspie",
+        "kaiserschmarrn", "khaoniaomamuang", "knickerbockerglory", "kungpaochicken",
+        "lobsterthermidor", "linguineallevongole", "lasagnaalforno", "lemonmeringuepie",
+        "macaronandcheese", "mulligatawnysoup", "milanesanapolitana", "moussakacasserole",
+        "neapolitanicecream", "newenglandclamchowder", "navarincasserole", "nachosupremeplate",
+        "oystersrockefeller", "ossobucomilanese", "okonomiyakipancake", "onionringstower",
+        "pumpernickelbread", "prosciuttoemelone", "pekingduckcrepes", "poutinequebecoise",
+        "quichelorraine", "quesadillasincronizada", "quinoasaladbowl", "quailseggscaviar",
+        "ratatouillestew", "raviolidiricotta", "roganjoshcurry", "roastedmarshmallow",
+        "spaghetticarbonara", "stracciatellagelato", "sweetandsourpork", "spanakopitapie",
+        "tikkamasalacurry", "tzatzikicucumberdip", "tiramisudessert", "tournedosrossini",
+        "udonnoodlesoup", "ugaliandcabbage", "upsidedownapplecake", "unagikabayakieels",
+        "vichyssoisesoup", "vealscaloppine", "vindaloocurrydish", "victoriaspongecake",
+        "wienerschnitzel", "waldorfsaladdish", "watercresssoup", "welshrarebitcheese",
+        "xacutichickencurry", "xiaolongbaodumpling", "xiphiasswordfish", "ximeniafruitjam",
+        "yorkshirepudding", "yakitoriskewers", "yellowtailjalapeno", "yucafritafrites",
+        "zabaglionecustard", "zurchergeschnetzeltes", "zucchinifritters", "zuppatoscanasoup"
+    },
+
+    ["fruit"] = {
+        "africanhornedcucumber", "australianfingerlime", "amazontreegrape", "africanmangosteen",
+        "buddhashandcitron", "brazilianguava", "blackhuckleberry", "burmesegrape",
+        "chinesegooseberry", "ceylonwoodapple", "calamondinorange", "camucamufruit",
+        "desertquandong", "davidsonplum", "deadmansfingers", "dekoponcitrus",
+        "evergreenhuckleberry", "elephantapple", "easternmayhaw", "emuapplefruit",
+        "floridastranglerfig", "falsemasticfruit", "fingerlimefruit", "fiveleafakebia",
+        "giantgranadilla", "guatemalanguava", "guanabanafruit", "governorplum",
+        "himalayanblackberry", "highbushblueberry", "hackberryfruit", "hawthornberry",
+        "indianfigopuntia", "indianjujubefruit", "icecreambeanfruit", "ichangpapeda",
+        "japanesepersimmon", "jellypalmfruit", "jamaicacherry", "jacaratiafruit",
+        "kiwanohornedmelon", "kaffirlimefruit", "keittmangofruit", "karandafruit",
+        "lillypillyfruit", "languedocmelon", "lanzonesfruit", "ladyapplefruit",
+        "monsteradeliciosa", "mamoncillofruit", "mountainpapaya", "madagascarplum",
+        "northernspyapple", "natsumikancitrus", "naranjillafruit", "natalplumfruit",
+        "orientalpersimmon", "osageorangefruit", "oregongrapefruit", "oroblancocitrus",
+        "peanutbutterfruit", "philippinemango", "persimmonfruit", "phalsafigfruit",
+        "quararibeacordata", "queenannecherry", "quandongfruit", "queenslandnut",
+        "rolliniadeliciosa", "rajapuriplantain", "roughlemonfruit", "redhuckleberry",
+        "strawberryguava", "sapodillafruit", "starapplefruit", "surinamcherry",
+        "trifoliateorange", "texaspersimmon", "tamarillofruit", "tomatillofruit",
+        "usambaraorange", "uvarufadofruit", "umbrellaapple", "ugandancitrus",
+        "velvetapplefruit", "vanillabeanfruit", "velvettamarind", "voavangafruit",
+        "whitesapotefruit", "wildwaterlemon", "waterapplefruit", "waxjambufruit",
+        "ximeniaamericana", "xiguawatermelon", "xylocarpusfruit", "xanthiumfruit",
+        "yellowpassionfruit", "yellowmombinfruit", "yellowwatermelon", "yuzuorangefruit",
+        "zambianmangosteen", "ziziphusjujube", "zinfandelgrape", "zalaccafruit"
+    },
+
+    ["animal"] = { 
+        "argentinosaurus", "ankylosaurus", "archaeopteryx", "australopithecus",
+        "brachiosaurus", "brontosaurus", "baryonyx", "bandicoot",
+        "carcharodontosaurus", "compsognathus", "corythosaurus", "chimpanzee",
+        "dreadnoughtus", "diplodocus", "deinonychus", "dromedary",
+        "edmontosaurus", "einiosaurus", "echinoderm", "elephant",
+        "fukuisaurus", "fukuiraptor", "fritillary", "flamingo",
+        "giganotosaurus", "gargoyleosaurus", "gallimimus", "grasshopper",
+        "humuhumunukunukuapuaa", "heterodontosaurus", "hadrosaurus", "hippopotamus",
+        "ichthyovenator", "iguanodon", "ichthyosaurus", "inchworm",
+        "juravenator", "jaxartosaurus", "jaguarundi", "jackrabbit",
+        "kosmoceratops", "kentrosaurus", "kookaburra", "kingfisher",
+        "lambeosaurus", "lesothosaurus", "leatherback", "leafhopper",
+        "micropachycephalosaurus", "muttaburrasaurus", "megalosaurus", "millipede",
+        "nanuqsaurus", "nigersaurus", "nightingale", "nudibranch",
+        "ornithomimus", "ouranosaurus", "oystercatcher", "orangutan",
+        "parasaurolophus", "pachycephalosaurus", "pterodactyl", "porcupine",
+        "quaesitosaurus", "quetzalcoatlus", "qiaowanlong", "quadruped",
+        "rapetosaurus", "rajasaurus", "rhinoceros", "rattlesnake",
+        "spinosaurus", "stegosaurus", "salamander", "sandpiper",
+        "therizinosaurus", "tyrannosaurus", "triceratops", "tarantula",
+        "udanoceratops", "utahraptor", "uromastyx", "ultrasaurus",
+        "velociraptor", "vulcanodon", "velafrons", "vicuna",
+        "wuerhosaurus", "wulagasaurus", "wildebeest", "woodpecker",
+        "xenoceratops", "xiaosaurus", "xoloitzcuintli", "xinjiangovenator",
+        "yangchuanosaurus", "yutyrannus", "yellowhammer", "yellowjacket",
+        "zuniceratops", "zephyrosaurus", "zooplankton", "zalmoxes"
+    },
+
+    ["vehicle"] = {
+        "amphibioustractor", "allterrainvehicle", "aircraftcarrier", "armoredcruiser",
+        "bucketwheelexcavator", "batteryelectricbus", "bulkcarriership", "bomberaircraft",
+        "commandandcontrolship", "concretemixertruck", "caterpillartractor", "containership",
+        "deepsubmergencevehicle", "dieselmultipleunit", "doubledeckerbus", "destroyerescort",
+        "electriclocomotive", "elevatedrailway", "ekranoplan", "endurodirtbike",
+        "firefightingaircraft", "freightlocomotive", "fourwheeldrive", "fishingtrawler",
+        "guidedmissilecruiser", "groundeffectvehicle", "gondolafreightcar", "garbagecompactor",
+        "heavygoodsvehicle", "hybridlocomotive", "halftrackvehicle", "hotairballoon",
+        "infantryfightingvehicle", "interceptoraircraft", "intercityexpress", "icebreakership",
+        "jumbopassengerjet", "jetpropulsionboat", "jcbbackhoeloader", "jeepneytaxi",
+        "ketchriggedyacht", "knarrsailingboat", "keelboatsailboat", "kaiserjeep",
+        "landingcraftaircushion", "lightcommercialvehicle", "luxurysuperyacht", "locomotiveengine",
+        "multipurposevehicle", "motorizedtricycle", "minesweepership", "mainbattletank",
+        "narrowgaugeengine", "nuclearsubmarine", "nonrigidairship", "navalhovercraft",
+        "observationhelicopter", "oceanographicvessel", "orbitalspacecraft", "outriggercanoe",
+        "pluginelectricvehicle", "passengerlocomotive", "pneumatictubetrain", "patroltorpedoboat",
+        "quadrotorhelicopter", "quinqueremeship", "quadricyclecar", "quartertonjeep",
+        "refusecollectionvehicle", "remotelyoperatedvehicle", "recreationalvehicle", "rescuehelicopter",
+        "streetcleaningvehicle", "supersonictransport", "submersiblevessel", "semitrailertruck",
+        "tandemrotorhelicopter", "torpedoboatdestroyer", "trooptransportship", "tracklesstrolley",
+        "unmannedaerialvehicle", "ultralightaircraft", "utilityhelicopter", "underwaterglider",
+        "vanguardsubmarine", "velocipedebicycle", "vactraintransport", "vintagesportscar",
+        "wheelchairaccessiblevan", "watercraftcarrier", "woodenfishingboat", "widebodyaircraft",
+        "xraytestingvehicle", "xialipassengercar", "xebecsailingboat", "xcraftsubmarine",
+        "yachtingschooner", "yellowschoolbus", "yorkboatvessel", "yawlsailboat",
+        "zamboniicemachine", "zeppelinairship", "zodiacinflatable", "zephyrlocomotive"
+    },
+    
+    ["job"] = {
+        "aerospaceengineer", "anesthesiologist", "astrobiologist", "actuarialanalyst",
+        "biomedicalengineer", "broadcastjournalist", "bioinformatician", "bacteriologist",
+        "cardiothoracicsurgeon", "cytotechnologist", "cinematographer", "cryptanalyst",
+        "dermatopathologist", "datawarehousedeveloper", "dentalhygienist", "dactyloscopist",
+        "electrophysiologist", "echocardiographer", "endocrinologist", "epidemiologist",
+        "forensicanthropologist", "financialcontroller", "flightdispatcher", "flavorchemist",
+        "gastroenterologist", "geospatialanalyst", "geneticcounselor", "geochronologist",
+        "histotechnologist", "hematopathologist", "hydrogeologist", "horticulturist",
+        "informationarchitect", "industrialhygienist", "immunotoxicologist", "investmentbanker",
+        "jurisprudencescholar", "journeymanlineman", "justiceofthepeace", "jewelrydesigner",
+        "kindergarteninstructor", "keyboardprogrammer", "kinesiotherapist", "kenneltechnician",
+        "logisticscoordinator", "landscapearchitect", "lightingtechnician", "lexicographer",
+        "metallurgicalengineer", "maxillofacialsurgeon", "microbiologist", "meteorologist",
+        "neuroendocrinologist", "neuropsychologist", "nuclearphysicist", "neonatologist",
+        "otorhinolaryngologist", "orthopedicsurgeon", "ophthalmologist", "oceanographer",
+        "psychopharmacologist", "paleoanthropologist", "paleoclimatologist", "parasitologist",
+        "qualityassuranceengineer", "quantitativeanalyst", "quantitysurveyor", "quarrymanager",
+        "respiratorytherapist", "radiopharmacist", "rheumatologist", "radiobiologist",
+        "sportsstatistician", "softwarearchitect", "seismologist", "somnologist",
+        "telecommunications", "thoracicsurgeon", "transcriptionist", "toxicologist",
+        "underwaterarchaeologist", "universitychancellor", "urbanclimatologist", "usabilityengineer",
+        "veterinarypathologist", "vocationalcounselor", "vascularsurgeon", "volcanologist",
+        "wealthmanagementadvisor", "waterqualityscientist", "wastewaterengineer", "wildlifebiologist",
+        "xraytechnician", "xeroxoperator", "xylographist", "xylophonist",
+        "yieldmanagementanalyst", "youthcounselor", "youtubevlogger", "yogainstructor",
+        "zoonoticdiseaseexpert", "zoologicalresearcher", "zymologist", "zookeeper"
+    },
+    
+    ["wear"] = {
+        "aviatorsunglasses", "argylesweatervest", "academicregalia", "ascotneckerchief",
+        "bellbottomjeans", "birkenstocksandals", "buttondownshirt", "balaclavaheadgear",
+        "compressionstockings", "chesterfieldcoat", "corduroytrousers", "crochetedcardigan",
+        "doublebreastedsuit", "deerstalkerhat", "drivingmoccasins", "denimdungarees",
+        "embroideredwaistcoat", "edwardiancorset", "espadrilleshoes", "eveningballdress",
+        "fingerlessgloves", "fishtailparka", "flannelovershirt", "fedoraheadpiece",
+        "guayaberashirt", "gladiatorsandals", "gatsbyflatcap", "ginghampinafore",
+        "houndstoothjacket", "herringbonecoat", "highheeledshoes", "homburgfeltcap",
+        "illuminatedsneakers", "invernesscape", "infinityscarf", "irishwalkinghat",
+        "jacquardwaistcoat", "jodhpurtrousers", "julietcapheadpiece", "jeanleggings",
+        "knickerbockers", "kneehighboots", "kashmirsweater", "kimonobathrobe",
+        "leathermotorcyclejacket", "lumberjackshirt", "laceupcombatboots", "legwarmerstights",
+        "mandarincollarshirt", "motorcyclehelmet", "messengerbagstrap", "moccasinslippers",
+        "nehrucollarjacket", "nightgownpajamas", "neopreneswimsuit", "nylonpantyhose",
+        "overthekneeboots", "oversizedcardigan", "offshoulderdress", "oxfordbuttondown",
+        "pleatedminiskirt", "platformsneakers", "panamastrawhat", "pufferwinterjacket",
+        "quarterzipfleece", "quiltedwaistcoat", "quartercrewsocks", "qipaocheongsam",
+        "reversiblewindbreaker", "retrotracksuit", "readingglasses", "ringersteeshirt",
+        "spaghettistrapdress", "straightlegjeans", "spectatorshoes", "sombrerocordobes",
+        "tortoiseshellglasses", "thighhighstockings", "turtlenecksweater", "trenchcoatbelt",
+        "utilityjumpsuit", "underwirecorset", "ushankasnowhat", "unitardleotard",
+        "vulcanizedsneakers", "velveteenblazer", "victoriancorset", "vneckundershirt",
+        "wellingtongaloshes", "wingedcollarshirt", "windbreakerjacket", "wedgeespadrilles",
+        "xbacksuspenders", "xrayvisionglasses", "xiapecapecollar", "xmasjumpersweater",
+        "yogapantsleggings", "yarmulkeskullcap", "yarndyedcottonshirt", "yokedpeasantblouse",
+        "zipuphoodiesweatshirt", "zebrastripedleggings", "zootsuitjacket", "zorisandals"
+    }
+
+    ["sport"] = {
+        "associationfootball", "aerobicgymnastics", "artisticswimming", "alpinesnowboarding",
+        "barebackbroncriding", "boardercrossracing", "beachvolleyball", "backcountryskiing",
+        "competitivecheerleading", "crosscountryskiing", "canoeslalomracing", "cyclocrossracing",
+        "downhillmountainbiking", "dragonboatracing", "doubleminitrampoline", "demolitionderby",
+        "equestrianshowjumping", "equestrianvaulting", "enduranceracing", "eightballpool",
+        "freestylemotocross", "freestylewrestling", "formulaoneracing", "figureskating",
+        "grecoromanwrestling", "giantslalomskiing", "gymnasticsartistic", "gaelicfootball",
+        "halfpipesnowboarding", "horsebackarchery", "historicalfencing", "highlandgames",
+        "internationalrules", "indoorfieldhockey", "icesledgehockey", "individualmedley",
+        "javelinthrowing", "jumpingequestrian", "jiujitsugrappling", "jetskiracing",
+        "kettlebelllifting", "kickboxingaerobics", "kayakcrossracing", "kneeboardsurfing",
+        "luchalibrewrestling", "lightweightrowing", "longdistancecycling", "lumberjacksports",
+        "mixedmartialarts", "modernpentathlon", "motocrosstrials", "miniaturegolfing",
+        "nordiccombinedskiing", "ninjawarriorcompetition", "narrowboatracing", "ninepinbowling",
+        "obstaclecourseracing", "openwaterswimming", "outriggercanoeing", "offroadmotorsport",
+        "professionalwrestling", "paralympicequestrian", "paintballwoodsball", "paddleboarding",
+        "quadracycleracing", "quarterhorseracing", "quadrollerderby", "quidditchsport",
+        "rollerfigureskating", "rugbyleaguefootball", "rhythmicgymnastics", "radiocontrolracing",
+        "synchronizedswimming", "synchronizedskating", "steeplechaseracing", "springboarddiving",
+        "threedimensionalarchery", "tabletennisdoubles", "taekwondosparring", "tugofwarcompetition",
+        "underwatertargetshooting", "ultramarathonrunning", "underwaterphotography", "ultimatefrisbee",
+        "velodromecycling", "vintagecarracing", "verticalmarathon", "valetudowrestling",
+        "wheelchairbasketball", "weightliftingolympic", "whitewaterkayaking", "windsurfingslalom",
+        "xcountrymountainbiking", "xiangqiboardgame", "xtremesnowboarding", "xarepelota",
+        "yoseikanbudomartialart", "yakpolotournament", "yachtmatchracing", "yawlboatracing",
+        "zuiquanmartialarts", "zorbingdownhill", "zumbafitness", "zorbsoccer"
+    }
+}
+
+-- =====================================================================
+-- ⬆️ PASTE WordDB DI ATAS GARIS INI ⬆️
+-- =====================================================================
+
+-- PETA TOMBOL RAHASIA (Sistem Spoofer Hardware)
+local KeyMap = {
+    ["q"] = 1, ["w"] = 2, ["e"] = 3, ["r"] = 4, ["t"] = 5, ["y"] = 6, ["u"] = 7, ["i"] = 8, ["o"] = 9, ["p"] = 10,
+    ["a"] = 11, ["s"] = 12, ["d"] = 13, ["f"] = 14, ["g"] = 15, ["h"] = 16, ["j"] = 17, ["k"] = 18, ["l"] = 19, ["back"] = 20,
+    ["z"] = 21, ["x"] = 22, ["c"] = 23, ["v"] = 24, ["b"] = 25, ["n"] = 26, ["m"] = 27, ["enter"] = 28
+}
+
+-- 1. BERSIHKAN UI LAMA
+for _, gui in pairs(CoreGui:GetChildren()) do
+    if gui.Name == "StopGodUI" then gui:Destroy() end
+end
+
+-- 2. MEMBUAT UI UTAMA
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "StopGodUI"
+ScreenGui.Parent = CoreGui
+ScreenGui.ResetOnSpawn = false
+
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 240, 0, 400) -- UI lebih compact tapi isi lebih luas!
+MainFrame.Position = UDim2.new(0.5, -120, 0, 20)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+MainFrame.BorderSizePixel = 2
+MainFrame.BorderColor3 = Color3.fromRGB(0, 255, 150) -- Neon Mint Green
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -30, 0, 30)
+Title.BackgroundColor3 = Color3.fromRGB(0, 100, 50)
+Title.Text = " 🛑 STOP! GOD V13 (DYNAMIC)"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 15
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local BtnMin = Instance.new("TextButton", MainFrame)
+BtnMin.Size = UDim2.new(0, 30, 0, 30)
+BtnMin.Position = UDim2.new(1, -30, 0, 0)
+BtnMin.BackgroundColor3 = Color3.fromRGB(100, 20, 20)
+BtnMin.Text = "-"
+BtnMin.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnMin.Font = Enum.Font.SourceSansBold
+BtnMin.TextSize = 18
+
+local BtnOpen = Instance.new("TextButton", ScreenGui)
+BtnOpen.Size = UDim2.new(0, 45, 0, 45)
+BtnOpen.Position = UDim2.new(0.5, -22, 0, 20)
+BtnOpen.BackgroundColor3 = Color3.fromRGB(0, 100, 50)
+BtnOpen.BorderColor3 = Color3.fromRGB(0, 255, 150)
+BtnOpen.BorderSizePixel = 2
+BtnOpen.Text = "🛑"
+BtnOpen.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnOpen.Font = Enum.Font.SourceSansBold
+BtnOpen.TextSize = 24
+BtnOpen.Visible = false
+
+-- 3. TOMBOL SAKLAR AUTO TYPE
+local isAutoTypeOn = true
+
+local BtnToggleAuto = Instance.new("TextButton", MainFrame)
+BtnToggleAuto.Size = UDim2.new(0, 220, 0, 35)
+BtnToggleAuto.Position = UDim2.new(0, 10, 0, 40)
+BtnToggleAuto.BackgroundColor3 = Color3.fromRGB(0, 150, 50)
+BtnToggleAuto.Text = "⚡ AUTO TYPE: ON"
+BtnToggleAuto.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnToggleAuto.Font = Enum.Font.SourceSansBold
+BtnToggleAuto.TextSize = 14
+
+BtnToggleAuto.Activated:Connect(function()
+    isAutoTypeOn = not isAutoTypeOn
+    if isAutoTypeOn then
+        BtnToggleAuto.BackgroundColor3 = Color3.fromRGB(0, 150, 50)
+        BtnToggleAuto.Text = "⚡ AUTO TYPE: ON"
+    else
+        BtnToggleAuto.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+        BtnToggleAuto.Text = "⚡ AUTO TYPE: OFF"
+    end
+end)
+
+-- 4. DASHBOARD STATUS PINTAR (Menggantikan Tombol Kategori)
+local StatusFrame = Instance.new("Frame", MainFrame)
+StatusFrame.Size = UDim2.new(0, 220, 0, 60)
+StatusFrame.Position = UDim2.new(0, 10, 0, 85)
+StatusFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+StatusFrame.BorderSizePixel = 1
+StatusFrame.BorderColor3 = Color3.fromRGB(100, 100, 150)
+
+local LetterStatus = Instance.new("TextLabel", StatusFrame)
+LetterStatus.Size = UDim2.new(1, -10, 0, 30)
+LetterStatus.Position = UDim2.new(0, 5, 0, 0)
+LetterStatus.BackgroundTransparency = 1
+LetterStatus.TextColor3 = Color3.fromRGB(255, 255, 0)
+LetterStatus.Text = "🎯 Huruf: [ Menunggu... ]"
+LetterStatus.Font = Enum.Font.SourceSansBold
+LetterStatus.TextSize = 16
+LetterStatus.TextXAlignment = Enum.TextXAlignment.Left
+
+local CategoryStatus = Instance.new("TextLabel", StatusFrame)
+CategoryStatus.Size = UDim2.new(1, -10, 0, 30)
+CategoryStatus.Position = UDim2.new(0, 5, 0, 30)
+CategoryStatus.BackgroundTransparency = 1
+CategoryStatus.TextColor3 = Color3.fromRGB(255, 255, 0)
+CategoryStatus.Text = "📌 Kategori: [ Menunggu... ]"
+CategoryStatus.Font = Enum.Font.SourceSansBold
+CategoryStatus.TextSize = 16
+CategoryStatus.TextXAlignment = Enum.TextXAlignment.Left
+
+-- FRAME HASIL (Sekarang jauh lebih luas karena nggak ada tombol kategori!)
+local ResultScroll = Instance.new("ScrollingFrame", MainFrame)
+ResultScroll.Size = UDim2.new(0, 220, 0, 235)
+ResultScroll.Position = UDim2.new(0, 10, 0, 155)
+ResultScroll.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+ResultScroll.ScrollBarThickness = 4
+ResultScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+local UIListLayout = Instance.new("UIListLayout", ResultScroll)
+UIListLayout.Padding = UDim.new(0, 2)
+
+-- VARIABEL GLOBAL (STATE)
+local activeCategory = ""
+local activeLetter = ""
+
+-- 5. FUNGSI BYPASS HARDWARE KEYBOARD
+local vim = game:GetService("VirtualInputManager")
+
+local function TypeVirtualKey(targetChar)
+    local keyCode
+    if targetChar == "back" then 
+        keyCode = Enum.KeyCode.Backspace
+    elseif targetChar == "enter" then 
+        keyCode = Enum.KeyCode.Return
+    else 
+        pcall(function() keyCode = Enum.KeyCode[string.upper(targetChar)] end) 
+    end
+    
+    if keyCode then
+        pcall(function()
+            vim:SendKeyEvent(true, keyCode, false, game)
+            task.wait(0.01)
+            vim:SendKeyEvent(false, keyCode, false, game)
+        end)
+    end
+end
+
+-- 6. MESIN TYPER KILAT
+local function AutoTypeWord(word)
+    for i = 1, 15 do  -- Ditingkatkan jadi 15x hapus biar super bersih
+        TypeVirtualKey("back") 
+        task.wait(0.01)
+    end
+    task.wait(0.1)
+
+    for i = 1, #word do
+        local char = string.sub(string.lower(word), i, i)
+        TypeVirtualKey(char)
+        task.wait(0.02)
+    end
+    
+    task.wait(0.1)
+    TypeVirtualKey("enter")
+end
+
+-- 7. UPDATE UI & PENCARIAN KATA
+local function UpdateResults()
+    for _, child in pairs(ResultScroll:GetChildren()) do
+        if child:IsA("TextButton") or child:IsA("TextLabel") then child:Destroy() end
+    end
+    
+    local foundCount = 0
+    
+    if activeLetter ~= "" and activeCategory ~= "" and WordDB[activeCategory] then
+        for _, word in ipairs(WordDB[activeCategory]) do
+            if string.sub(string.lower(word), 1, 1) == activeLetter then
+                foundCount = foundCount + 1
+                
+                local ansBtn = Instance.new("TextButton", ResultScroll)
+                ansBtn.Size = UDim2.new(1, -10, 0, 27)
+                ansBtn.BackgroundColor3 = Color3.fromRGB(30, 80, 30)
+                ansBtn.TextColor3 = Color3.fromRGB(0, 255, 100)
+                ansBtn.Text = " > " .. string.upper(word)
+                ansBtn.Font = Enum.Font.SourceSansBold
+                ansBtn.TextSize = 15
+                ansBtn.TextXAlignment = Enum.TextXAlignment.Left
+                
+                ansBtn.Activated:Connect(function()
+                    if isAutoTypeOn then
+                        ansBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                        AutoTypeWord(word)
+                        task.wait(0.1)
+                        ansBtn.BackgroundColor3 = Color3.fromRGB(30, 80, 30)
+                    else
+                        ansBtn.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+                        task.wait(0.2)
+                        ansBtn.BackgroundColor3 = Color3.fromRGB(30, 80, 30)
+                    end
+                end)
+            end
+        end
+    end
+    
+    if foundCount == 0 then
+        local err = Instance.new("TextLabel", ResultScroll)
+        err.Size = UDim2.new(1, -10, 0, 25)
+        err.BackgroundTransparency = 1
+        err.TextColor3 = Color3.fromRGB(200, 50, 50)
+        if activeLetter == "" or activeCategory == "" then
+            err.Text = "Menunggu Radar..."
+        else
+            err.Text = "Kosong / Kata Tidak Ada!"
+        end
+        err.Font = Enum.Font.SourceSansItalic
+        err.TextSize = 14
+    end
+    ResultScroll.CanvasSize = UDim2.new(0, 0, 0, foundCount * 29)
+end
+
+-- 8. RADAR PEMANTAU SUPER CEPAT (0.3 Detik)
+task.spawn(function()
+    while task.wait(0.3) do
+        pcall(function()
+            local app = LP.PlayerGui:FindFirstChild("StopGameGui") and LP.PlayerGui.StopGameGui:FindFirstChild("app")
+            if not app then return end
+            
+            local hasChanged = false
+            
+            -- A. SADAP KATEGORI (Smart Search & Tambahan Sports)
+            local questionLbl = app:FindFirstChild("question", true)
+            if questionLbl and questionLbl:IsA("TextLabel") then
+                local qt = string.lower(questionLbl.Text)
+                local detectedCat = ""
+                
+                if qt:match("country") or qt:match("city") or qt:match("place") then detectedCat = "country"
+                elseif qt:match("person") then detectedCat = "person"
+                elseif qt:match("animal") then detectedCat = "animal"
+                elseif qt:match("object") then detectedCat = "object"
+                elseif qt:match("food") then detectedCat = "food"
+                elseif qt:match("fruit") then detectedCat = "fruit"
+                elseif qt:match("color") then detectedCat = "color"
+                elseif qt:match("wear") or qt:match("clothing") then detectedCat = "wear"
+                elseif qt:match("vehicle") or qt:match("transport") then detectedCat = "vehicle" 
+                elseif qt:match("job") or qt:match("profession") or qt:match("occupation") then detectedCat = "job"
+                elseif qt:match("sport") or qt:match("game") then detectedCat = "sports" -- KATEGORI BARU 
+                end
+                
+                if detectedCat ~= "" and detectedCat ~= activeCategory then
+                    activeCategory = detectedCat
+                    CategoryStatus.Text = "📌 Kategori: " .. string.upper(activeCategory)
+                    CategoryStatus.TextColor3 = Color3.fromRGB(0, 255, 150)
+                    hasChanged = true
+                end
+            end
+            
+            -- B. SADAP HURUF AWALAN ('letter1.letter')
+            local letter1Folder = app:FindFirstChild("letter1", true)
+            local letterLbl = letter1Folder and letter1Folder:FindFirstChild("letter")
+            
+            if letterLbl and letterLbl:IsA("TextLabel") then
+                local letterRaw = string.match(letterLbl.Text, "%a") 
+                if letterRaw then
+                    local letterLower = string.lower(letterRaw)
+                    if letterLower ~= activeLetter then
+                        activeLetter = letterLower
+                        LetterStatus.Text = "🎯 Huruf: " .. string.upper(activeLetter)
+                        LetterStatus.TextColor3 = Color3.fromRGB(0, 255, 150)
+                        hasChanged = true
+                    end
+                end
+            else
+                if activeLetter ~= "" then
+                    activeLetter = ""
+                    LetterStatus.Text = "🎯 Huruf: [ Menunggu... ]"
+                    LetterStatus.TextColor3 = Color3.fromRGB(255, 255, 0)
+                    hasChanged = true
+                end
+            end
+            
+            if hasChanged then
+                UpdateResults()
+            end
+        end)
+    end
+end)
+
+-- 9. TRIGGER UMUM
+BtnMin.Activated:Connect(function() MainFrame.Visible = false; BtnOpen.Visible = true end)
+BtnOpen.Activated:Connect(function() BtnOpen.Visible = false; MainFrame.Visible = true end)
