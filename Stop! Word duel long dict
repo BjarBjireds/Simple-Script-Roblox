@@ -1,14 +1,14 @@
 -- ===================================================
--- STOP! WORD DUEL 🛑 : GOD V13 (CLOUD DICTIONARY UI)
+-- STOP! WORD DUEL ðŸ›‘ : GOD V13.2 (CLOUD + SHORT/RANDOM/LONG)
 -- ===================================================
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 
 -- ==========================================
--- ☁️ MENGAMBIL DICTIONARY DARI GITHUB ☁️
+-- â˜ï¸ MENGAMBIL DICTIONARY DARI GITHUB â˜ï¸
 -- ==========================================
-local rawGithubUrl = "https://raw.githubusercontent.com/BjarBjireds/Simple-Script-Roblox/refs/heads/main/stop!%20word%20duel(long%20dict).txt" -- ⚠️ GANTI DENGAN LINK RAW GITHUB MILIKMU ⚠️
+local rawGithubUrl = "https://raw.githubusercontent.com/BjarBjireds/Simple-Script-Roblox/refs/heads/main/stop!%20word%20duel(long%20dict).txt" -- âš ï¸ GANTI DENGAN LINK RAW GITHUB MILIKMU âš ï¸
 
 local WordDB = {}
 local success, result = pcall(function()
@@ -43,7 +43,7 @@ ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 240, 0, 400)
+MainFrame.Size = UDim2.new(0, 240, 0, 445) -- diperbesar sedikit untuk tombol baru
 MainFrame.Position = UDim2.new(0.5, -120, 0, 20)
 MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
 MainFrame.BorderSizePixel = 2
@@ -54,7 +54,7 @@ MainFrame.Draggable = true
 local Title = Instance.new("TextLabel", MainFrame)
 Title.Size = UDim2.new(1, -30, 0, 30)
 Title.BackgroundColor3 = Color3.fromRGB(0, 100, 50)
-Title.Text = " 🛑 STOP! GOD V13 (CLOUD)"
+Title.Text = " ðŸ›‘ STOP! GOD V13.2 (CLOUD)"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.SourceSansBold
 Title.TextSize = 15
@@ -75,7 +75,7 @@ BtnOpen.Position = UDim2.new(0.5, -22, 0, 20)
 BtnOpen.BackgroundColor3 = Color3.fromRGB(0, 100, 50)
 BtnOpen.BorderColor3 = Color3.fromRGB(0, 255, 150)
 BtnOpen.BorderSizePixel = 2
-BtnOpen.Text = "🛑"
+BtnOpen.Text = "ðŸ›‘"
 BtnOpen.TextColor3 = Color3.fromRGB(255, 255, 255)
 BtnOpen.Font = Enum.Font.SourceSansBold
 BtnOpen.TextSize = 24
@@ -85,10 +85,10 @@ BtnOpen.Visible = false
 local isAutoTypeOn = true
 
 local BtnToggleAuto = Instance.new("TextButton", MainFrame)
-BtnToggleAuto.Size = UDim2.new(0, 220, 0, 35)
-BtnToggleAuto.Position = UDim2.new(0, 10, 0, 40)
+BtnToggleAuto.Size = UDim2.new(0, 220, 0, 32)
+BtnToggleAuto.Position = UDim2.new(0, 10, 0, 38)
 BtnToggleAuto.BackgroundColor3 = Color3.fromRGB(0, 150, 50)
-BtnToggleAuto.Text = "⚡ AUTO TYPE: ON"
+BtnToggleAuto.Text = "âš¡ AUTO TYPE: ON"
 BtnToggleAuto.TextColor3 = Color3.fromRGB(255, 255, 255)
 BtnToggleAuto.Font = Enum.Font.SourceSansBold
 BtnToggleAuto.TextSize = 14
@@ -97,45 +97,66 @@ BtnToggleAuto.Activated:Connect(function()
     isAutoTypeOn = not isAutoTypeOn
     if isAutoTypeOn then
         BtnToggleAuto.BackgroundColor3 = Color3.fromRGB(0, 150, 50)
-        BtnToggleAuto.Text = "⚡ AUTO TYPE: ON"
+        BtnToggleAuto.Text = "âš¡ AUTO TYPE: ON"
     else
         BtnToggleAuto.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
-        BtnToggleAuto.Text = "⚡ AUTO TYPE: OFF"
+        BtnToggleAuto.Text = "âš¡ AUTO TYPE: OFF"
     end
 end)
 
--- 4. DASHBOARD STATUS PINTAR
+-- ==========================================
+-- 4. TOMBOL SHORT / RANDOM / LONGEST (BARU)
+-- ==========================================
+local function createSmartBtn(parent, text, posX, color)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(0, 68, 0, 28)
+    btn.Position = UDim2.new(0, posX, 0, 75)
+    btn.BackgroundColor3 = color
+    btn.Text = text
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.SourceSansBold
+    btn.TextSize = 12
+    btn.BorderSizePixel = 1
+    btn.BorderColor3 = Color3.fromRGB(0, 200, 120)
+    return btn
+end
+
+local BtnShort   = createSmartBtn(MainFrame, "SHORT",   10,  Color3.fromRGB(40, 120, 180))
+local BtnRandom  = createSmartBtn(MainFrame, "RANDOM",  86,  Color3.fromRGB(140, 80, 180))
+local BtnLongest = createSmartBtn(MainFrame, "LONGEST", 162, Color3.fromRGB(180, 100, 40))
+
+-- 5. DASHBOARD STATUS PINTAR
 local StatusFrame = Instance.new("Frame", MainFrame)
-StatusFrame.Size = UDim2.new(0, 220, 0, 60)
-StatusFrame.Position = UDim2.new(0, 10, 0, 85)
+StatusFrame.Size = UDim2.new(0, 220, 0, 50)
+StatusFrame.Position = UDim2.new(0, 10, 0, 110)
 StatusFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 StatusFrame.BorderSizePixel = 1
 StatusFrame.BorderColor3 = Color3.fromRGB(100, 100, 150)
 
 local LetterStatus = Instance.new("TextLabel", StatusFrame)
-LetterStatus.Size = UDim2.new(1, -10, 0, 30)
+LetterStatus.Size = UDim2.new(1, -10, 0, 25)
 LetterStatus.Position = UDim2.new(0, 5, 0, 0)
 LetterStatus.BackgroundTransparency = 1
 LetterStatus.TextColor3 = Color3.fromRGB(255, 255, 0)
-LetterStatus.Text = "🎯 Huruf: [ Menunggu... ]"
+LetterStatus.Text = "ðŸŽ¯ Huruf: [ Menunggu... ]"
 LetterStatus.Font = Enum.Font.SourceSansBold
-LetterStatus.TextSize = 16
+LetterStatus.TextSize = 14
 LetterStatus.TextXAlignment = Enum.TextXAlignment.Left
 
 local CategoryStatus = Instance.new("TextLabel", StatusFrame)
-CategoryStatus.Size = UDim2.new(1, -10, 0, 30)
-CategoryStatus.Position = UDim2.new(0, 5, 0, 30)
+CategoryStatus.Size = UDim2.new(1, -10, 0, 25)
+CategoryStatus.Position = UDim2.new(0, 5, 0, 25)
 CategoryStatus.BackgroundTransparency = 1
 CategoryStatus.TextColor3 = Color3.fromRGB(255, 255, 0)
-CategoryStatus.Text = "📌 Kategori: [ Menunggu... ]"
+CategoryStatus.Text = "ðŸ“Œ Kategori: [ Menunggu... ]"
 CategoryStatus.Font = Enum.Font.SourceSansBold
-CategoryStatus.TextSize = 16
+CategoryStatus.TextSize = 14
 CategoryStatus.TextXAlignment = Enum.TextXAlignment.Left
 
 -- FRAME HASIL
 local ResultScroll = Instance.new("ScrollingFrame", MainFrame)
-ResultScroll.Size = UDim2.new(0, 220, 0, 235)
-ResultScroll.Position = UDim2.new(0, 10, 0, 155)
+ResultScroll.Size = UDim2.new(0, 220, 0, 265)
+ResultScroll.Position = UDim2.new(0, 10, 0, 168)
 ResultScroll.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
 ResultScroll.ScrollBarThickness = 4
 ResultScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -145,7 +166,7 @@ UIListLayout.Padding = UDim.new(0, 2)
 local activeCategory = ""
 local activeLetter = ""
 
--- 5. FUNGSI BYPASS HARDWARE KEYBOARD
+-- 6. FUNGSI BYPASS HARDWARE KEYBOARD
 local vim = game:GetService("VirtualInputManager")
 
 local function TypeVirtualKey(targetChar)
@@ -167,7 +188,7 @@ local function TypeVirtualKey(targetChar)
     end
 end
 
--- 6. MESIN TYPER KILAT
+-- 7. MESIN TYPER KILAT
 local function AutoTypeWord(word)
     for i = 1, 15 do  
         TypeVirtualKey("back") 
@@ -185,42 +206,113 @@ local function AutoTypeWord(word)
     TypeVirtualKey("enter")
 end
 
--- 7. UPDATE UI & PENCARIAN KATA
+-- ==========================================
+-- FUNGSI AMBIL KATA MATCHING (dipakai bersama)
+-- ==========================================
+local function GetMatchingWords()
+    local list = {}
+    if activeLetter ~= "" and activeCategory ~= "" and WordDB[activeCategory] then
+        for _, word in ipairs(WordDB[activeCategory]) do
+            if string.sub(string.lower(word), 1, 1) == activeLetter then
+                table.insert(list, word)
+            end
+        end
+    end
+    return list
+end
+
+-- ==========================================
+-- 8. FUNGSI SHORT / RANDOM / LONGEST
+-- ==========================================
+local function PickAndType(mode)
+    local words = GetMatchingWords()
+    if #words == 0 then
+        print("[SMART] Tidak ada kata untuk dipilih!")
+        return
+    end
+
+    local chosen = nil
+
+    if mode == "short" then
+        local minLen = math.huge
+        for _, w in ipairs(words) do
+            if #w < minLen then
+                minLen = #w
+                chosen = w
+            end
+        end
+        print("[SMART] SHORT â†’ " .. string.upper(chosen) .. " (" .. #chosen .. " huruf)")
+
+    elseif mode == "random" then
+        chosen = words[math.random(1, #words)]
+        print("[SMART] RANDOM â†’ " .. string.upper(chosen))
+
+    elseif mode == "longest" then
+        local maxLen = 0
+        for _, w in ipairs(words) do
+            if #w > maxLen then
+                maxLen = #w
+                chosen = w
+            end
+        end
+        print("[SMART] LONGEST â†’ " .. string.upper(chosen) .. " (" .. #chosen .. " huruf)")
+    end
+
+    if chosen then
+        if isAutoTypeOn then
+            AutoTypeWord(chosen)
+        else
+            -- Kalau auto type OFF, tetap tampilkan di console & highlight di list (opsional)
+            print("[SMART] AutoType OFF, kata terpilih: " .. string.upper(chosen))
+        end
+    end
+end
+
+BtnShort.Activated:Connect(function()
+    PickAndType("short")
+end)
+
+BtnRandom.Activated:Connect(function()
+    PickAndType("random")
+end)
+
+BtnLongest.Activated:Connect(function()
+    PickAndType("longest")
+end)
+
+-- 9. UPDATE UI & PENCARIAN KATA
 local function UpdateResults()
     for _, child in pairs(ResultScroll:GetChildren()) do
         if child:IsA("TextButton") or child:IsA("TextLabel") then child:Destroy() end
     end
     
     local foundCount = 0
+    local matching = GetMatchingWords()
     
-    if activeLetter ~= "" and activeCategory ~= "" and WordDB[activeCategory] then
-        for _, word in ipairs(WordDB[activeCategory]) do
-            if string.sub(string.lower(word), 1, 1) == activeLetter then
-                foundCount = foundCount + 1
-                
-                local ansBtn = Instance.new("TextButton", ResultScroll)
-                ansBtn.Size = UDim2.new(1, -10, 0, 27)
+    for _, word in ipairs(matching) do
+        foundCount = foundCount + 1
+        
+        local ansBtn = Instance.new("TextButton", ResultScroll)
+        ansBtn.Size = UDim2.new(1, -10, 0, 27)
+        ansBtn.BackgroundColor3 = Color3.fromRGB(30, 80, 30)
+        ansBtn.TextColor3 = Color3.fromRGB(0, 255, 100)
+        ansBtn.Text = " > " .. string.upper(word)
+        ansBtn.Font = Enum.Font.SourceSansBold
+        ansBtn.TextSize = 15
+        ansBtn.TextXAlignment = Enum.TextXAlignment.Left
+        
+        ansBtn.Activated:Connect(function()
+            if isAutoTypeOn then
+                ansBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                AutoTypeWord(word)
+                task.wait(0.1)
                 ansBtn.BackgroundColor3 = Color3.fromRGB(30, 80, 30)
-                ansBtn.TextColor3 = Color3.fromRGB(0, 255, 100)
-                ansBtn.Text = " > " .. string.upper(word)
-                ansBtn.Font = Enum.Font.SourceSansBold
-                ansBtn.TextSize = 15
-                ansBtn.TextXAlignment = Enum.TextXAlignment.Left
-                
-                ansBtn.Activated:Connect(function()
-                    if isAutoTypeOn then
-                        ansBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                        AutoTypeWord(word)
-                        task.wait(0.1)
-                        ansBtn.BackgroundColor3 = Color3.fromRGB(30, 80, 30)
-                    else
-                        ansBtn.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
-                        task.wait(0.2)
-                        ansBtn.BackgroundColor3 = Color3.fromRGB(30, 80, 30)
-                    end
-                end)
+            else
+                ansBtn.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+                task.wait(0.2)
+                ansBtn.BackgroundColor3 = Color3.fromRGB(30, 80, 30)
             end
-        end
+        end)
     end
     
     if foundCount == 0 then
@@ -241,7 +333,7 @@ local function UpdateResults()
     ResultScroll.CanvasSize = UDim2.new(0, 0, 0, foundCount * 29)
 end
 
--- 8. RADAR PEMANTAU
+-- 10. RADAR PEMANTAU
 task.spawn(function()
     while task.wait(0.3) do
         pcall(function()
@@ -270,7 +362,7 @@ task.spawn(function()
                 
                 if detectedCat ~= "" and detectedCat ~= activeCategory then
                     activeCategory = detectedCat
-                    CategoryStatus.Text = "📌 Kategori: " .. string.upper(activeCategory)
+                    CategoryStatus.Text = "ðŸ“Œ Kategori: " .. string.upper(activeCategory)
                     CategoryStatus.TextColor3 = Color3.fromRGB(0, 255, 150)
                     hasChanged = true
                 end
@@ -285,7 +377,7 @@ task.spawn(function()
                     local letterLower = string.lower(letterRaw)
                     if letterLower ~= activeLetter then
                         activeLetter = letterLower
-                        LetterStatus.Text = "🎯 Huruf: " .. string.upper(activeLetter)
+                        LetterStatus.Text = "ðŸŽ¯ Huruf: " .. string.upper(activeLetter)
                         LetterStatus.TextColor3 = Color3.fromRGB(0, 255, 150)
                         hasChanged = true
                     end
@@ -293,7 +385,7 @@ task.spawn(function()
             else
                 if activeLetter ~= "" then
                     activeLetter = ""
-                    LetterStatus.Text = "🎯 Huruf: [ Menunggu... ]"
+                    LetterStatus.Text = "ðŸŽ¯ Huruf: [ Menunggu... ]"
                     LetterStatus.TextColor3 = Color3.fromRGB(255, 255, 0)
                     hasChanged = true
                 end
@@ -306,12 +398,12 @@ task.spawn(function()
     end
 end)
 
--- 9. TRIGGER UMUM
+-- 11. TRIGGER UMUM
 BtnMin.Activated:Connect(function() MainFrame.Visible = false; BtnOpen.Visible = true end)
 BtnOpen.Activated:Connect(function() BtnOpen.Visible = false; MainFrame.Visible = true end)
 
 -- ==========================================
--- AUTO-LOGGER: INVALID WORD DETECTOR 🛑 (UPDATE V2)
+-- AUTO-LOGGER: INVALID WORD DETECTOR ðŸ›‘ (UPDATE V2)
 -- ==========================================
 local FileName = "Stop_InvalidWords.txt"
 local loggedWords = {} 
@@ -390,3 +482,5 @@ task.spawn(function()
         end)
     end
 end)
+
+print("[GOD V13.2] Script loaded! Tombol SHORT / RANDOM / LONGEST aktif.")
