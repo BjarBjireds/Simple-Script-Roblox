@@ -20,7 +20,7 @@ local LP = Players.LocalPlayer
 -- Ganti link di bawah dengan raw GitHub milikmu.
 -- Format file harus: return { "APPLE", "BANANA", "CAT", ... }
 -- (satu kata per elemen, boleh UPPERCASE atau lowercase)
-local rawGithubUrl = "https://raw.githubusercontent.com/BjarBjireds/Simple-Script-Roblox/refs/heads/main/mega_kamus_english.lua" -- ⚠️ GANTI LINK INI ⚠️
+local rawGithubUrl = "https://raw.githubusercontent.com/BjarBjireds/Simple-Script-Roblox/refs/heads/main/finish%20the%20word%20dict.txt" -- ⚠️ GANTI LINK INI ⚠️
 
 local WordList = {}
 local success, result = pcall(function()
