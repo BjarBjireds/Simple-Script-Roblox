@@ -1,0 +1,372 @@
+-- ===================================================
+-- FINISH THE WORD 🛑 : GOD V1 (CLOUD DICTIONARY)
+-- ===================================================
+-- Fitur:
+-- - Deteksi otomatis huruf awal dari UI game
+-- - Tampilkan daftar kata yang cocok
+-- - Tombol SHORT / RANDOM / LONGEST (hanya sort daftar)
+-- - Auto Type pakai RemoteFunction (keyStroke + tryAnswer)
+-- - Pakai Mega Kamus English (atau dictionary kamu sendiri)
+-- ===================================================
+
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LP = Players.LocalPlayer
+
+-- ==========================================
+-- ☁️ MENGAMBIL DICTIONARY DARI GITHUB ☁️
+-- ==========================================
+-- Ganti link di bawah dengan raw GitHub milikmu.
+-- Format file harus: return { "APPLE", "BANANA", "CAT", ... }
+-- (satu kata per elemen, boleh UPPERCASE atau lowercase)
+local rawGithubUrl = "https://raw.githubusercontent.com/BjarBjireds/Simple-Script-Roblox/refs/heads/main/mega_kamus_english.lua" -- ⚠️ GANTI LINK INI ⚠️
+
+local WordList = {}
+local success, result = pcall(function()
+    return loadstring(game:HttpGet(rawGithubUrl))()
+end)
+
+if success and type(result) == "table" then
+    -- Normalisasi ke uppercase biar konsisten
+    for _, w in ipairs(result) do
+        if type(w) == "string" and #w >= 3 then
+            table.insert(WordList, string.upper(w))
+        end
+    end
+    print("[CLOUD] Dictionary berhasil dimuat! Total kata:", #WordList)
+else
+    warn("[ERROR] Gagal memuat Dictionary! Pastikan link raw benar dan format 'return { \"KATA1\", \"KATA2\", ... }'")
+end
+
+-- RemoteFunction game
+local Remote = ReplicatedStorage:WaitForChild("Services"):WaitForChild("Communication"):WaitForChild("event"):WaitForChild("RemoteFunction")
+
+-- ==========================================
+-- 1. BERSIHKAN UI LAMA
+-- ==========================================
+for _, gui in pairs(CoreGui:GetChildren()) do
+    if gui.Name == "FinishWordGodUI" then gui:Destroy() end
+end
+
+-- ==========================================
+-- 2. MEMBUAT UI UTAMA
+-- ==========================================
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "FinishWordGodUI"
+ScreenGui.Parent = CoreGui
+ScreenGui.ResetOnSpawn = false
+
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 240, 0, 430)
+MainFrame.Position = UDim2.new(0.5, -120, 0, 20)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+MainFrame.BorderSizePixel = 2
+MainFrame.BorderColor3 = Color3.fromRGB(0, 200, 255)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -30, 0, 30)
+Title.BackgroundColor3 = Color3.fromRGB(0, 80, 140)
+Title.Text = " 🛑 FINISH THE WORD GOD V1"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 14
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local BtnMin = Instance.new("TextButton", MainFrame)
+BtnMin.Size = UDim2.new(0, 30, 0, 30)
+BtnMin.Position = UDim2.new(1, -30, 0, 0)
+BtnMin.BackgroundColor3 = Color3.fromRGB(100, 20, 20)
+BtnMin.Text = "-"
+BtnMin.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnMin.Font = Enum.Font.SourceSansBold
+BtnMin.TextSize = 18
+
+local BtnOpen = Instance.new("TextButton", ScreenGui)
+BtnOpen.Size = UDim2.new(0, 45, 0, 45)
+BtnOpen.Position = UDim2.new(0.5, -22, 0, 20)
+BtnOpen.BackgroundColor3 = Color3.fromRGB(0, 80, 140)
+BtnOpen.BorderColor3 = Color3.fromRGB(0, 200, 255)
+BtnOpen.BorderSizePixel = 2
+BtnOpen.Text = "🛑"
+BtnOpen.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnOpen.Font = Enum.Font.SourceSansBold
+BtnOpen.TextSize = 24
+BtnOpen.Visible = false
+
+-- 3. TOMBOL AUTO TYPE
+local isAutoTypeOn = true
+
+local BtnToggleAuto = Instance.new("TextButton", MainFrame)
+BtnToggleAuto.Size = UDim2.new(0, 220, 0, 32)
+BtnToggleAuto.Position = UDim2.new(0, 10, 0, 38)
+BtnToggleAuto.BackgroundColor3 = Color3.fromRGB(0, 140, 80)
+BtnToggleAuto.Text = "⚡ AUTO TYPE: ON"
+BtnToggleAuto.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnToggleAuto.Font = Enum.Font.SourceSansBold
+BtnToggleAuto.TextSize = 14
+
+BtnToggleAuto.Activated:Connect(function()
+    isAutoTypeOn = not isAutoTypeOn
+    if isAutoTypeOn then
+        BtnToggleAuto.BackgroundColor3 = Color3.fromRGB(0, 140, 80)
+        BtnToggleAuto.Text = "⚡ AUTO TYPE: ON"
+    else
+        BtnToggleAuto.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+        BtnToggleAuto.Text = "⚡ AUTO TYPE: OFF"
+    end
+end)
+
+-- 4. TOMBOL SHORT / RANDOM / LONGEST (SORT ONLY)
+local function createSmartBtn(parent, text, posX, color)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(0, 68, 0, 28)
+    btn.Position = UDim2.new(0, posX, 0, 75)
+    btn.BackgroundColor3 = color
+    btn.Text = text
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.SourceSansBold
+    btn.TextSize = 12
+    btn.BorderSizePixel = 1
+    btn.BorderColor3 = Color3.fromRGB(0, 180, 220)
+    return btn
+end
+
+local BtnShort   = createSmartBtn(MainFrame, "SHORT",   10,  Color3.fromRGB(40, 120, 180))
+local BtnRandom  = createSmartBtn(MainFrame, "RANDOM",  86,  Color3.fromRGB(140, 80, 180))
+local BtnLongest = createSmartBtn(MainFrame, "LONGEST", 162, Color3.fromRGB(180, 100, 40))
+
+-- 5. STATUS
+local StatusFrame = Instance.new("Frame", MainFrame)
+StatusFrame.Size = UDim2.new(0, 220, 0, 40)
+StatusFrame.Position = UDim2.new(0, 10, 0, 110)
+StatusFrame.BackgroundColor3 = Color3.fromRGB(25, 30, 45)
+StatusFrame.BorderSizePixel = 1
+StatusFrame.BorderColor3 = Color3.fromRGB(80, 120, 180)
+
+local LetterStatus = Instance.new("TextLabel", StatusFrame)
+LetterStatus.Size = UDim2.new(1, -10, 1, 0)
+LetterStatus.Position = UDim2.new(0, 5, 0, 0)
+LetterStatus.BackgroundTransparency = 1
+LetterStatus.TextColor3 = Color3.fromRGB(255, 220, 50)
+LetterStatus.Text = "🎯 Huruf Awal: [ Menunggu... ]"
+LetterStatus.Font = Enum.Font.SourceSansBold
+LetterStatus.TextSize = 15
+LetterStatus.TextXAlignment = Enum.TextXAlignment.Left
+
+-- FRAME HASIL
+local ResultScroll = Instance.new("ScrollingFrame", MainFrame)
+ResultScroll.Size = UDim2.new(0, 220, 0, 260)
+ResultScroll.Position = UDim2.new(0, 10, 0, 158)
+ResultScroll.BackgroundColor3 = Color3.fromRGB(12, 15, 22)
+ResultScroll.ScrollBarThickness = 4
+ResultScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+local UIListLayout = Instance.new("UIListLayout", ResultScroll)
+UIListLayout.Padding = UDim.new(0, 2)
+
+local activeLetter = ""
+local currentSortMode = "default"
+
+-- ==========================================
+-- FUNGSI KIRIM KEYSTROKE & ANSWER
+-- ==========================================
+local function SendKey(char)
+    pcall(function()
+        Remote:InvokeServer("keyStroke", string.upper(char))
+    end)
+end
+
+local function SendEnter()
+    pcall(function()
+        Remote:InvokeServer("tryAnswer")
+    end)
+end
+
+local function AutoTypeWord(word)
+    word = string.upper(word)
+    
+    -- Ketik setiap huruf
+    for i = 1, #word do
+        local char = string.sub(word, i, i)
+        SendKey(char)
+        task.wait(0.03) -- delay kecil biar stabil
+    end
+    
+    task.wait(0.08)
+    SendEnter()
+end
+
+-- ==========================================
+-- AMBIL KATA YANG COCOK
+-- ==========================================
+local function GetMatchingWords()
+    local list = {}
+    if activeLetter == "" or #WordList == 0 then return list end
+    
+    local letter = string.upper(activeLetter)
+    for _, word in ipairs(WordList) do
+        if string.sub(word, 1, 1) == letter then
+            table.insert(list, word)
+        end
+    end
+    return list
+end
+
+-- ==========================================
+-- SORT + TAMPILKAN
+-- ==========================================
+local function SortAndDisplay(mode)
+    currentSortMode = mode or "default"
+    
+    local words = GetMatchingWords()
+    if #words == 0 then
+        -- bersihkan list
+        for _, child in pairs(ResultScroll:GetChildren()) do
+            if child:IsA("TextButton") or child:IsA("TextLabel") then child:Destroy() end
+        end
+        local err = Instance.new("TextLabel", ResultScroll)
+        err.Size = UDim2.new(1, -10, 0, 25)
+        err.BackgroundTransparency = 1
+        err.TextColor3 = Color3.fromRGB(200, 80, 80)
+        err.Text = activeLetter == "" and "Menunggu huruf..." or "Tidak ada kata untuk huruf " .. activeLetter
+        err.Font = Enum.Font.SourceSansItalic
+        err.TextSize = 13
+        ResultScroll.CanvasSize = UDim2.new(0, 0, 0, 30)
+        return
+    end
+
+    if mode == "short" then
+        table.sort(words, function(a, b)
+            if #a == #b then return a < b end
+            return #a < #b
+        end)
+        print("[SORT] SHORT →", #words, "kata")
+    elseif mode == "longest" then
+        table.sort(words, function(a, b)
+            if #a == #b then return a < b end
+            return #a > #b
+        end)
+        print("[SORT] LONGEST →", #words, "kata")
+    elseif mode == "random" then
+        for i = #words, 2, -1 do
+            local j = math.random(1, i)
+            words[i], words[j] = words[j], words[i]
+        end
+        print("[SORT] RANDOM →", #words, "kata")
+    else
+        table.sort(words)
+    end
+
+    -- Render
+    for _, child in pairs(ResultScroll:GetChildren()) do
+        if child:IsA("TextButton") or child:IsA("TextLabel") then child:Destroy() end
+    end
+
+    local foundCount = 0
+    for _, word in ipairs(words) do
+        foundCount = foundCount + 1
+        
+        local ansBtn = Instance.new("TextButton", ResultScroll)
+        ansBtn.Size = UDim2.new(1, -10, 0, 26)
+        ansBtn.BackgroundColor3 = Color3.fromRGB(25, 70, 100)
+        ansBtn.TextColor3 = Color3.fromRGB(100, 220, 255)
+        ansBtn.Text = " > " .. word
+        ansBtn.Font = Enum.Font.SourceSansBold
+        ansBtn.TextSize = 14
+        ansBtn.TextXAlignment = Enum.TextXAlignment.Left
+        
+        ansBtn.Activated:Connect(function()
+            if isAutoTypeOn then
+                ansBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                ansBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+                AutoTypeWord(word)
+                task.wait(0.15)
+                ansBtn.BackgroundColor3 = Color3.fromRGB(25, 70, 100)
+                ansBtn.TextColor3 = Color3.fromRGB(100, 220, 255)
+            else
+                ansBtn.BackgroundColor3 = Color3.fromRGB(150, 60, 60)
+                task.wait(0.2)
+                ansBtn.BackgroundColor3 = Color3.fromRGB(25, 70, 100)
+            end
+        end)
+    end
+
+    ResultScroll.CanvasSize = UDim2.new(0, 0, 0, foundCount * 28)
+end
+
+BtnShort.Activated:Connect(function() SortAndDisplay("short") end)
+BtnRandom.Activated:Connect(function() SortAndDisplay("random") end)
+BtnLongest.Activated:Connect(function() SortAndDisplay("longest") end)
+
+-- ==========================================
+-- RADAR DETEKSI HURUF AWAL
+-- ==========================================
+-- Path dari bahan: PlayerGui > ScreenGui > TopBar > AnswerInput > Keys > 1 > Inner > InnerBack > TextLabel
+task.spawn(function()
+    while task.wait(0.25) do
+        pcall(function()
+            local pg = LP:FindFirstChild("PlayerGui")
+            if not pg then return end
+            
+            local screen = pg:FindFirstChild("ScreenGui")
+            if not screen then return end
+            
+            local topBar = screen:FindFirstChild("TopBar")
+            if not topBar then return end
+            
+            local answerInput = topBar:FindFirstChild("AnswerInput")
+            if not answerInput then return end
+            
+            local keys = answerInput:FindFirstChild("Keys")
+            if not keys then return end
+            
+            local key1 = keys:FindFirstChild("1")
+            if not key1 then return end
+            
+            local inner = key1:FindFirstChild("Inner")
+            if not inner then return end
+            
+            local innerBack = inner:FindFirstChild("InnerBack")
+            if not innerBack then return end
+            
+            local textLabel = innerBack:FindFirstChild("TextLabel")
+            if not textLabel or not textLabel:IsA("TextLabel") then return end
+            
+            local raw = textLabel.Text
+            local letter = string.match(raw or "", "%a")
+            
+            if letter then
+                letter = string.upper(letter)
+                if letter ~= activeLetter then
+                    activeLetter = letter
+                    LetterStatus.Text = "🎯 Huruf Awal: " .. activeLetter
+                    LetterStatus.TextColor3 = Color3.fromRGB(80, 255, 160)
+                    SortAndDisplay(currentSortMode)
+                end
+            else
+                if activeLetter ~= "" then
+                    activeLetter = ""
+                    LetterStatus.Text = "🎯 Huruf Awal: [ Menunggu... ]"
+                    LetterStatus.TextColor3 = Color3.fromRGB(255, 220, 50)
+                    SortAndDisplay("default")
+                end
+            end
+        end)
+    end
+end)
+
+-- Minimize / Open
+BtnMin.Activated:Connect(function()
+    MainFrame.Visible = false
+    BtnOpen.Visible = true
+end)
+BtnOpen.Activated:Connect(function()
+    BtnOpen.Visible = false
+    MainFrame.Visible = true
+end)
+
+print("[FINISH THE WORD GOD V1] Loaded!")
+print("Pastikan kamu sudah ganti rawGithubUrl dengan dictionary milikmu.")
+print("Tombol SHORT / RANDOM / LONGEST hanya menyortir daftar.")
